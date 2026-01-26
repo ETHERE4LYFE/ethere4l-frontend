@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Producto | ETHEREAL</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/responsive.css"> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* --- ESTILOS ESPECÍFICOS DEL PRODUCTO --- */
+        .size-selector-container { margin: 20px 0; }
+        .size-options { display: flex; gap: 10px; margin: 10px 0; }
+        .size-option input { display: none; }
+        .size-option span {
+            padding: 10px 20px; border: 1px solid #ddd; cursor: pointer; transition: 0.2s;
+            display: inline-block; min-width: 45px; text-align: center; color: #333; font-weight: bold;
+        }
+        .size-option input:checked + span { background: #000; color: #fff; border-color: #000; }
+        
+        /* Botón de la calculadora */
+        .btn-calc-size {
+            background: none; border: none; color: #555; text-decoration: underline;
+            cursor: pointer; font-size: 0.9rem; margin-top: 5px; display: inline-block;
+        }
+        .btn-calc-size:hover { color: #000; }
+
+        /* Grid de Relacionados (Ajustado para colección completa) */
+        .related-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Móvil: 2 columnas */
+            gap: 15px;
+            margin-top: 20px;
+        }
+        @media(min-width: 768px) { .related-grid { grid-template-columns: repeat(4, 1fr); } }
+
+        .related-card img { width: 100%; height: auto; object-fit: cover; }
+        .related-card h4 { font-size: 0.9rem; margin: 5px 0; color: #000; }
+        .related-card p { font-size: 0.8rem; color: #666; }
+        .related-card { text-decoration: none; color: inherit; }
+
+        /* Animación Botón Compra */
+        @keyframes clickPulse { 0% { transform: scale(1); } 50% { transform: scale(0.95); } 100% { transform: scale(1); } }
+        .btn-added { background-color: #2ecc71 !important; pointer-events: none; }
+
+        /* --- ESTILOS DEL MODAL CALCULADORA --- */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: #fff; padding: 25px; max-width: 400px; width: 90%; position: relative;
+            text-align: center; border-radius: 4px;
+        }
+        .close-modal {
+            position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #000;
+        }
+        .modal-input {
+            width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ddd;
+            font-family: inherit; box-sizing: border-box;
+        }
+        .btn-calculate {
+            width: 100%; padding: 12px; background: #000; color: #fff; border: none;
+            cursor: pointer; margin-top: 10px; font-weight: bold; text-transform: uppercase;
+        }
+        .result-box {
+            margin-top: 15px; font-weight: bold; font-size: 1.1rem; color: #000;
+            min-height: 20px;
+        }
+    </style>
+</head>
+<body class="product-page-body">
+
+<nav class="navbar">
+    <div class="logo-nav">
+        <a href="index.html">
+            <span class="logo-text-gothic">ETHERE4L</span>
+        </a>
+    </div>
+
+    <i class="fa-solid fa-bars" id="mobile-menu" style="display:none;"></i>
+
+    <ul class="nav-list" id="nav-list">
+        <li><a href="index.html">Inicio</a></li>
+        <li class="dropdown-trigger">
+            <a href="#">Marcas <i class="fa-solid fa-chevron-down" style="font-size: 0.7em;"></i></a>
+            <ul class="dropdown-menu" id="lista-marcas">
+                </ul>
+        </li>
+        <li class="cart-icon-nav">
+            <a href="pedido.html">
+                <i class="fa-solid fa-shopping-bag"></i>
+                </a>
+        </li>
+    </ul>
+</nav>
+
+<div class="container-detalle">
+    <button class="btn-back" onclick="window.history.back()" style="border:none; background:none; font-size:1.2rem; cursor:pointer; margin-bottom:10px;">
+        <i class="fa-solid fa-arrow-left"></i>
+    </button>
+
+    <div class="product-wrapper">
+        <div class="product-gallery">
+            <div class="main-image-container">
+                <img id="main-img" src="" alt="Cargando...">
+            </div>
+            <div class="thumbnails-container" id="thumbnails"></div>
+        </div>
+
+        <div class="product-info">
+            <h2 id="marca-producto" class="brand-title" style="color:#666; font-size:0.9rem; text-transform:uppercase; letter-spacing:1px;">...</h2>
+            <h1 id="nombre-producto" class="product-title" style="font-size:1.8rem; margin:5px 0;">...</h1>
+            <p id="precio-producto" class="price" style="font-size:1.4rem; font-weight:bold;">...</p>
+            
+            <p id="desc-producto" class="description" style="margin:20px 0; color:#555; line-height:1.6;"></p>
+
+            <div class="size-selector-container">
+                <p style="font-size: 0.9rem; font-weight: bold;">Selecciona tu talla:</p>
+                <div class="size-options">
+                    <label class="size-option"><input type="radio" name="size" value="S"><span>S</span></label>
+                    <label class="size-option"><input type="radio" name="size" value="M"><span>M</span></label>
+                    <label class="size-option"><input type="radio" name="size" value="L"><span>L</span></label>
+                    <label class="size-option"><input type="radio" name="size" value="XL"><span>XL</span></label>
+                </div>
+                <button type="button" class="btn-calc-size" onclick="abrirModalSize()">
+                    📏 ¿Cuál es mi talla? (Calculadora)
+                </button>
+            </div>
+            <button id="btn-add-cart" class="btn-buy" style="width:100%; padding:18px; background:#000; color:#fff; border:none; margin-top:20px; font-weight:bold; cursor:pointer;">
+                AÑADIR A LA BOLSA
+            </button>
+        </div>
+    </div>
+
+    <div class="related-section" style="margin-top:60px; padding-top:40px; border-top:1px solid #eee;">
+        <h3 style="text-align:center; text-transform:uppercase; margin-bottom:20px;">Colección Completa</h3>
+        <div id="related-grid" class="related-grid"></div>
+    </div>
+</div>
+
+<div id="modal-size" class="modal-overlay">
+    <div class="modal-content">
+        <span onclick="cerrarModalSize()" class="close-modal">&times;</span>
+        <h3 style="margin-bottom:15px; text-transform:uppercase;">Size Calculator</h3>
+        
+        <label style="display:block; text-align:left; font-size:0.8rem; margin-bottom:2px;">Altura (cm)</label>
+        <input type="number" id="calc-altura" class="modal-input" placeholder="Ej: 175">
+        
+        <label style="display:block; text-align:left; font-size:0.8rem; margin-bottom:2px;">Peso (kg)</label>
+        <input type="number" id="calc-peso" class="modal-input" placeholder="Ej: 70">
+        
+        <label style="display:block; text-align:left; font-size:0.8rem; margin-bottom:2px;">Preferencia de Fit</label>
+        <select id="calc-fit" class="modal-input">
+            <option value="regular">Regular Fit (Normal)</option>
+            <option value="slim">Slim Fit (Ajustado)</option>
+            <option value="oversized">Oversized (Holgado)</option>
+        </select>
+
+        <button onclick="calcularTalla()" class="btn-calculate">Calcular Talla</button>
+        <p id="resultado-talla" class="result-box"></p>
+        <p style="font-size:0.7rem; color:#888; margin-top:10px;">Esta es una sugerencia basada en promedios.</p>
+    </div>
+</div>
+
+<script src="assets/js/cart.js"></script> <script src="assets/js/main.js"></script> <script>
+    let allProducts = [];
+    let currentProduct = null;
+
+    // --- LÓGICA CALCULADORA DE TALLAS ---
+    function abrirModalSize() {
+        document.getElementById('modal-size').style.display = 'flex';
+    }
+
+    function cerrarModalSize() {
+        document.getElementById('modal-size').style.display = 'none';
+        document.getElementById('resultado-talla').innerText = '';
+    }
+
+    function calcularTalla() {
+        const altura = parseFloat(document.getElementById('calc-altura').value);
+        const peso = parseFloat(document.getElementById('calc-peso').value);
+        const fit = document.getElementById('calc-fit').value;
+
+        if(!altura || !peso) {
+            document.getElementById('resultado-talla').innerText = "⚠️ Ingresa altura y peso.";
+            return;
+        }
+
+        let score = 0;
+        if (peso < 60) score = 1;      // S
+        else if (peso < 75) score = 2; // M
+        else if (peso < 85) score = 3; // L
+        else score = 4;                // XL
+
+        if (altura > 185 && score < 4) score += 1;
+
+        if (fit === 'oversized' && score < 4) score += 1;
+        if (fit === 'slim' && score > 1) score -= 1;
+
+        const tallas = { 1: 'S', 2: 'M', 3: 'L', 4: 'XL' };
+        const recomendacion = tallas[score] || 'XL';
+
+        document.getElementById('resultado-talla').innerText = `Te sugerimos talla: ${recomendacion}`;
+    }
+
+    // --- FUNCIONES PRINCIPALES ---
+
+    // 1. INICIALIZAR
+    async function initPage() {
+        const params = new URLSearchParams(window.location.search);
+        const productId = params.get('id');
+
+        try {
+            const res = await fetch('data/productos.json'); 
+            allProducts = await res.json();
+            currentProduct = allProducts.find(p => p.id == productId);
+
+            if (currentProduct) {
+                renderProduct(currentProduct);
+                // Pasamos la marca para renderizar TODA la colección
+                renderRelated(currentProduct.marca, currentProduct.id);
+            }
+        } catch (error) {
+            console.error("Error cargando productos:", error);
+        }
+    }
+
+    // 2. RENDER PRODUCTO
+    function renderProduct(p) {
+        document.getElementById('marca-producto').innerText = p.marca;
+        document.getElementById('nombre-producto').innerText = p.nombre;
+        
+        // Manejo visual de precio "None"
+        if (typeof p.precio === 'string' && p.precio.toLowerCase().includes('none')) {
+             document.getElementById('precio-producto').innerText = "Consultar Precio";
+        } else {
+             document.getElementById('precio-producto').innerText = p.precio.includes('$') ? p.precio : `$${p.precio}`;
+        }
+        
+        document.getElementById('desc-producto').innerText = p.descripcion || "Prenda exclusiva calidad mirror 1.1";
+        document.getElementById('main-img').src = p.fotos[0];
+
+        const thumbContainer = document.getElementById('thumbnails');
+        thumbContainer.innerHTML = '';
+        if (p.fotos.length > 1) {
+            p.fotos.forEach(foto => {
+                const img = document.createElement('img');
+                img.src = foto;
+                img.onclick = () => document.getElementById('main-img').src = foto;
+                thumbContainer.appendChild(img);
+            });
+        }
+    }
+
+    // 3. RENDER RELACIONADOS (COLECCIÓN COMPLETA)
+    function renderRelated(marca, currentId) {
+        const grid = document.getElementById('related-grid');
+        
+        // Filtrar misma marca, excluir actual. SIN LIMITAR (quitamos .slice)
+        const related = allProducts.filter(p => p.marca === marca && p.id !== currentId); 
+
+        if (related.length === 0) {
+            grid.innerHTML = "<p>No hay más productos en esta colección.</p>";
+            return;
+        }
+
+        grid.innerHTML = related.map(p => {
+            // Validar precio visualmente
+            const displayPrice = (typeof p.precio === 'string' && p.precio.toLowerCase().includes('none')) 
+                ? "Ver detalle" 
+                : p.precio;
+
+            return `
+                <a href="producto.html?id=${p.id}" class="related-card">
+                    <div style="background:#f4f4f4; margin-bottom:10px;">
+                        <img src="${p.fotos[0]}" alt="${p.nombre}">
+                    </div>
+                    <h4>${p.nombre}</h4>
+                    <p>${displayPrice}</p>
+                </a>
+            `;
+        }).join('');
+    }
+
+    // 4. AÑADIR AL CARRITO
+    document.getElementById('btn-add-cart').addEventListener('click', function() {
+        const sizeInput = document.querySelector('input[name="size"]:checked');
+        
+        // VALIDACIÓN DE TALLA
+        if (!sizeInput) {
+            alert("⚠️ Por favor selecciona una talla antes de continuar.");
+            document.querySelector('.size-options').style.border = "1px solid red";
+            setTimeout(() => document.querySelector('.size-options').style.border = "none", 2000);
+            return;
+        }
+
+        if(typeof addToCart === 'function') {
+            addToCart({
+                id: currentProduct.id,
+                nombre: currentProduct.nombre,
+                // IMPORTANTE: Pasamos el precio CRUDO (string) y dejamos que cart.js lo limpie
+                precio: currentProduct.precio, 
+                talla: sizeInput.value,
+                imagen: currentProduct.fotos[0]
+            });
+
+            // ANIMACIÓN VISUAL
+            const btn = this;
+            const originalText = btn.innerText;
+            
+            btn.style.animation = 'clickPulse 0.3s ease'; 
+            btn.innerText = "¡AGREGADO! ✓";
+            btn.classList.add('btn-added'); 
+            
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.classList.remove('btn-added'); 
+                btn.style.animation = '';
+            }, 1500);
+        } else {
+            console.error("Función addToCart no encontrada. Verifica cart.js");
+        }
+    });
+
+    // Cerrar modal al hacer click fuera
+    window.onclick = function(event) {
+        const modal = document.getElementById('modal-size');
+        if (event.target == modal) {
+            cerrarModalSize();
+        }
+    }
+
+    initPage();
+</script>
+
+</body>
+</html>

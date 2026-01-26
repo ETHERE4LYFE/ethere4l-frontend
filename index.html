@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETHEREAL | Official Store</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="fade-in-page"> 
+    <main class="portada-container" id="main-portada">
+        <div class="logo-wrapper">
+            <img src="images/ui/logo.png" alt="Logo Ethereal" class="logo-principal">
+        </div>
+        
+        <div class="enter-text">CLICK PARA ENTRAR</div>
+    </main>
+
+    <script src="assets/js/index.js"></script>
+    <script>
+    document.getElementById('main-portada').addEventListener('click', function(e) {
+        e.preventDefault();
+        const container = document.getElementById('main-portada');
+        container.classList.add('fade-out-exit');
+        setTimeout(function() {
+            window.location.href = 'catalogo.html';
+        }, 500); 
+    });
+
+    // Cursor Logic
+    const cursor = document.querySelector('.custom-cursor');
+    document.addEventListener('mousemove', (e) => {
+        if(cursor) {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        }
+    });
+
+    document.querySelectorAll('a, button, .producto-card').forEach(el => {
+        el.addEventListener('mouseenter', () => cursor?.classList.add('active'));
+        el.addEventListener('mouseleave', () => cursor?.classList.remove('active'));
+    });
+    </script>
+
+    <div class="custom-cursor"></div>
+</body>
+</html>

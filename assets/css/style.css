@@ -1,0 +1,1155 @@
+@import url('variables.css');
+/* Importar fuentes góticas */
+@import url('https://fonts.googleapis.com/css2?family=Pirata+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
+
+/* Reset Básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Helvetica Neue', sans-serif; /* Fuente base limpia */
+    background-color: #ffffff;
+    color: #000;
+}
+
+/* --- NAVBAR (Corregida: Delgada y Gótica) --- */
+/* --- NAVBAR FIJA (Sticky corregido) --- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    
+    /* CAMBIA EL COLOR AQUÍ: #ffffff es blanco, #000000 negro */
+    background: #ffffff; 
+    
+    border-bottom: 1px solid #000;
+    
+    /* Sticky funciona mejor que Fixed para no tapar el contenido */
+    position: -webkit-sticky; /* Soporte para Safari */
+    position: sticky;
+    top: 0;
+    width: 100%;
+    
+    z-index: 2000; /* Aumentado para estar por encima de todo */
+    height: 70px;  /* Altura fija para consistencia */
+}
+
+.logo-nav {
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+}
+
+/* Enlace del logo para que abarque imagen y texto */
+.logo-nav a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+}
+
+.logo-img {
+    height: 60px; /* TAMAÑO PEQUEÑO para barra delgada */
+    width: auto;
+    object-fit: contain;
+    padding: 5px 0;
+}
+
+.logo-text-gothic {
+    font-family: 'Pirata One', cursive;
+    font-size: 2rem;
+    margin-left: 10px;
+    letter-spacing: 2px;
+    color: #000;
+    text-transform: uppercase;
+    line-height: 1;
+}
+
+/* Menú de navegación (Desktop) */
+.nav-list {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+}
+
+.nav-list a {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+.nav-list a:hover { opacity: 0.6; }
+
+/* DROPDOWN MARCAS */
+.dropdown { position: relative; }
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    min-width: 200px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    list-style: none;
+    padding: 10px 0;
+    border: 1px solid #eee;
+}
+
+.dropdown-content li a {
+    padding: 10px 20px;
+    display: block;
+    font-size: 0.8rem;
+}
+
+.dropdown:hover .dropdown-content { display: block; }
+
+/* MENU HAMBURGUESA (Móvil) */
+.menu-toggle { display: none; flex-direction: column; cursor: pointer; gap: 5px; }
+.bar { width: 25px; height: 3px; background: black; transition: 0.3s; }
+
+
+/* --- GRID DE PRODUCTOS (CATÁLOGO) --- */
+.container-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+    padding: 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.producto-card {
+    text-decoration: none;
+    color: black;
+    transition: 0.3s;
+}
+
+.producto-card:hover { transform: translateY(-10px); }
+
+.img-container {
+    width: 100%;
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    background: #f9f9f9;
+}
+
+.img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.producto-info { padding: 15px; text-align: center; }
+.producto-info h3 { font-size: 1rem; margin-bottom: 5px; }
+.marca-tag { color: #888; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 5px; }
+.precio { font-weight: bold; }
+
+
+/* --- ESTILOS PÁGINA DE PRODUCTO INDIVIDUAL --- */
+.product-page-body {
+    background-color: #f9f9f9; 
+    color: #111;
+}
+
+.container-detalle {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.btn-back {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Estructura Principal del Producto */
+.product-wrapper {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr; /* Más espacio a las fotos */
+    gap: 50px;
+    margin-bottom: 80px;
+}
+
+/* Galería de Imágenes */
+.main-image-container {
+    width: 100%;
+}
+
+.main-image-container img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border: 1px solid #eee;
+}
+
+.thumbnails-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    overflow-x: auto;
+}
+
+.thumb {
+    width: 80px;
+    height: 100px;
+    object-fit: cover;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: 0.3s;
+    border: 1px solid transparent;
+}
+
+.thumb:hover, .thumb.active {
+    opacity: 1;
+    border: 1px solid #000;
+}
+
+/* Info del producto (Texto derecha) */
+.brand-title {
+    font-size: 14px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.product-title {
+    font-size: 2.5rem;
+    margin: 0 0 20px 0;
+    font-weight: 500;
+    line-height: 1.1;
+}
+
+.price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.divider {
+    height: 1px;
+    background: #ddd;
+    margin: 20px 0;
+}
+
+.description {
+    line-height: 1.6;
+    color: #444;
+    margin-bottom: 40px;
+}
+
+/* Botón de compra / Instagram */
+.btn-buy {
+    width: 100%;
+    padding: 15px;
+    background: #000;
+    color: #fff;
+    border: none;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: 0.3s;
+    display: block; /* Importante para que funcione dentro del <a> */
+}
+
+.btn-buy:hover {
+    background: #333;
+}
+
+/* Productos Relacionados */
+.related-section h3 {
+    text-transform: uppercase;
+    border-bottom: 1px solid #000;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+}
+
+.related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.related-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.related-card h4 {
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+.related-card a {
+    text-decoration: none;
+    color: #000;
+}
+
+
+/* --- RESPONSIVE / MÓVIL --- */
+@media (max-width: 768px) {
+    
+    /* Menú Hamburguesa */
+    .menu-toggle { display: flex; }
+    .nav-list {
+        display: none;
+        position: absolute;
+        top: 60px; /* Ajustado a la altura de la navbar */
+        left: 0; 
+        width: 100%;
+        background: white; 
+        flex-direction: column;
+        padding: 20px; 
+        border-bottom: 1px solid #eee;
+        z-index: 1001;
+    }
+    .nav-list.active { display: flex; }
+
+    /* FUNCIÓN AÑADIDA: Toggle de Marcas en Móvil */
+    .dropdown:hover .dropdown-content { 
+        display: none; /* Desactiva el hover en móvil para que no se quede pegado */
+    }
+    .dropdown.active .dropdown-content { 
+        display: block; /* Solo se muestra cuando el JS añade la clase active */
+        position: static;
+        width: 100%;
+        box-shadow: none;
+        border: none;
+        padding-left: 15px;
+    }
+
+    /* Grid del catálogo en celular */
+    .container-grid { 
+        grid-template-columns: 1fr 1fr; /* 2 columnas en celular */
+        padding: 15px; 
+        gap: 15px; 
+    }
+
+    /* --- CORRECCIÓN PÁGINA DE PRODUCTO --- */
+    
+    .product-wrapper {
+        display: flex;
+        flex-direction: column; /* Apilar imagen arriba, texto abajo */
+        gap: 20px;
+        margin-bottom: 40px;
+    }
+
+    /* Contenedor de la imagen principal AJUSTADO */
+    .main-image-container {
+        width: 100%;
+        height: 50vh !important; /* REGRESADO AL TAMAÑO ORIGINAL */
+        background-color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Imagen principal ajustada */
+    .main-image-container img {
+        width: auto;      
+        height: 100%;     
+        max-height: 100%; 
+        object-fit: contain; 
+        border: none;
+    }
+
+    /* Ajustes de texto para móvil */
+    .product-info {
+        padding: 0 10px;
+        text-align: center;
+    }
+    
+    .product-title {
+        font-size: 1.8rem;
+    }
+
+    /* Miniaturas deslizables */
+    .thumbnails-container {
+        justify-content: flex-start;
+        padding-bottom: 10px;
+    }
+}
+/* --- CORRECCIÓN FINAL: LOGO EN CELULAR --- */
+@media (max-width: 768px) {
+    
+    /* Forzamos que CUALQUIER imagen dentro del navegador sea pequeña */
+    .navbar img, 
+    .simple-nav img, 
+    .logo-nav img,
+    .brand-image,
+    .logo-img {
+        height: 50px !important; /* Altura fija elegante */
+        width: auto !important;  /* El ancho se ajusta solo */
+        max-width: 80% !important; /* Nunca más ancho que la pantalla */
+        object-fit: contain;
+    }
+
+    /* Ajuste para que el contenedor del logo no ocupe espacio extra */
+    .navbar, .simple-nav {
+        padding: 10px 0 !important;
+        min-height: 60px;
+    }
+
+    /* Si usas el texto gótico al lado, ajustamos su tamaño también */
+    .logo-text-gothic, .nav-text {
+        font-size: 1.5rem !important; /* Más pequeño para celular */
+    }
+}
+/* --- BOTÓN CONSULTAR DISPONIBILIDAD EN CATALOGO --- */
+.btn-consulta-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+
+/* ========================= */
+/* INDEX / PORTADA FULL SCREEN */
+/* ========================= */
+
+/* Elimina márgenes extra del body para que no queden espacios blancos */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: auto; /* Permite que el cuerpo crezca y el sticky detecte el scroll */
+    overflow-x: hidden;
+}
+
+.full-screen-link {
+    text-decoration: none;
+}
+
+.portada-container {
+    width: 100%;
+    height: 100vh; /* Ocupa exactamente el 100% del alto de la ventana */
+    display: flex;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center;     /* Centra verticalmente */
+    position: relative;
+    background-color: #ffffff;
+    overflow: hidden; /* Evita scrolls innecesarios */
+}
+
+.logo-wrapper {
+    width: 50%; /* Tamaño para computadoras (puedes subirlo a 60% si lo quieres más grande) */
+    max-width: 900px;
+    z-index: 10;
+    text-align: center;
+}
+
+.logo-principal {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0px 10px 20px rgba(0,0,0,0.05)); /* Toque profesional */
+}
+
+/* ADORNOS EN LAS ESQUINAS */
+.adorno {
+    position: absolute;
+    width: 180px; /* Tamaño de los adornos en laptop */
+    height: auto;
+    opacity: 0.8;
+}
+
+.topleft { top: 30px; left: 30px; }
+.topright { top: 30px; right: 30px; transform: rotate(90deg); }
+.bottomleft { bottom: 30px; left: 30px; transform: rotate(-90deg); }
+.bottomright { bottom: 30px; right: 30px; transform: rotate(180deg); }
+
+/* ========================= */
+/* AJUSTES PARA CELULAR (Sin afectar desktop) */
+/* ========================= */
+@media (max-width: 768px) {
+    .logo-wrapper {
+        width: 85%; /* En celular el logo debe ser más ancho para que se lea */
+    }
+
+    .adorno {
+        width: 80px; /* Adornos más pequeños para no estorbar en pantallas chicas */
+    }
+    
+    .topleft, .topright, .bottomleft, .bottomright {
+        top: 15px;
+        bottom: 15px;
+        left: 15px;
+        right: 15px;
+    }
+}
+
+/* Ocultar iconos de imágenes rotas (opcional pero profesional) */
+img:not([src]), img[src=""] {
+    visibility: hidden;
+}
+
+/* Optimización para el celular */
+@media (max-width: 768px) {
+    /* Si los adornos no existen o se ven mal en el celular, los ocultamos */
+    .adorno {
+        display: none; 
+    }
+
+    .logo-wrapper {
+        width: 80% !important; /* El logo se adapta mejor al ancho del móvil */
+    }
+
+    .portada-container {
+        height: 100vh;
+        height: -webkit-fill-available; /* Ajuste para navegadores móviles como Safari */
+    }
+}
+/* ========================= */
+/* PORTADA INDEX PROFESIONAL */
+/* ========================= */
+
+.portada-container {
+    width: 100%;
+    height: 100vh; /* Ocupa toda la pantalla en Laptop */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.logo-wrapper {
+    width: 50%; /* Tamaño equilibrado para computadoras */
+    max-width: 700px;
+    transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.logo-principal {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* --- EFECTO DE PARPADEO (BLINK) --- */
+@keyframes fadeBlink {
+    0% { opacity: 0.2; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.2; }
+}
+
+.enter-text {
+    margin-top: 30px;
+    font-size: 0.75rem;
+    letter-spacing: 5px;
+    color: #000;
+    font-weight: bold;
+    text-transform: uppercase;
+    /* Aplicamos la animación: 3 segundos, infinita */
+    animation: fadeBlink 3s infinite ease-in-out; 
+}
+
+/* EFECTO AL PASAR EL MOUSE (PC) */
+.portada-container:hover .logo-wrapper {
+    transform: scale(1.03);
+}
+
+/* ========================= */
+/* AJUSTE PARA MÓVIL */
+/* ========================= */
+@media (max-width: 768px) {
+    .logo-wrapper {
+        width: 85% !important; /* Más grande en celular para que se vea el detalle */
+    }
+
+    .portada-container {
+        height: 100dvh; /* Evita saltos con la barra del navegador en iPhone/Android */
+    }
+
+    .enter-text {
+        font-size: 0.65rem;
+        letter-spacing: 3px;
+    }
+}
+
+/* OCULTAR IMÁGENES ROTAS POR SEGURIDAD */
+img:not([src]), img[src=""] {
+    display: none !important;
+}
+
+/* ========================= */
+/* TRANSICIÓN DE LUJO (SIN TRABADAS) */
+/* ========================= */
+
+/* Estado inicial: El catálogo empieza totalmente invisible */
+.fade-in-page {
+    opacity: 0;
+    animation: fadeInAnimation 0.8s ease-out forwards;
+    /* Evita que se vea nada antes de la animación */
+    will-change: opacity; 
+}
+
+@keyframes fadeInAnimation {
+    from { 
+        opacity: 0; 
+        transform: translateY(5px); /* Movimiento más sutil para que no parezca lag */
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+/* Transición de salida del Index */
+.fade-out-exit {
+    opacity: 0 !important;
+    transition: opacity 0.5s ease-in-out !important;
+}
+
+/* --- CURSOR Y HOVER (ADICIONAL & CROSS-FADE CORREGIDO) --- */
+@media (min-width: 769px) {
+    body { cursor: none; }
+    a, button { cursor: none; }
+    .custom-cursor {
+        width: 20px; height: 20px; border: 1px solid #000; border-radius: 50%;
+        position: fixed; pointer-events: none; z-index: 9999;
+        transition: transform 0.1s ease-out, background 0.3s ease;
+    }
+    .custom-cursor.active { transform: scale(3); background: rgba(0, 0, 0, 0.1); border: none; }
+}
+
+/* CONTENEDOR DE IMÁGENES (Tamaño Original Restaurado) */
+.img-container { 
+    position: relative; 
+    width: 100%;
+    /* Volvemos a fijar la proporción para que no oculten el texto */
+    aspect-ratio: 3/4; 
+    overflow: hidden;
+    background: #f9f9f9;
+}
+
+/* IMAGEN PRINCIPAL (FRENTE) */
+.img-primary { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    display: block;
+    transition: opacity 0.4s ease-in-out; 
+    opacity: 1; /* Visible por defecto */
+}
+
+/* IMAGEN SECUNDARIA (ESPALDA) */
+.img-secondary { 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    opacity: 0; /* Invisible por defecto */
+    transition: opacity 0.4s ease-in-out; 
+}
+
+/* --- INTERCAMBIO (CROSS-FADE) --- */
+
+/* 1. Aparece la espalda */
+.producto-card:hover .img-secondary, 
+.reveal-back .img-secondary { 
+    opacity: 1; 
+}
+
+/* 2. Desaparece el frente (evita bordes sucios) */
+.producto-card:hover .img-primary, 
+.reveal-back .img-primary { 
+    opacity: 0; 
+}
+/* --- SECCIÓN CONTACTO / FORMULARIO --- */
+.contacto-footer {
+    background: #000; /* Fondo negro para contraste */
+    color: #fff;
+    padding: 80px 20px;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.contacto-container {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.contacto-container h2 {
+    font-family: 'Pirata One', cursive;
+    font-size: 2.5rem;
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+}
+
+.contacto-container p {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.contacto-container input {
+    width: 100%;
+    padding: 15px;
+    background: transparent;
+    border: 1px solid #333;
+    color: #fff;
+    font-family: 'Helvetica Neue', sans-serif;
+    outline: none;
+    transition: 0.3s;
+}
+
+.contacto-container input:focus {
+    border-color: #fff;
+}
+
+.contacto-container .btn-buy {
+    background: #fff;
+    color: #000;
+    border: none;
+    transition: 0.3s;
+}
+
+.contacto-container .btn-buy:hover {
+    background: #ccc;
+    transform: scale(1.02);
+}
+/* =========================================
+   NUEVO CSS PROFESIONAL - ETHEREAL v2
+   ========================================= */
+
+/* --- 1. Página de Producto (Arreglo de Imágenes y Calculadora) --- */
+
+/* Contenedor principal de la imagen para evitar distorsión */
+.main-image-container {
+    width: 100%;
+    height: 500px; /* Altura fija para uniformidad */
+    background: #f9f9f9; /* Fondo gris claro elegante */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+/* La imagen se adapta sin estirarse */
+.main-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* CLAVE: Muestra la imagen entera sin cortarla ni estirarla */
+    mix-blend-mode: multiply; /* Truco pro: hace que el fondo blanco de la foto se fusione */
+}
+
+/* Miniaturas más limpias */
+.thumbnails-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.thumbnails-container img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.thumbnails-container img:hover, .thumbnails-container img.active {
+    opacity: 1;
+    border-color: #000;
+}
+
+/* Estilo del enlace de la calculadora */
+.calculator-btn {
+    background: none;
+    border: none;
+    color: #555;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.3s;
+    padding: 0;
+}
+
+.calculator-btn:hover {
+    color: #000;
+    text-decoration: underline;
+}
+
+/* Modal de Calculadora Profesional */
+.calc-modal {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); /* Fondo oscuro semitransparente */
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px); /* Efecto borroso de fondo moderno */
+}
+
+.calc-content {
+    background: #fff;
+    padding: 40px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    position: relative;
+    border-radius: 8px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.calc-content h3 {
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.calc-input {
+    width: 100%;
+    padding: 12px 15px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    cursor: pointer;
+    font-size: 24px;
+    color: #999;
+}
+
+
+/* --- 2. Página de Checkout / Pedido (Diseño Profesional de 2 Columnas) --- */
+
+.checkout-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.checkout-container h1 {
+    text-align: center;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Layout de rejilla para pantallas grandes */
+.checkout-layout {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr; /* Columna izq más ancha que la derecha */
+    gap: 60px;
+    align-items: start;
+}
+
+/* Columna Izquierda: Resumen del Carrito */
+.cart-summary {
+    background: #fff;
+    padding-right: 20px;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.cart-item-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.cart-item img {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 4px;
+    background: #f5f5f5;
+}
+
+.cart-item-details h4 {
+    margin: 0 0 5px 0;
+    font-size: 1rem;
+}
+
+.cart-item-details p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.cart-item-price {
+    text-align: right;
+}
+
+.cart-item-price p {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.btn-remove {
+    color: #999;
+    font-size: 0.8rem;
+    text-decoration: underline;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.btn-remove:hover { color: #ff4444; }
+
+/* Columna Derecha: Formulario y Total */
+.checkout-sidebar {
+    background: #f9f9f9;
+    padding: 30px;
+    border-radius: 8px;
+    position: sticky;
+    top: 100px; /* Se queda fijo al hacer scroll */
+}
+
+.total-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.total-section h3 { margin: 0; font-size: 1.2rem; }
+.total-price { font-size: 1.5rem; font-weight: bold; }
+
+.form-envio h2 {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.form-input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+    transition: border-color 0.3s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #000;
+}
+
+#btn-finalizar {
+    width: 100%;
+    padding: 16px;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.3s;
+}
+
+#btn-finalizar:hover { background: #333; }
+
+/* Responsive para celulares */
+@media (max-width: 768px) {
+    .checkout-layout {
+        grid-template-columns: 1fr; /* Una sola columna */
+        gap: 30px;
+    }
+    .checkout-sidebar {
+        position: static; /* Ya no es fijo en móvil */
+    }
+    .main-image-container {
+        height: 350px; /* Imagen más pequeña en móvil */
+    }
+}
+/* Agregar al final de style.css */
+
+/* Menú Overlay Pantalla Completa */
+.mobile-menu-overlay {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100vh;
+    background: #fff;
+    z-index: 2000;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.mobile-links {
+    list-style: none;
+    text-align: center;
+}
+
+.mobile-links li { margin: 20px 0; }
+.mobile-links a {
+    font-size: 1.5rem;
+    color: #000;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.close-menu {
+    position: absolute;
+    top: 20px; right: 20px;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+/* ======================================================
+   PARCHE DE CORRECCIONES ETHERE4L (PEGAR AL FINAL)
+   ====================================================== */
+
+/* 1. ARREGLO URGENTE NAVBAR (Evita que las marcas floten) */
+.navbar {
+    position: sticky !important;
+    top: 0;
+    z-index: 10000 !important; /* Prioridad máxima */
+    background: #fff !important;
+}
+
+/* Forzar que el menú desplegable NO se vea estático */
+.dropdown-menu, #lista-marcas {
+    display: none; /* Oculto por defecto */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #fff;
+    min-width: 200px;
+    border: 1px solid #000;
+    padding: 0;
+    list-style: none;
+    z-index: 10001;
+}
+
+/* Mostrar solo al pasar el mouse (Desktop) */
+.dropdown-trigger:hover .dropdown-menu,
+.dropdown-trigger:hover #lista-marcas {
+    display: block !important;
+}
+
+.dropdown-menu li a, #lista-marcas li a {
+    display: block;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #000;
+    font-size: 0.9rem;
+}
+
+.dropdown-menu li a:hover {
+    background: #f0f0f0;
+}
+
+/* 2. HOVER VISIBLE EN NAVBAR (Desktop) */
+.nav-list a {
+    position: relative;
+    text-decoration: none;
+    padding-bottom: 5px;
+}
+
+.nav-list a:hover {
+    opacity: 1 !important; /* Quitar opacidad vieja si existía */
+}
+
+/* Línea negra debajo al hacer hover */
+.nav-list a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #000;
+    transition: width 0.3s;
+}
+
+.nav-list a:hover::after {
+    width: 100%;
+}
+
+/* 3. ARREGLO CHECKOUT MÓVIL (Tu Bolsa) */
+@media (max-width: 768px) {
+    /* Forzar layout horizontal en items del carrito */
+    .cart-item {
+        display: grid !important;
+        grid-template-columns: 80px 1fr !important; /* Imagen | Info */
+        gap: 15px !important;
+        align-items: start !important;
+        border-bottom: 1px solid #eee;
+        padding: 15px 0;
+    }
+
+    .cart-item img {
+        width: 100% !important;
+        height: 100px !important;
+        object-fit: cover;
+    }
+
+    /* Contenedor de info */
+    .item-details {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    /* Botón eliminar accesible en móvil */
+    .btn-remove {
+        margin-top: 10px;
+        color: red !important;
+        font-size: 0.9rem !important;
+        text-align: left;
+        padding: 5px 0;
+    }
+}

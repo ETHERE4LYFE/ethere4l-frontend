@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo | ETHEREAL</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="fade-in-page">
+
+<nav class="navbar">
+    <div class="logo-nav">
+        <a href="index.html">
+            <img src="images/ui/header-logo.png" class="logo-img" alt="ETHEREAL">
+            <span class="logo-text-gothic">ETHERE4L</span>
+        </a>
+    </div>
+
+    <div class="menu-toggle" id="mobile-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </div>
+
+    <ul class="nav-list">
+        <li><a href="index.html">Inicio</a></li>
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle">Marcas <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i></a>
+            <ul class="dropdown-content">
+                <li><a href="catalogo.html?marca=balenciaga">Balenciaga</a></li>
+                <li><a href="catalogo.html?marca=chrome-hearts">Chrome Hearts</a></li>
+                <li><a href="catalogo.html?marca=supreme">Supreme</a></li>
+                <li><a href="catalogo.html?marca=hellstar">Hellstar</a></li>
+                <li><a href="catalogo.html?marca=jaded-london">Jaded London</a></li>
+                <li><a href="catalogo.html?marca=cozy-worldwide">Cozy Worldwide</a></li>
+                <li><a href="catalogo.html?marca=maison-margiela">Maison Margiela</a></li>
+                <li><a href="catalogo.html?marca=designer-shoes">Designer Shoes</a></li>
+                <li><a href="catalogo.html?marca=accessories">Accessories</a></li>
+                <li><a href="catalogo.html?marca=acnestudios">Acne Studios</a></li>
+            </ul>
+        </li>
+        <li><a href="catalogo.html">Catálogo</a></li>
+    </ul>
+
+</nav>
+
+<div class="btn-consulta-container">
+    <a href="https://www.instagram.com/etheere4l" 
+       target="_blank" 
+       class="btn-buy">
+        CONSULTAR DISPONIBILIDAD
+    </a>
+</div>
+
+<header class="tienda-header" style="text-align: center; padding: 40px 0;">
+    <h1 id="titulo-seccion">NUESTRAS COLECCIONES</h1> 
+    <p>Calidad Ethereal en cada prenda.</p>
+</header>
+
+<section id="grid-productos" class="container-grid"></section>
+
+<script src="assets/js/render.js"></script>
+<script>
+    const menuToggle = document.getElementById('mobile-menu');
+    const navList = document.querySelector('.nav-list');
+    const dropdownToggle = document.querySelector('.dropdown-toggle');
+    const dropdownParent = document.querySelector('.dropdown');
+
+    menuToggle.addEventListener('click', () => navList.classList.toggle('active'));
+
+    dropdownToggle.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768) {
+            e.preventDefault();
+            dropdownParent.classList.toggle('active');
+        }
+    });
+</script>
+
+<div class="custom-cursor"></div>
+<script>
+    const cursor = document.querySelector('.custom-cursor');
+    document.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+    });
+
+    // Detectar elementos clickeables para agrandar el cursor
+    document.querySelectorAll('a, button, .producto-card').forEach(el => {
+        el.addEventListener('mouseenter', () => cursor.classList.add('active'));
+        el.addEventListener('mouseleave', () => cursor.classList.remove('active'));
+    });
+</script>
+
+<section class="contacto-footer">
+    <div class="contacto-container">
+        <h2>¿BUSCAS ALGO EN ESPECIAL?</h2>
+        <p>Si no encuentras una pieza, cuéntanos cuál buscas y te contactaremos.</p>
+        
+        <form name="interes-piezas" method="POST" data-netlify="true" action="/gracias.html" id="form-piezas">
+            <input type="hidden" name="form-name" value="interes-piezas">
+            
+            <div class="form-group">
+                <input type="text" name="pieza" id="pieza" placeholder="Ej. Chrome Hearts chain" required>
+            </div>
+
+            <div class="form-group">
+                <input type="text" name="instagram" id="insta_user" placeholder="Tu usuario de Instagram (@...)" required>
+            </div>
+
+            <button type="submit" class="btn-buy">ENVIAR SOLICITUD</button>
+        </form>
+    </div>
+</section>
+
+<script>
+  document.getElementById('form-piezas').onsubmit = function() {
+    const pieza = document.getElementById('pieza').value;
+    const user = document.getElementById('insta_user').value;
+    
+    // Abre Instagram en paralelo al envío del formulario
+    setTimeout(() => {
+        window.open(`https://ig.me/m/etheere4l?text=Hola! Busco: ${pieza}. Mi usuario es ${user}`, '_blank');
+    }, 100);
+
+    // Permitimos que el formulario se envíe a Netlify normalmente
+    return true; 
+  };
+</script>
+</body>
+</html>
