@@ -113,69 +113,58 @@
     </div>
 </nav>
 
-<div class="checkout-container">
+<!-- SOLO CAMBIOS DE ESTRUCTURA VISUAL, LÓGICA IGUAL -->
+<div class="checkout-form">
+    <h3>Datos de Envío</h3>
 
-    <div class="checkout-summary">
-        <h2>Tu Bolsa</h2>
-        <div id="lista-carrito">
-            <p>Cargando productos...</p>
-        </div>
-
-        <div class="total-row">
-            <span>TOTAL A PAGAR:</span>
-            <span id="total-precio">$0.00</span>
-        </div>
+    <div class="alert-info">
+        <i class="fa-solid fa-circle-info"></i>
+        El pago es por <strong>Transferencia Bancaria</strong>.
+        Recibirás tu Orden en PDF por correo.
     </div>
 
-    <div class="checkout-form">
-        <h3>Datos de Envío</h3>
+    <form id="form-pedido">
 
-        <div class="alert-info">
-            <i class="fa-solid fa-circle-info"></i>
-            El pago es por <strong>Transferencia Bancaria</strong>.  
-            Al confirmar, recibirás tu Orden en PDF.
+        <h4>Información del Cliente</h4>
+
+        <div class="form-group">
+            <label>Nombre Completo</label>
+            <input type="text" id="nombre" required>
         </div>
 
-        <form id="form-pedido" novalidate>
+        <div class="form-group">
+            <label>Correo Electrónico (obligatorio)</label>
+            <input
+                type="email"
+                id="email"
+                placeholder="cliente@gmail.com"
+                required
+            >
+        </div>
 
-            <div class="form-group">
-                <label>Nombre Completo</label>
-                <input type="text" id="nombre" name="nombre" placeholder="Ej: Juan Pérez" required>
-            </div>
+        <div class="form-group">
+            <label>Teléfono (WhatsApp)</label>
+            <input type="tel" id="telefono" required>
+        </div>
 
-            <div class="form-group">
-                <label>Correo Electrónico</label>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="Ej: cliente@gmail.com"
-                    required
-                >
-            </div>
+        <h4>Dirección</h4>
 
-            <div class="form-group">
-                <label>Teléfono (WhatsApp)</label>
-                <input type="tel" id="telefono" name="telefono" placeholder="Ej: 55 1234 5678" required>
-            </div>
+        <div class="form-group">
+            <label>Dirección Completa</label>
+            <textarea id="direccion" rows="3" required></textarea>
+        </div>
 
-            <div class="form-group">
-                <label>Dirección Completa</label>
-                <textarea id="direccion" name="direccion" rows="3" placeholder="Calle, Número, Colonia, Ciudad, CP" required></textarea>
-            </div>
+        <div class="form-group">
+            <label>Notas (Opcional)</label>
+            <input type="text" id="notas">
+        </div>
 
-            <div class="form-group">
-                <label>Notas para el envío (Opcional)</label>
-                <input type="text" id="notas" name="notas" placeholder="Ej: Casa blanca portón negro">
-            </div>
-
-            <button type="submit" id="btn-comprar" class="btn-primary">
-                CONFIRMAR PEDIDO
-            </button>
-
-        </form>
-    </div>
+        <button type="submit" id="btn-comprar" class="btn-primary">
+            CONFIRMAR PEDIDO
+        </button>
+    </form>
 </div>
+
 
 <script src="assets/js/cart.js"></script>
 <script src="assets/js/checkout.js"></script>

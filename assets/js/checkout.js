@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const emailInput = document.getElementById('email');
         const emailValue = emailInput.value.trim();
 
+        // 🔒 VALIDACIÓN ABSOLUTA (NO SE PUEDE SALTAR)
         if (!emailValue || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
             alert("Por favor ingresa un correo electrónico válido.");
             emailInput.focus();
