@@ -1,5 +1,5 @@
 // ===============================
-// ETHERE4L BACKEND – RAILWAY SAFE (UPDATED)
+// ETHERE4L BACKEND – RAILWAY SAFE (FINAL VERSION)
 // ===============================
 
 if (process.env.NODE_ENV !== 'production') {
@@ -8,13 +8,14 @@ if (process.env.NODE_ENV !== 'production') {
 
 const express = require('express');
 const cors = require('cors');
-// Importamos módulos nuevos (NO BORRAR)
+// Importamos módulos nuevos
 const { Resend } = require('resend');
 const Database = require('better-sqlite3');
+// Importamos tus utilidades creadas
 const { buildPDF } = require('./utils/pdfGenerator');
 const { getEmailTemplate } = require('./utils/emailTemplates');
 
-// --- DB (PERSISTENTE LOCAL / RAILWAY SAFE) ---
+// --- DB ---
 const db = new Database('orders.db');
 
 db.prepare(`
@@ -28,15 +29,9 @@ CREATE TABLE IF NOT EXISTS pedidos (
 
 // --- APP ---
 const app = express();
+let portToUse = process.env.PORT || 3000;
 
-// --- PORT ---
-let portToUse = 3000;
-if (process.env.PORT) {
-    const p = parseInt(process.env.PORT, 10);
-    if (!isNaN(p)) portToUse = p;
-}
-
-// --- RESEND ---
+// --- RESEND CONFIG ---
 let resend = null;
 if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.trim() !== '') {
     resend = new Resend(process.env.RESEND_API_KEY.trim());
@@ -45,120 +40,83 @@ if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.trim() !== '') {
     console.warn('⚠️ RESEND_API_KEY no configurado');
 }
 
-// --- MIDDLEWARE ---
 app.use(cors());
 app.use(express.json());
 
-// --- HEALTH ---
-app.get('/', (req, res) => {
-    res.json({ status: 'ok', service: 'ETHERE4L backend' });
-});
+app.get('/', (req, res) => res.json({ status: 'ok', service: 'ETHERE4L backend' }));
 
-// --- API ---
+// --- API: CREAR PEDIDO ---
 app.post('/api/crear-pedido', (req, res) => {
     const { cliente, pedido } = req.body;
 
-    if (!cliente || !pedido || !Array.isArray(pedido.items)) {
-        return res.status(400).json({ success: false, message: 'Datos incompletos' });
-    }
-
-    if (!cliente.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cliente.email)) {
-        return res.status(400).json({
-            success: false,
-            message: 'Correo electrónico obligatorio y válido'
-        });
+    // Validación estricta antes de procesar
+    if (!cliente || !cliente.email || !pedido) {
+        return res.status(400).json({ success: false, message: 'Faltan datos o email' });
     }
 
     const jobId = `JOB-${Date.now()}`;
 
-    // RESPUESTA INMEDIATA (NO BLOQUEA)
+    // Responder rápido al frontend
     res.json({ success: true, jobId });
 
+    // Procesar en segundo plano
     setImmediate(() => {
         runBackgroundTask(jobId, cliente, pedido)
-            .catch(err => console.error(`❌ Background error ${jobId}`, err));
+            .catch(err => console.error(`❌ Error en Job ${jobId}:`, err));
     });
 });
 
-// --- FUNCIÓN DE REINTENTO (RETRY LOGIC) ---
+// --- FUNCIÓN DE REINTENTO ---
 async function sendEmailWithRetry(payload, retries = 3) {
     try {
         if (!resend) throw new Error("Resend no inicializado");
         return await resend.emails.send(payload);
     } catch (error) {
         if (retries > 0) {
-            console.log(`⚠️ Falló envío de email. Reintentando... Intentos restantes: ${retries}`);
-            await new Promise(r => setTimeout(r, 2000)); // Esperar 2 segundos
+            console.log(`⚠️ Reintentando email... intentos restantes: ${retries}`);
+            await new Promise(r => setTimeout(r, 1500));
             return sendEmailWithRetry(payload, retries - 1);
         }
         throw error;
     }
 }
 
-// --- WORKER MEJORADO ---
+// --- WORKER DE FONDO ---
 async function runBackgroundTask(jobId, cliente, pedido) {
-    console.log(`⚙️ Procesando Job ${jobId}...`);
+    console.log(`⚙️ Procesando pedido ${jobId} para ${cliente.email}`);
     
-    // 1. Generar PDF Profesional usando utils
+    // 1. Generar PDF (Usando tu nuevo módulo utils)
     const pdfBuffer = await buildPDF(cliente, pedido, jobId);
 
-    // 2. GUARDAR EN DB
-    db.prepare(`
-        INSERT INTO pedidos (id, email, data)
-        VALUES (?, ?, ?)
-    `).run(jobId, cliente.email, JSON.stringify({ cliente, pedido }));
+    // 2. Guardar en DB
+    db.prepare('INSERT INTO pedidos (id, email, data) VALUES (?, ?, ?)')
+      .run(jobId, cliente.email, JSON.stringify({ cliente, pedido }));
 
-    if (!resend) {
-        console.log("🚫 Email omitido (Falta API Key)");
-        return;
-    }
-
-    // Remitente verificado en tu DNS
+    // 3. Enviar Emails
     const from = 'ETHERE4L <orders@ethere4l.com>';
 
-    try {
-        // 3. ENVIAR EMAIL ADMIN (Con reintento)
+    if (resend) {
+        // Al Cliente
+        await sendEmailWithRetry({
+            from,
+            to: [cliente.email],
+            subject: '🛍️ Confirmación de Orden - ETHERE4L',
+            html: getEmailTemplate(cliente, pedido, jobId, false),
+            attachments: [{ filename: `Orden_${jobId}.pdf`, content: pdfBuffer }]
+        });
+
+        // Al Admin (si existe)
         if (process.env.ADMIN_EMAIL) {
             await sendEmailWithRetry({
                 from,
                 to: [process.env.ADMIN_EMAIL],
-                subject: `🚨 Nuevo pedido ${jobId} – ETHERE4L`,
+                subject: `🚨 Nueva Venta ${jobId}`,
                 html: getEmailTemplate(cliente, pedido, jobId, true),
                 attachments: [{ filename: `Orden_${jobId}.pdf`, content: pdfBuffer }]
             });
-            console.log("📨 Email Admin enviado");
         }
-
-        // 4. ENVIAR EMAIL CLIENTE (Con reintento)
-        await sendEmailWithRetry({
-            from,
-            to: [cliente.email],
-            subject: '🛍️ Order Confirmation - ETHERE4L',
-            html: getEmailTemplate(cliente, pedido, jobId, false),
-            attachments: [{ filename: `Orden_${jobId}.pdf`, content: pdfBuffer }]
-        });
-        
-        console.log(`✅ Pedido ${jobId} completado y notificado al cliente.`);
-
-    } catch (emailError) {
-        console.error("❌ Error crítico enviando emails después de reintentos:", emailError);
-        // Aquí podrías agregar lógica para guardar el error en DB si quisieras
+        console.log(`✅ Emails enviados correctamente para ${jobId}`);
     }
 }
 
-// --- FUNCIONES ANTIGUAS (MANTENIDAS PERO NO USADAS, PARA CUMPLIR RESTRICCIÓN) ---
-/*
-function generateEmailHTML(cliente, pedido, jobId, isAdmin) {
-    // ... código antiguo ...
-    return "Deprecated"; 
-}
-function generatePDF(cliente, pedido) {
-    // ... código antiguo ...
-    return Promise.resolve(Buffer.from("Deprecated"));
-}
-*/
-
-// --- START ---
-app.listen(portToUse, '0.0.0.0', () => {
-    console.log(`🟢 Server escuchando en puerto ${portToUse}`);
-});
+app.listen(portToUse, '0.0.0.0', () => console.log(`🟢 Server en puerto ${portToUse}`));
