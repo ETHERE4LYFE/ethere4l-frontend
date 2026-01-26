@@ -103,11 +103,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
 
             if (res.ok && data.success) {
-                alert("✅ Pedido exitoso. Revisa tu correo.");
+                // 1. Limpiar el carrito silenciosamente
                 clearCart();
+                
+                // 2. REDIRECCIÓN INMEDIATA (Sin alertas que estorben)
                 window.location.href = 'gracias.html';
                 return;
             }
+
             throw new Error(data.message || 'Error del servidor');
 
         } catch (err) {
