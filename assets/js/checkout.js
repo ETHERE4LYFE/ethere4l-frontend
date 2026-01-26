@@ -4,31 +4,19 @@
 */
 
 const API_URL = 'https://ethereal-backend-production-6060.up.railway.app/api/crear-pedido'; 
+const TIMEOUT_DURATION = 45000;
 
-// Configuración de Tiempos
-const TIMEOUT_DURATION = 45000; // 45 segundos
-
-document.getElementById('form-pedido').addEventListener('submit', async function (e) {
+document.getElementById('form-pedido').addEventListener('submit', async function(e) {
     e.preventDefault();
 
-    const form = e.target;
     const btnSubmit = document.getElementById('btn-comprar');
     const originalText = btnSubmit.innerText;
 
-    // 🔒 VALIDACIÓN NATIVA DEL FORM (OBLIGATORIA)
-    if (!form.reportValidity()) {
-        return;
-    }
-
-    // 🔍 VALIDAR EXISTENCIA DEL INPUT EMAIL
+    // 🔒 VALIDACIÓN DURA ANTES DE TODO
     const emailInput = document.getElementById('email');
-    if (!emailInput) {
-        alert("Error del sistema: el campo de correo no está disponible. Recarga la página.");
-        return;
-    }
+    const emailValue = emailInput ? emailInput.value.trim() : "";
 
-    const emailValue = emailInput.value.trim();
-    if (!emailValue || !emailValue.includes('@')) {
+    if (!emailValue || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
         alert("Por favor ingresa un correo electrónico válido.");
         emailInput.focus();
         return;
@@ -56,23 +44,16 @@ document.getElementById('form-pedido').addEventListener('submit', async function
     const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_DURATION);
 
     try {
-        // 3. Preparar Items
-        const safeItems = rawCartItems.map(item => {
-            const precio = Number(item.precio);
-            const cantidad = Number(item.cantidad);
-
-            return {
-                nombre: String(item.nombre || "Producto"),
-                talla: String(item.talla || "Unitalla"),
-                cantidad: (isNaN(cantidad) || cantidad < 1) ? 1 : cantidad,
-                precio: isNaN(precio) ? 0 : precio,
-                imagen: item.imagen
-            };
-        });
+        const safeItems = rawCartItems.map(item => ({
+            nombre: String(item.nombre || "Producto"),
+            talla: String(item.talla || "Unitalla"),
+            cantidad: Number(item.cantidad) || 1,
+            precio: Number(item.precio) || 0,
+            imagen: item.imagen
+        }));
 
         const totalPedido = safeItems.reduce(
-            (sum, item) => sum + (item.precio * item.cantidad),
-            0
+            (sum, item) => sum + (item.precio * item.cantidad), 0
         );
 
         const payload = {
@@ -81,11 +62,11 @@ document.getElementById('form-pedido').addEventListener('submit', async function
                 email: emailValue,
                 telefono: document.getElementById('telefono').value.trim(),
                 direccion: document.getElementById('direccion').value.trim(),
-                notas: (document.getElementById('notas').value || "").trim()
+                notas: document.getElementById('notas').value.trim()
             },
             pedido: {
                 items: safeItems,
-                total: Number(totalPedido)
+                total: totalPedido
             }
         };
 
@@ -109,26 +90,16 @@ document.getElementById('form-pedido').addEventListener('submit', async function
             return;
         }
 
-        throw new Error(data.message || "El servidor no pudo procesar el pedido.");
+        throw new Error(data.message || 'Error al procesar pedido');
 
     } catch (error) {
-        console.error("🔥 Error checkout:", error);
-
-        let message = "Hubo un problema al procesar tu pedido.";
-
-        if (error.name === 'AbortError') {
-            message = "El servidor tardó demasiado. Contáctanos por Instagram antes de intentar de nuevo.";
-        } else if (error.message) {
-            message = error.message;
-        }
-
-        alert(message);
+        console.error("🔥 Error:", error);
+        alert(error.message || "Error inesperado");
 
         btnSubmit.disabled = false;
         btnSubmit.innerText = originalText;
         btnSubmit.style.opacity = "1";
         btnSubmit.style.cursor = "pointer";
-
     } finally {
         clearTimeout(timeoutId);
     }
