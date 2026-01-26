@@ -1153,3 +1153,51 @@ img:not([src]), img[src=""] {
         padding: 5px 0;
     }
 }
+/* Estilos para el checkout responsive */
+.form-section-title {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+.input-full {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Importante para que no se salga del contenedor */
+}
+.form-row {
+    display: flex;
+    gap: 10px;
+}
+.form-group.half {
+    flex: 1; /* Ocupan 50% cada uno */
+}
+/* Botón estilo Ethereal */
+.btn-black {
+    width: 100%;
+    padding: 15px;
+    background: #000;
+    color: #fff;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: opacity 0.3s;
+}
+.btn-black:disabled {
+    background: #555;
+    cursor: not-allowed;
+}
+
+/* Ajuste para móviles muy pequeños */
+@media (max-width: 480px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}

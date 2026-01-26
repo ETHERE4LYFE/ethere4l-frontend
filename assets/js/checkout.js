@@ -2,6 +2,32 @@ const API_URL = 'https://ethereal-backend-production-6060.up.railway.app/api/cre
 const TIMEOUT_DURATION = 45000;
 
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. CARGAR RESUMEN DEL CARRITO (Lógica Visual)
+    if (typeof getCart === 'function') {
+        const cart = getCart();
+        const container = document.getElementById('checkout-cart-items');
+        const totalElem = document.getElementById('checkout-total');
+        
+        if (container && cart.length > 0) {
+            let total = 0;
+            container.innerHTML = cart.map(item => {
+                const subtotal = item.precio * item.cantidad;
+                total += subtotal;
+                return `
+                <div class="cart-item">
+                    <img src="${item.imagen}" alt="${item.nombre}">
+                    <div class="item-details">
+                        <h4>${item.nombre}</h4>
+                        <p>Talla: ${item.talla} | Cant: ${item.cantidad}</p>
+                        <p>$${item.precio}</p>
+                    </div>
+                </div>`;
+            }).join('');
+            if(totalElem) totalElem.innerText = total.toFixed(2);
+        }
+    }
+
+    // 2. LÓGICA DE ENVÍO
     const form = document.getElementById('form-pedido');
     if (!form) return;
 
@@ -14,15 +40,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const emailInput = document.getElementById('email');
         const emailValue = emailInput.value.trim();
 
-        // 🔒 VALIDACIÓN ABSOLUTA (NO SE PUEDE SALTAR)
+        // VALIDACIÓN
         if (!emailValue || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
-            alert("Por favor ingresa un correo electrónico válido.");
+            alert("⚠️ Por favor ingresa un correo electrónico válido.");
             emailInput.focus();
-            return;
-        }
-
-        if (typeof getCart !== 'function' || typeof clearCart !== 'function') {
-            alert("Error del sistema. Recarga la página.");
             return;
         }
 
@@ -32,6 +53,17 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // CAPTURA DE DIRECCIÓN DESGLOSADA
+        const calle = document.getElementById('calle').value.trim();
+        const colonia = document.getElementById('colonia').value.trim();
+        const cp = document.getElementById('cp').value.trim();
+        const ciudad = document.getElementById('ciudad').value.trim();
+        const estado = document.getElementById('estado').value.trim();
+        
+        // UNIR DIRECCIÓN PARA BACKEND
+        const direccionCompleta = `${calle}, Col. ${colonia}, CP ${cp}, ${ciudad}, ${estado}`;
+
+        // UI LOADING
         btnSubmit.disabled = true;
         btnSubmit.innerText = "PROCESANDO... (NO CIERRES)";
         btnSubmit.style.opacity = "0.7";
@@ -55,13 +87,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     nombre: document.getElementById('nombre').value.trim(),
                     email: emailValue,
                     telefono: document.getElementById('telefono').value.trim(),
-                    direccion: document.getElementById('direccion').value.trim(),
+                    direccion: direccionCompleta, // Dirección unida
                     notas: document.getElementById('notas').value.trim()
                 },
-                pedido: {
-                    items,
-                    total
-                }
+                pedido: { items, total }
             };
 
             const res = await fetch(API_URL, {
@@ -74,16 +103,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
 
             if (res.ok && data.success) {
-                alert("Pedido recibido. Revisa tu correo 📧");
+                alert("✅ Pedido exitoso. Revisa tu correo.");
                 clearCart();
                 window.location.href = 'gracias.html';
                 return;
             }
-
-            throw new Error(data.message || 'Error al procesar pedido');
+            throw new Error(data.message || 'Error del servidor');
 
         } catch (err) {
-            alert(err.message || "Error inesperado");
+            console.error(err);
+            alert("Error: " + (err.message || "Problema de conexión"));
             btnSubmit.disabled = false;
             btnSubmit.innerText = originalText;
             btnSubmit.style.opacity = "1";
