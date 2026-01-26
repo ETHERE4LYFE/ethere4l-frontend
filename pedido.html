@@ -42,7 +42,7 @@
         .item-details h4 { margin: 0; font-size: 0.95rem; }
         .item-details p { margin: 4px 0; font-size: 0.85rem; color: #666; }
         
-        /* Controles de Cantidad (NUEVO) */
+        /* Controles de Cantidad */
         .qty-controls {
             display: flex;
             align-items: center;
@@ -87,155 +87,124 @@
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="logo-nav">
-             <a href="index.html">
-                <span class="logo-text-gothic">ETHERE4L</span>
-            </a>
-        </div>
-    </nav>
-
-    <div class="checkout-container">
-        
-        <div class="checkout-summary">
-            <h2>Tu Bolsa</h2>
-            <div id="lista-carrito">
-                <p>Cargando productos...</p>
-            </div>
-
-            <div class="total-row">
-                <span>TOTAL A PAGAR:</span>
-                <span id="total-precio">$0.00</span>
-            </div>
-        </div>
-
-        <div class="checkout-form">
-            <h3>Datos de Envío</h3>
-            <div class="alert-info">
-                <i class="fa-solid fa-circle-info"></i> 
-                El pago es por <strong>Transferencia Bancaria</strong>. Al confirmar, recibirás tu Orden en PDF.
-            </div>
-
-
-            <form id="form-pedido">
-    <div class="form-group">
-        <label>Nombre Completo</label>
-        <input type="text" id="nombre" placeholder="Ej: Juan Pérez" required>
+<nav class="navbar">
+    <div class="logo-nav">
+        <a href="index.html">
+            <span class="logo-text-gothic">ETHERE4L</span>
+        </a>
     </div>
+</nav>
 
-    <div class="form-group">
-        <label>Correo Electrónico</label>
-        <input 
-            type="email" 
-            id="email" 
-            placeholder="Ej: cliente@gmail.com"
-            required
-        >
-    </div>
-
-    <div class="form-group">
-        <label>Teléfono (WhatsApp)</label>
-        <input type="tel" id="telefono" placeholder="Ej: 55 1234 5678" required>
-    </div>
-
-    <div class="form-group">
-        <label>Dirección Completa</label>
-        <textarea id="direccion" rows="3" placeholder="Calle, Número, Colonia, Ciudad, CP" required></textarea>
-    </div>
-
-    <div class="form-group">
-        <label>Notas para el envío (Opcional)</label>
-        <input type="text" id="notas" placeholder="Ej: Casa blanca portón negro">
-    </div>
-
-    <button type="submit" id="btn-comprar" class="btn-primary">
-        CONFIRMAR PEDIDO
-    </button>
-</form>
-
-
-    <script src="assets/js/cart.js"></script>
+<div class="checkout-container">
     
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            renderCheckoutItems();
-            // Escuchar cambios en el carrito para repintar
-            window.addEventListener('cartUpdated', renderCheckoutItems);
+    <div class="checkout-summary">
+        <h2>Tu Bolsa</h2>
+        <div id="lista-carrito">
+            <p>Cargando productos...</p>
+        </div>
+
+        <div class="total-row">
+            <span>TOTAL A PAGAR:</span>
+            <span id="total-precio">$0.00</span>
+        </div>
+    </div>
+
+    <div class="checkout-form">
+        <h3>Datos de Envío</h3>
+        <div class="alert-info">
+            <i class="fa-solid fa-circle-info"></i> 
+            El pago es por <strong>Transferencia Bancaria</strong>. Al confirmar, recibirás tu Orden en PDF.
+        </div>
+
+        <form id="form-pedido">
+
+            <div class="form-group">
+                <label>Nombre Completo</label>
+                <input type="text" id="nombre" placeholder="Ej: Juan Pérez" required>
+            </div>
+
+            <div class="form-group">
+                <label>Correo Electrónico</label>
+                <input type="email" id="email" placeholder="Ej: cliente@gmail.com" required>
+            </div>
+
+            <div class="form-group">
+                <label>Teléfono (WhatsApp)</label>
+                <input type="tel" id="telefono" placeholder="Ej: 55 1234 5678" required>
+            </div>
+
+            <div class="form-group">
+                <label>Dirección Completa</label>
+                <textarea id="direccion" rows="3" placeholder="Calle, Número, Colonia, Ciudad, CP" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Notas para el envío (Opcional)</label>
+                <input type="text" id="notas" placeholder="Ej: Casa blanca portón negro">
+            </div>
+
+            <button type="submit" id="btn-comprar" class="btn-primary">
+                CONFIRMAR PEDIDO
+            </button>
+
+        </form>
+    </div>
+
+</div>
+
+<script src="assets/js/cart.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        renderCheckoutItems();
+        window.addEventListener('cartUpdated', renderCheckoutItems);
+    });
+
+    function renderCheckoutItems() {
+        const items = (typeof getCart === 'function') ? getCart() : [];
+        const container = document.getElementById('lista-carrito');
+        const totalDisplay = document.getElementById('total-precio');
+        const btnComprar = document.getElementById('btn-comprar');
+        
+        if (items.length === 0) {
+            container.innerHTML = '<p>Tu bolsa está vacía. <a href="catalogo.html">Ir al catálogo</a></p>';
+            btnComprar.disabled = true;
+            totalDisplay.innerText = "$0.00";
+            return;
+        }
+
+        btnComprar.disabled = false;
+
+        let html = '';
+        let total = 0;
+
+        items.forEach(item => {
+            const precio = Number(item.precio) || 0;
+            const cantidad = Number(item.cantidad) || 0;
+            const subtotal = precio * cantidad;
+            total += subtotal;
+
+            html += `
+                <div class="cart-item">
+                    <img src="${item.imagen}" alt="${item.nombre}">
+                    <div class="item-details">
+                        <h4>${item.nombre}</h4>
+                        <p>Talla: <strong>${item.talla}</strong></p>
+                        <p>$${precio.toLocaleString()} c/u</p>
+                    </div>
+                    <div class="item-actions">
+                        <span><strong>$${subtotal.toLocaleString()}</strong></span>
+                    </div>
+                </div>
+            `;
         });
 
-        function renderCheckoutItems() {
-            // Usamos window.getCart por si acaso cart.js no se cargó como módulo
-            const items = (typeof getCart === 'function') ? getCart() : [];
-            const container = document.getElementById('lista-carrito');
-            const totalDisplay = document.getElementById('total-precio');
-            const btnComprar = document.getElementById('btn-comprar');
-            
-            if (items.length === 0) {
-                container.innerHTML = '<p>Tu bolsa está vacía. <a href="catalogo.html">Ir al catálogo</a></p>';
-                if(btnComprar) btnComprar.disabled = true;
-                if(totalDisplay) totalDisplay.innerText = "$0.00";
-                return;
-            }
+        container.innerHTML = html;
+        totalDisplay.innerText = `$${total.toLocaleString()}`;
+    }
+</script>
 
-            if(btnComprar) btnComprar.disabled = false;
-
-            let html = '';
-            let total = 0;
-
-            items.forEach(item => {
-                const precio = Number(item.precio) || 0;
-                const cantidad = Number(item.cantidad) || 0;
-                const subtotal = precio * cantidad;
-                total += subtotal;
-                
-                // NOTA: Las comillas en los onclick son CRÍTICAS para strings (IDs)
-                html += `
-                    <div class="cart-item">
-                        <img src="${item.imagen}" alt="${item.nombre}" onerror="this.src='assets/img/placeholder.png'">
-                        
-                        <div class="item-details">
-                            <h4>${item.nombre}</h4>
-                            <p>Talla: <strong>${item.talla}</strong></p>
-                            <p>$${precio.toLocaleString()} c/u</p>
-                            
-                            <div class="qty-controls">
-                                <button type="button" class="btn-qty" onclick="cambiarCantidad('${item.id}', '${item.talla}', -1)">-</button>
-                                <span>${cantidad}</span>
-                                <button type="button" class="btn-qty" onclick="cambiarCantidad('${item.id}', '${item.talla}', 1)">+</button>
-                            </div>
-                        </div>
-
-                        <div class="item-actions">
-                            <span style="font-weight:bold;">$${subtotal.toLocaleString()}</span>
-                            <button type="button" class="btn-remove" onclick="eliminarItemCheckout('${item.id}', '${item.talla}')">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            container.innerHTML = html;
-            if(totalDisplay) totalDisplay.innerText = `$${total.toLocaleString()}`;
-        }
-
-        // Wrappers para interactuar con cart.js desde el HTML
-        function cambiarCantidad(id, talla, delta) {
-            if(typeof updateItemQuantity === 'function') {
-                updateItemQuantity(id, talla, delta);
-            }
-        }
-
-        function eliminarItemCheckout(id, talla) {
-            if(typeof removeFromCart === 'function') {
-                removeFromCart(id, talla);
-            }
-        }
-    </script>
-
-    <script src="assets/js/cart.js"></script>
 <script src="assets/js/checkout.js"></script>
-
 
 </body>
 </html>
