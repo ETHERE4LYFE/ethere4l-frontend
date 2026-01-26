@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finalizar Pedido | ETHEREAL</title>
+
     <link rel="stylesheet" href="assets/css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
+
     <style>
-        /* Estilos base (Manteniendo estructura original) */
         .checkout-container {
             max-width: 1200px;
             margin: 40px auto;
@@ -24,7 +24,6 @@
             .checkout-form { order: 1; }
         }
 
-        /* Items del Carrito */
         .cart-item {
             display: flex;
             align-items: center;
@@ -32,59 +31,78 @@
             padding: 15px 0;
             gap: 15px;
         }
+
         .cart-item img {
             width: 80px;
             height: 80px;
             object-fit: cover;
             border-radius: 4px;
         }
+
         .item-details { flex: 1; }
         .item-details h4 { margin: 0; font-size: 0.95rem; }
         .item-details p { margin: 4px 0; font-size: 0.85rem; color: #666; }
-        
-        /* Controles de Cantidad */
-        .qty-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 5px;
-        }
-        .btn-qty {
-            background: #f0f0f0;
-            border: 1px solid #ddd;
-            width: 25px; height: 25px;
-            cursor: pointer;
-            font-weight: bold;
-            display: flex; align-items: center; justify-content: center;
-        }
-        
-        .item-actions {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 10px;
-        }
-        .btn-remove { color: red; cursor: pointer; border: none; background: none; font-size: 1.1rem; }
 
-        /* Formulario */
-        .checkout-form { background: #f9f9f9; padding: 30px; border-radius: 8px; }
+        .checkout-form {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 8px;
+        }
+
         .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; }
-        .form-group input, .form-group textarea {
-            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit;
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-bottom: 5px;
         }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
         .alert-info {
-            background: #e8f4fd; color: #0c5460; padding: 10px; font-size: 0.85rem; margin-bottom: 20px; border-left: 4px solid #0c5460;
+            background: #e8f4fd;
+            color: #0c5460;
+            padding: 10px;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            border-left: 4px solid #0c5460;
         }
+
         .total-row {
-            display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold; margin: 20px 0; border-top: 2px solid #ddd; padding-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 20px 0;
+            border-top: 2px solid #ddd;
+            padding-top: 15px;
         }
+
         .btn-primary {
-            width: 100%; padding: 15px; background: #000; color: #fff; font-weight: bold; border: none; cursor: pointer; text-transform: uppercase;
+            width: 100%;
+            padding: 15px;
+            background: #000;
+            color: #fff;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
         }
-        .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
     </style>
 </head>
+
 <body>
 
 <nav class="navbar">
@@ -96,7 +114,7 @@
 </nav>
 
 <div class="checkout-container">
-    
+
     <div class="checkout-summary">
         <h2>Tu Bolsa</h2>
         <div id="lista-carrito">
@@ -111,36 +129,44 @@
 
     <div class="checkout-form">
         <h3>Datos de Envío</h3>
+
         <div class="alert-info">
-            <i class="fa-solid fa-circle-info"></i> 
-            El pago es por <strong>Transferencia Bancaria</strong>. Al confirmar, recibirás tu Orden en PDF.
+            <i class="fa-solid fa-circle-info"></i>
+            El pago es por <strong>Transferencia Bancaria</strong>.  
+            Al confirmar, recibirás tu Orden en PDF.
         </div>
 
-        <form id="form-pedido">
+        <form id="form-pedido" novalidate>
 
             <div class="form-group">
                 <label>Nombre Completo</label>
-                <input type="text" id="nombre" placeholder="Ej: Juan Pérez" required>
+                <input type="text" id="nombre" name="nombre" placeholder="Ej: Juan Pérez" required>
             </div>
 
             <div class="form-group">
                 <label>Correo Electrónico</label>
-                <input type="email" id="email" placeholder="Ej: cliente@gmail.com" required>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Ej: cliente@gmail.com"
+                    required
+                >
             </div>
 
             <div class="form-group">
                 <label>Teléfono (WhatsApp)</label>
-                <input type="tel" id="telefono" placeholder="Ej: 55 1234 5678" required>
+                <input type="tel" id="telefono" name="telefono" placeholder="Ej: 55 1234 5678" required>
             </div>
 
             <div class="form-group">
                 <label>Dirección Completa</label>
-                <textarea id="direccion" rows="3" placeholder="Calle, Número, Colonia, Ciudad, CP" required></textarea>
+                <textarea id="direccion" name="direccion" rows="3" placeholder="Calle, Número, Colonia, Ciudad, CP" required></textarea>
             </div>
 
             <div class="form-group">
                 <label>Notas para el envío (Opcional)</label>
-                <input type="text" id="notas" placeholder="Ej: Casa blanca portón negro">
+                <input type="text" id="notas" name="notas" placeholder="Ej: Casa blanca portón negro">
             </div>
 
             <button type="submit" id="btn-comprar" class="btn-primary">
@@ -149,61 +175,9 @@
 
         </form>
     </div>
-
 </div>
 
 <script src="assets/js/cart.js"></script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        renderCheckoutItems();
-        window.addEventListener('cartUpdated', renderCheckoutItems);
-    });
-
-    function renderCheckoutItems() {
-        const items = (typeof getCart === 'function') ? getCart() : [];
-        const container = document.getElementById('lista-carrito');
-        const totalDisplay = document.getElementById('total-precio');
-        const btnComprar = document.getElementById('btn-comprar');
-        
-        if (items.length === 0) {
-            container.innerHTML = '<p>Tu bolsa está vacía. <a href="catalogo.html">Ir al catálogo</a></p>';
-            btnComprar.disabled = true;
-            totalDisplay.innerText = "$0.00";
-            return;
-        }
-
-        btnComprar.disabled = false;
-
-        let html = '';
-        let total = 0;
-
-        items.forEach(item => {
-            const precio = Number(item.precio) || 0;
-            const cantidad = Number(item.cantidad) || 0;
-            const subtotal = precio * cantidad;
-            total += subtotal;
-
-            html += `
-                <div class="cart-item">
-                    <img src="${item.imagen}" alt="${item.nombre}">
-                    <div class="item-details">
-                        <h4>${item.nombre}</h4>
-                        <p>Talla: <strong>${item.talla}</strong></p>
-                        <p>$${precio.toLocaleString()} c/u</p>
-                    </div>
-                    <div class="item-actions">
-                        <span><strong>$${subtotal.toLocaleString()}</strong></span>
-                    </div>
-                </div>
-            `;
-        });
-
-        container.innerHTML = html;
-        totalDisplay.innerText = `$${total.toLocaleString()}`;
-    }
-</script>
-
 <script src="assets/js/checkout.js"></script>
 
 </body>
