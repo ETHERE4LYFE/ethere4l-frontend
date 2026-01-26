@@ -6,17 +6,37 @@
 const API_URL = 'https://ethereal-backend-production-6060.up.railway.app/api/crear-pedido'; 
 
 // Configuración de Tiempos
-const TIMEOUT_DURATION = 45000; // 45 segundos (Suficiente para despertar Railway)
+const TIMEOUT_DURATION = 45000; // 45 segundos
 
-document.getElementById('form-pedido').addEventListener('submit', async function(e) {
+document.getElementById('form-pedido').addEventListener('submit', async function (e) {
     e.preventDefault();
 
+    const form = e.target;
     const btnSubmit = document.getElementById('btn-comprar');
     const originalText = btnSubmit.innerText;
 
+    // 🔒 VALIDACIÓN NATIVA DEL FORM (OBLIGATORIA)
+    if (!form.reportValidity()) {
+        return;
+    }
+
+    // 🔍 VALIDAR EXISTENCIA DEL INPUT EMAIL
+    const emailInput = document.getElementById('email');
+    if (!emailInput) {
+        alert("Error del sistema: el campo de correo no está disponible. Recarga la página.");
+        return;
+    }
+
+    const emailValue = emailInput.value.trim();
+    if (!emailValue || !emailValue.includes('@')) {
+        alert("Por favor ingresa un correo electrónico válido.");
+        emailInput.focus();
+        return;
+    }
+
     // 1. Validar Dependencias y Carrito
     if (typeof getCart !== 'function' || typeof clearCart !== 'function') {
-        alert("Error de sistema: Funciones del carrito no disponibles. Recarga la página.");
+        alert("Error de sistema: Funciones del carrito no disponibles.");
         return;
     }
 
@@ -26,22 +46,21 @@ document.getElementById('form-pedido').addEventListener('submit', async function
         return;
     }
 
-    // 2. Bloquear UI con Feedback Claro
+    // 2. Bloquear UI
     btnSubmit.disabled = true;
     btnSubmit.innerText = "PROCESANDO... (NO CIERRES)";
     btnSubmit.style.opacity = "0.7";
     btnSubmit.style.cursor = "wait";
 
-    // Controlador para abortar si excede el tiempo límite
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_DURATION);
 
     try {
-        // 3. Preparar Payload Estricto
+        // 3. Preparar Items
         const safeItems = rawCartItems.map(item => {
             const precio = Number(item.precio);
             const cantidad = Number(item.cantidad);
-            
+
             return {
                 nombre: String(item.nombre || "Producto"),
                 talla: String(item.talla || "Unitalla"),
@@ -51,15 +70,18 @@ document.getElementById('form-pedido').addEventListener('submit', async function
             };
         });
 
-        const totalPedido = safeItems.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+        const totalPedido = safeItems.reduce(
+            (sum, item) => sum + (item.precio * item.cantidad),
+            0
+        );
 
         const payload = {
             cliente: {
-                nombre: String(document.getElementById('nombre').value).trim(),
-                email: document.getElementById('email').value.trim(),
-                telefono: String(document.getElementById('telefono').value).trim(),
-                direccion: String(document.getElementById('direccion').value).trim(),
-                notas: String(document.getElementById('notas').value || "").trim()
+                nombre: document.getElementById('nombre').value.trim(),
+                email: emailValue,
+                telefono: document.getElementById('telefono').value.trim(),
+                direccion: document.getElementById('direccion').value.trim(),
+                notas: (document.getElementById('notas').value || "").trim()
             },
             pedido: {
                 items: safeItems,
@@ -67,69 +89,47 @@ document.getElementById('form-pedido').addEventListener('submit', async function
             }
         };
 
+        console.log("🚀 Enviando pedido:", payload);
 
-        console.log("🚀 Iniciando petición (Timeout: 45s)...", payload);
-
-        if (!payload.cliente.email || !payload.cliente.email.includes('@')) {
-    alert("Por favor ingresa un correo electrónico válido.");
-    btnSubmit.disabled = false;
-    btnSubmit.innerText = originalText;
-    btnSubmit.style.opacity = "1";
-    btnSubmit.style.cursor = "pointer";
-    return;
-}
-
-
-        // 4. Fetch al Backend con Timeout Extendido
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
             signal: controller.signal
         });
-        
-        // ¡Importante! Limpiamos el timeout apenas responde el servidor
+
         clearTimeout(timeoutId);
 
-        // 5. Manejo de Respuesta (Lógica Fail-Safe)
         const data = await response.json();
 
-        // REGLA DE ORO: Si success es true, ignoramos cualquier advertencia secundaria
         if (response.ok && data.success === true) {
             alert("Pedido recibido. Revisa tu correo 📧");
-            console.log("✅ Pedido Confirmado:", data);
-            clearCart(); 
+            clearCart();
             window.location.href = 'gracias.html';
             return;
         }
 
-        // Si llegamos aquí, es un error lógico real del backend (ej: validación)
-        console.error("❌ Rechazo del servidor:", data);
-        throw new Error(data.message || 'El servidor no pudo generar la orden.');
+        throw new Error(data.message || "El servidor no pudo procesar el pedido.");
 
     } catch (error) {
-        console.error("🔥 Error en checkout:", error);
+        console.error("🔥 Error checkout:", error);
 
-        let userMessage = "Hubo un problema al procesar tu pedido.";
-        let isRecoverable = true;
-        
-        // Diferenciamos Timeout de Error de Red
+        let message = "Hubo un problema al procesar tu pedido.";
+
         if (error.name === 'AbortError') {
-            userMessage = "El servidor tardó demasiado en responder. Es posible que tu pedido se haya procesado. Por favor, contáctanos por Instagram antes de intentar de nuevo para evitar duplicados.";
-            isRecoverable = false; // Sugerimos no reintentar inmediatamente a ciegas
+            message = "El servidor tardó demasiado. Contáctanos por Instagram antes de intentar de nuevo.";
         } else if (error.message) {
-            userMessage = error.message;
+            message = error.message;
         }
 
-        alert(`${userMessage}`);
-        
-        // Restaurar botón
+        alert(message);
+
         btnSubmit.disabled = false;
         btnSubmit.innerText = originalText;
         btnSubmit.style.opacity = "1";
         btnSubmit.style.cursor = "pointer";
+
     } finally {
-        // Aseguramos limpieza del timer pase lo que pase
         clearTimeout(timeoutId);
     }
 });
