@@ -1,129 +1,124 @@
 const PDFDocument = require('pdfkit');
+const path = require('path');
+const fs = require('fs');
 
 function buildPDF(cliente, pedido, jobId) {
     return new Promise((resolve, reject) => {
-        const doc = new PDFDocument({ margin: 50, size: 'A4' });
+        const doc = new PDFDocument({
+            margin: 40,
+            size: 'A4'
+        });
+
         const buffers = [];
-
         doc.on('data', buffers.push.bind(buffers));
-        doc.on('end', () => {
-            const pdfData = Buffer.concat(buffers);
-            resolve(pdfData);
-        });
+        doc.on('end', () => resolve(Buffer.concat(buffers)));
+        doc.on('error', reject);
 
-        doc.on('error', (err) => {
-            reject(err);
-        });
+        // --- PATH CONFIGURATION ---
+        const logoPath = path.join(__dirname, '..', 'images', 'header-logo.png');
 
-        // --- COLORES Y ESTILOS ---
-        const colorNegro = '#000000';
-        const colorGris = '#444444';
-        const colorGrisClaro = '#E0E0E0';
+        // --- COLORS ---
+        const BLACK = '#000000';
+        const WHITE = '#FFFFFF';
+        const SOFT_GRAY = '#F2F2F2';
+        const TEXT_GRAY = '#444444';
 
-        // --- 1. ENCABEZADO (BRANDING) ---
-        // Franja negra superior
-        doc.rect(0, 0, 595.28, 120).fill(colorNegro);
-        
-        // Texto Marca (Simulación de Logo en Blanco)
-        doc.fillColor('#FFFFFF')
-           .fontSize(30)
-           .font('Times-Roman') // Usamos fuente serif estándar elegante
-           .text('ETHERE4L', 50, 45, { characterSpacing: 2 });
-           
-        doc.fontSize(10)
+        // --- HEADER ---
+        doc.rect(0, 0, 595.28, 150).fill(BLACK);
+
+        const logoWidth = 200;
+        const centerX = (595.28 - logoWidth) / 2;
+
+        // 👉 VALIDACIÓN REAL DEL LOGO
+        if (fs.existsSync(logoPath)) {
+            doc.image(logoPath, centerX, 35, { width: logoWidth });
+        } else {
+            doc.fillColor(WHITE)
+               .fontSize(26)
+               .font('Times-Bold')
+               .text('ETHERE4L', 0, 55, { align: 'center', characterSpacing: 4 });
+        }
+
+        doc.fillColor(WHITE)
+           .fontSize(8)
            .font('Helvetica')
-           .text('STREETWEAR & HIGH FASHION', 50, 80, { characterSpacing: 3 });
+           .text('STREETWEAR & HIGH FASHION', 0, 105, {
+               align: 'center',
+               characterSpacing: 3
+           });
 
-        // Título del Documento (Lado Derecho)
-        doc.fillColor('#FFFFFF')
-           .fontSize(12)
+        // Order info (right)
+        doc.fillColor(WHITE)
+           .fontSize(10)
            .font('Helvetica-Bold')
            .text('ORDEN DE COMPRA', 400, 50, { align: 'right' });
 
-        doc.fontSize(10)
-           .font('Helvetica')
-           .text(`#${jobId}`, 400, 65, { align: 'right' });
-           
-        doc.text(new Date().toLocaleDateString('es-MX'), 400, 80, { align: 'right' });
+        doc.font('Helvetica')
+           .fontSize(9)
+           .text(`ID: ${jobId}`, 400, 65, { align: 'right' })
+           .text(`FECHA: ${new Date().toLocaleDateString('es-MX')}`, 400, 78, { align: 'right' });
 
-        // --- 2. INFORMACIÓN DEL CLIENTE ---
-        let y = 160;
-        doc.fillColor(colorNegro).fontSize(10).font('Helvetica-Bold');
-        doc.text('DATOS DEL CLIENTE:', 50, y);
-        
-        doc.font('Helvetica').fontSize(10).fillColor(colorGris);
+        // --- CLIENT INFO ---
+        let y = 180;
+        const x = 50;
+
+        doc.fillColor(BLACK).font('Helvetica-Bold').fontSize(11).text('CLIENTE', x, y);
+        doc.moveTo(x, y + 14).lineTo(x + 50, y + 14).lineWidth(2).stroke(BLACK);
+
+        doc.fillColor(TEXT_GRAY).font('Helvetica').fontSize(10);
+        y += 25;
+        doc.text(`Nombre: ${cliente.nombre}`, x, y);
+        doc.text(`Tel: ${cliente.telefono}`, 300, y);
         y += 15;
-        doc.text(`Nombre: ${cliente.nombre}`, 50, y);
+        doc.text(`Email: ${cliente.email}`, x, y);
         y += 15;
-        doc.text(`Email: ${cliente.email}`, 50, y);
+        doc.text(`Dirección: ${cliente.direccion}`, x, y, { width: 450 });
+
+        // --- ITEMS TABLE ---
+        y += 50;
+
+        doc.fillColor(BLACK).font('Helvetica-Bold').fontSize(9);
+        doc.text('PRODUCTO', x, y);
+        doc.text('TALLA', 320, y);
+        doc.text('CANT.', 380, y);
+        doc.text('PRECIO', 440, y, { width: 100, align: 'right' });
+
         y += 15;
-        doc.text(`Teléfono: ${cliente.telefono}`, 50, y);
-        
-        // Dirección con ajuste de línea
+        doc.moveTo(x, y).lineTo(545, y).stroke(BLACK);
         y += 15;
-        doc.text(`Dirección: ${cliente.direccion}`, 50, y, { width: 300 });
 
-        // --- 3. TABLA DE PRODUCTOS ---
-        y += 60; // Espacio antes de la tabla
+        doc.font('Helvetica').fontSize(10);
 
-        // Encabezados de tabla
-        doc.rect(50, y, 495, 25).fill(colorGrisClaro); // Fondo gris encabezado
-        doc.fillColor(colorNegro).font('Helvetica-Bold').fontSize(9);
-        
-        doc.text('PRODUCTO', 60, y + 8);
-        doc.text('TALLA', 300, y + 8);
-        doc.text('CANT.', 360, y + 8);
-        doc.text('PRECIO', 420, y + 8, { width: 60, align: 'right' });
-        doc.text('TOTAL', 490, y + 8, { width: 45, align: 'right' });
-
-        y += 30; // Mover cursor para los items
-
-        // Listado de Items
-        doc.font('Helvetica').fontSize(9).fillColor(colorNegro);
-
-        pedido.items.forEach((item, index) => {
-            const subtotalItem = item.precio * item.cantidad;
-            
-            // Línea divisoria tenue
-            if(index > 0) {
-                doc.moveTo(50, y - 5).lineTo(545, y - 5).strokeColor('#eeeeee').stroke();
-            }
-
-            doc.text(item.nombre.substring(0, 40), 60, y);
-            doc.text(item.talla, 300, y);
-            doc.text(item.cantidad, 370, y);
-            
-            // Precios formateados
-            doc.text(`$${item.precio}`, 420, y, { width: 60, align: 'right' });
-            doc.text(`$${subtotalItem}`, 490, y, { width: 45, align: 'right' });
-            
-            y += 20;
+        pedido.items.forEach(item => {
+            doc.fillColor(BLACK).font('Helvetica-Bold').text(item.nombre, x, y);
+            doc.fillColor(TEXT_GRAY).font('Helvetica').text(item.talla, 320, y);
+            doc.text(item.cantidad, 380, y);
+            doc.text(`$${item.precio.toLocaleString()}`, 440, y, { width: 100, align: 'right' });
+            y += 25;
+            doc.moveTo(x, y - 10).lineTo(545, y - 10).stroke('#EEEEEE');
         });
 
-        // Línea final tabla
-        doc.moveTo(50, y).lineTo(545, y).strokeColor(colorNegro).lineWidth(1).stroke();
-        y += 15;
+        // --- PAYMENT ---
+        y += 20;
 
-        // --- 4. TOTALES ---
-        doc.font('Helvetica-Bold').fontSize(12);
-        doc.text('TOTAL A PAGAR:', 350, y, { width: 100, align: 'right' });
-        doc.text(`$${pedido.total}`, 460, y, { width: 75, align: 'right' });
+        doc.rect(x, y, 250, 90).fill(SOFT_GRAY);
+        doc.fillColor(BLACK).font('Helvetica-Bold').fontSize(9)
+           .text('MÉTODO DE PAGO: TRANSFERENCIA', x + 15, y + 15);
 
-        // --- 5. INSTRUCCIONES DE PAGO ---
-        y += 50;
-        doc.rect(50, y, 495, 80).strokeColor(colorNegro).lineWidth(1).stroke(); // Recuadro
-        
-        doc.font('Helvetica-Bold').fontSize(10).text('INSTRUCCIONES DE PAGO', 65, y + 15);
-        
-        doc.font('Helvetica').fontSize(9).text('Realiza tu transferencia a la siguiente cuenta:', 65, y + 35);
-        doc.font('Helvetica-Bold').text('Banco: BBVA', 65, y + 50);
-        doc.text('CLABE: 1234 5678 9012 3456', 200, y + 50);
-        doc.text('Concepto: Tu Nombre o ID de Pedido', 65, y + 65);
+        doc.font('Helvetica').fontSize(8).fillColor(TEXT_GRAY);
+        doc.text('BANCO: BBVA', x + 15, y + 35);
+        doc.text('CLABE: 0123 4567 8901 2345 67', x + 15, y + 48);
+        doc.text(`CONCEPTO: ID ${jobId}`, x + 15, y + 61);
 
-        // --- 6. PIE DE PÁGINA ---
-        const bottom = 780;
-        doc.fontSize(8).fillColor(colorGris).text('ETHERE4L - Ciudad Juárez, Chihuahua.', 50, bottom, { align: 'center' });
-        doc.text('Gracias por tu preferencia.', 50, bottom + 12, { align: 'center' });
+        doc.fillColor(BLACK).font('Helvetica-Bold').fontSize(12);
+        doc.text('TOTAL A PAGAR', 350, y + 30, { width: 100, align: 'right' });
+        doc.fontSize(18).text(`$${pedido.total.toLocaleString()}`, 450, y + 28, { width: 100, align: 'right' });
+
+        // --- FOOTER ---
+        const footerY = 750;
+        doc.moveTo(x, footerY).lineTo(545, footerY).stroke(BLACK);
+        doc.fontSize(8).fillColor(TEXT_GRAY)
+           .text('ETHERE4L © 2026 — Ciudad Juárez, Chih.', x, footerY + 15, { align: 'center' });
 
         doc.end();
     });
