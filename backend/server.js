@@ -16,26 +16,28 @@ const { getEmailTemplate } = require('./utils/emailTemplates');
 // DATABASE (SAFE MODE FOR RAILWAY)
 // ===============================
 
-let db = null;
-let dbEnabled = false;
 
+
+// En tu archivo server.js o database.js
+let db;
 try {
     const Database = require('better-sqlite3');
-    db = new Database('orders.db');
-    db.prepare(`
-        CREATE TABLE IF NOT EXISTS pedidos (
-            id TEXT PRIMARY KEY,
-            email TEXT NOT NULL,
-            data TEXT NOT NULL,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-    `).run();
-    dbEnabled = true;
-    console.log('✅ SQLite DB activa');
+    // Intenta conectar
+    db = new Database('orders.db', { verbose: console.log });
+    console.log("✅ [DB] better-sqlite3 cargado correctamente.");
 } catch (err) {
-    console.warn('⚠️ SQLite deshabilitada (Railway safe mode)');
-    console.warn(err.message);
+    console.error("⚠️ [DB ERROR] Falló carga nativa de better-sqlite3.");
+    console.error(err.message);
+    
+    // Fallback Dummy para que el server NO CRASHEE y podamos ver logs del PDF
+    db = {
+        prepare: () => ({ run: () => {}, get: () => null, all: () => [] }),
+        exec: () => {}
+    };
+    console.warn("⚠️ [SYSTEM] Backend corriendo en modo 'Safe Mode' (Sin persistencia).");
 }
+
+// ... resto de tu código usando 'db' ...
 
 // ===============================
 // APP
@@ -107,6 +109,7 @@ async function sendEmailWithRetry(payload, retries = 3) {
 // ===============================
 // BACKGROUND WORKER
 // ===============================
+const dbEnabled = db && typeof db.prepare === 'function';
 
 async function runBackgroundTask(jobId, cliente, pedido) {
     console.log(`⚙️ Procesando ${jobId} para ${cliente.email}`);
