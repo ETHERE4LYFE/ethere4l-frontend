@@ -9,26 +9,45 @@ if (process.env.NODE_ENV !== 'production') {
 const express = require('express');
 const cors = require('cors');
 const { Resend } = require('resend');
-const Database = require('better-sqlite3');
 const { buildPDF } = require('./utils/pdfGenerator');
 const { getEmailTemplate } = require('./utils/emailTemplates');
 
-// --- DB ---
-const db = new Database('orders.db');
-db.prepare(`
-CREATE TABLE IF NOT EXISTS pedidos (
-    id TEXT PRIMARY KEY,
-    email TEXT NOT NULL,
-    data TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-)
-`).run();
+// ===============================
+// DATABASE (SAFE MODE FOR RAILWAY)
+// ===============================
 
-// --- APP ---
+let db = null;
+let dbEnabled = false;
+
+try {
+    const Database = require('better-sqlite3');
+    db = new Database('orders.db');
+    db.prepare(`
+        CREATE TABLE IF NOT EXISTS pedidos (
+            id TEXT PRIMARY KEY,
+            email TEXT NOT NULL,
+            data TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    `).run();
+    dbEnabled = true;
+    console.log('✅ SQLite DB activa');
+} catch (err) {
+    console.warn('⚠️ SQLite deshabilitada (Railway safe mode)');
+    console.warn(err.message);
+}
+
+// ===============================
+// APP
+// ===============================
+
 const app = express();
 let portToUse = process.env.PORT || 3000;
 
-// --- RESEND ---
+// ===============================
+// RESEND
+// ===============================
+
 let resend = null;
 if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.trim() !== '') {
     resend = new Resend(process.env.RESEND_API_KEY.trim());
@@ -40,9 +59,18 @@ if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.trim() !== '') {
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => res.json({ status: 'ok', service: 'ETHERE4L backend' }));
+// ===============================
+// HEALTH CHECK
+// ===============================
 
-// --- API ---
+app.get('/', (req, res) => {
+    res.json({ status: 'ok', service: 'ETHERE4L backend' });
+});
+
+// ===============================
+// API
+// ===============================
+
 app.post('/api/crear-pedido', (req, res) => {
     const { cliente, pedido } = req.body;
 
@@ -51,13 +79,17 @@ app.post('/api/crear-pedido', (req, res) => {
     }
 
     const jobId = `JOB-${Date.now()}`;
-    res.json({ success: true, jobId }); // Respuesta rápida
+    res.json({ success: true, jobId }); // respuesta inmediata
 
     setImmediate(() => {
         runBackgroundTask(jobId, cliente, pedido)
             .catch(err => console.error(`❌ Job Error ${jobId}:`, err));
     });
 });
+
+// ===============================
+// EMAIL RETRY
+// ===============================
 
 async function sendEmailWithRetry(payload, retries = 3) {
     try {
@@ -72,18 +104,28 @@ async function sendEmailWithRetry(payload, retries = 3) {
     }
 }
 
+// ===============================
+// BACKGROUND WORKER
+// ===============================
+
 async function runBackgroundTask(jobId, cliente, pedido) {
     console.log(`⚙️ Procesando ${jobId} para ${cliente.email}`);
-    
-    // 1. Generar PDF (cliente.direccion viene completa del JS)
+
+    // 1. Generar PDF
     const pdfBuffer = await buildPDF(cliente, pedido, jobId);
 
-    // 2. Guardar DB
-    db.prepare('INSERT INTO pedidos (id, email, data) VALUES (?, ?, ?)')
-      .run(jobId, cliente.email, JSON.stringify({ cliente, pedido }));
+    // 2. Guardar en DB (solo si está activa)
+    if (dbEnabled) {
+        db.prepare(
+            'INSERT INTO pedidos (id, email, data) VALUES (?, ?, ?)'
+        ).run(jobId, cliente.email, JSON.stringify({ cliente, pedido }));
+    } else {
+        console.log('ℹ️ Pedido no guardado en DB (DB deshabilitada)');
+    }
 
     // 3. Enviar Emails
     const from = 'ETHERE4L <orders@ethere4l.com>';
+
     if (resend) {
         // Cliente
         await sendEmailWithRetry({
@@ -93,7 +135,7 @@ async function runBackgroundTask(jobId, cliente, pedido) {
             html: getEmailTemplate(cliente, pedido, jobId, false),
             attachments: [{ filename: `Orden_${jobId}.pdf`, content: pdfBuffer }]
         });
-        
+
         // Admin
         if (process.env.ADMIN_EMAIL) {
             await sendEmailWithRetry({
@@ -104,8 +146,15 @@ async function runBackgroundTask(jobId, cliente, pedido) {
                 attachments: [{ filename: `Orden_${jobId}.pdf`, content: pdfBuffer }]
             });
         }
+
         console.log(`✅ Emails enviados para ${jobId}`);
     }
 }
 
-app.listen(portToUse, '0.0.0.0', () => console.log(`🟢 Server en puerto ${portToUse}`));
+// ===============================
+// START SERVER
+// ===============================
+
+app.listen(portToUse, '0.0.0.0', () => {
+    console.log(`🟢 Server en puerto ${portToUse}`);
+});
