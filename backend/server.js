@@ -1,163 +1,136 @@
-// ===============================
-// ETHERE4L BACKEND – RAILWAY SAFE
-// ===============================
+// =========================================================
+// SERVER.JS - ETHERE4L BACKEND (RAILWAY PRODUCTION)
+// =========================================================
 
-if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config();
-}
-
+require('dotenv').config(); 
 const express = require('express');
 const cors = require('cors');
 const { Resend } = require('resend');
 const { buildPDF } = require('./utils/pdfGenerator');
 const { getEmailTemplate } = require('./utils/emailTemplates');
 
-// ===============================
-// DATABASE (SAFE MODE FOR RAILWAY)
-// ===============================
+// --- CONFIGURACIÓN DE ENTORNO ---
+const PORT = process.env.PORT || 3000;
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'orders@ethere4l.com'; // Fallback
+const SENDER_EMAIL = 'orders@ethere4l.com';
 
-
-
-// En tu archivo server.js o database.js
+// --- INICIALIZACIÓN DE BASE DE DATOS (SAFE MODE) ---
+// Esto evita que Railway crashee si falla la compilación nativa
 let db;
 try {
     const Database = require('better-sqlite3');
-    // Intenta conectar
-    db = new Database('orders.db', { verbose: console.log });
-    console.log("✅ [DB] better-sqlite3 cargado correctamente.");
+    db = new Database('orders.db');
+    // Crear tabla si no existe
+    db.prepare(`
+        CREATE TABLE IF NOT EXISTS pedidos (
+            id TEXT PRIMARY KEY,
+            email TEXT,
+            data TEXT,
+            status TEXT DEFAULT 'PENDIENTE',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    `).run();
+    console.log("✅ [DB] Base de datos SQLite cargada correctamente.");
 } catch (err) {
-    console.error("⚠️ [DB ERROR] Falló carga nativa de better-sqlite3.");
-    console.error(err.message);
-    
-    // Fallback Dummy para que el server NO CRASHEE y podamos ver logs del PDF
+    console.error("⚠️ [DB] Error cargando better-sqlite3. Iniciando en SAFE MODE (Sin persistencia).", err.message);
+    // Mock DB para evitar crash
     db = {
-        prepare: () => ({ run: () => {}, get: () => null, all: () => [] }),
+        prepare: () => ({ run: () => {}, get: () => null }),
         exec: () => {}
     };
-    console.warn("⚠️ [SYSTEM] Backend corriendo en modo 'Safe Mode' (Sin persistencia).");
 }
 
-// ... resto de tu código usando 'db' ...
+const dbPersistent =
+    typeof db.prepare === 'function' &&
+    db.prepare.toString().includes('better-sqlite3');
 
-// ===============================
-// APP
-// ===============================
 
+// --- CONFIGURACIÓN APP ---
 const app = express();
-let portToUse = process.env.PORT || 3000;
-
-// ===============================
-// RESEND
-// ===============================
-
-let resend = null;
-if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.trim() !== '') {
-    resend = new Resend(process.env.RESEND_API_KEY.trim());
-    console.log('✅ Resend activo');
-} else {
-    console.warn('⚠️ RESEND_API_KEY no configurado');
-}
-
 app.use(cors());
 app.use(express.json());
 
-// ===============================
-// HEALTH CHECK
-// ===============================
+const resend = new Resend(RESEND_API_KEY);
+
+// --- ENDPOINTS ---
 
 app.get('/', (req, res) => {
-    res.json({ status: 'ok', service: 'ETHERE4L backend' });
+    res.json({ status: 'online', service: 'ETHERE4L Backend', db_mode: db.name ? 'persistent' : 'safe_mode' });
 });
-
-// ===============================
-// API
-// ===============================
 
 app.post('/api/crear-pedido', (req, res) => {
     const { cliente, pedido } = req.body;
 
-    if (!cliente || !cliente.email || !pedido) {
+    if (!cliente || !pedido) {
         return res.status(400).json({ success: false, message: 'Datos incompletos' });
     }
 
-    const jobId = `JOB-${Date.now()}`;
-    res.json({ success: true, jobId }); // respuesta inmediata
+    // 1. Generar ID único
+    const jobId = `ORD-${Date.now().toString().slice(-6)}`;
 
-    setImmediate(() => {
-        runBackgroundTask(jobId, cliente, pedido)
-            .catch(err => console.error(`❌ Job Error ${jobId}:`, err));
+    // 2. Responder INMEDIATAMENTE al frontend (UX)
+    res.status(200).json({ success: true, jobId, message: 'Procesando pedido' });
+
+    // 3. Ejecutar tarea en segundo plano (Fire & Forget)
+    processBackgroundOrder(jobId, cliente, pedido).catch(err => {
+        console.error(`❌ [JOB-FAIL] Error procesando pedido ${jobId}:`, err);
     });
 });
 
-// ===============================
-// EMAIL RETRY
-// ===============================
+// --- WORKER / BACKGROUND TASK ---
+async function processBackgroundOrder(jobId, cliente, pedido) {
+    console.log(`⚙️ [JOB-${jobId}] Iniciando procesamiento...`);
 
-async function sendEmailWithRetry(payload, retries = 3) {
     try {
-        if (!resend) throw new Error("No Resend API Key");
-        return await resend.emails.send(payload);
-    } catch (error) {
-        if (retries > 0) {
-            await new Promise(r => setTimeout(r, 1500));
-            return sendEmailWithRetry(payload, retries - 1);
+        // A. Guardar en Base de Datos
+        try {
+            const stmt = db.prepare('INSERT INTO pedidos (id, email, data, status) VALUES (?, ?, ?, ?)');
+            stmt.run(jobId, cliente.email, JSON.stringify({ cliente, pedido }), 'PENDIENTE');
+        } catch (dbErr) {
+            console.error(`⚠️ [DB] No se pudo guardar el pedido ${jobId}`, dbErr.message);
         }
-        throw error;
-    }
-}
 
-// ===============================
-// BACKGROUND WORKER
-// ===============================
-const dbEnabled = db && typeof db.prepare === 'function';
+        // B. Generar PDFs (Dual: Cliente y Proveedor)
+        console.log(`📄 [JOB-${jobId}] Generando PDFs...`);
+        
+        // PDF 1: Versión Cliente (Con precios, QR, pago)
+        const pdfBufferCliente = await buildPDF(cliente, pedido, jobId, 'CLIENTE');
+        
+        // PDF 2: Versión Proveedor (Sin precios, Purchase Order)
+        const pdfBufferProveedor = await buildPDF(cliente, pedido, jobId, 'PROVEEDOR');
 
-async function runBackgroundTask(jobId, cliente, pedido) {
-    console.log(`⚙️ Procesando ${jobId} para ${cliente.email}`);
+        // C. Enviar Emails vía Resend
+        console.log(`📧 [JOB-${jobId}] Enviando correos...`);
 
-    // 1. Generar PDF
-    const pdfBuffer = await buildPDF(cliente, pedido, jobId);
-
-    // 2. Guardar en DB (solo si está activa)
-    if (dbEnabled) {
-        db.prepare(
-            'INSERT INTO pedidos (id, email, data) VALUES (?, ?, ?)'
-        ).run(jobId, cliente.email, JSON.stringify({ cliente, pedido }));
-    } else {
-        console.log('ℹ️ Pedido no guardado en DB (DB deshabilitada)');
-    }
-
-    // 3. Enviar Emails
-    const from = 'ETHERE4L <orders@ethere4l.com>';
-
-    if (resend) {
-        // Cliente
-        await sendEmailWithRetry({
-            from,
+        // Email 1: Al Cliente
+        await resend.emails.send({
+            from: `ETHERE4L <${SENDER_EMAIL}>`,
             to: [cliente.email],
-            subject: '🛍️ Confirmación de Orden - ETHERE4L',
+            subject: `Confirmación de Orden #${jobId} - ETHERE4L`,
             html: getEmailTemplate(cliente, pedido, jobId, false),
-            attachments: [{ filename: `Orden_${jobId}.pdf`, content: pdfBuffer }]
+            attachments: [{ filename: `Orden_${jobId}.pdf`, content: pdfBufferCliente }]
         });
 
-        // Admin
-        if (process.env.ADMIN_EMAIL) {
-            await sendEmailWithRetry({
-                from,
-                to: [process.env.ADMIN_EMAIL],
-                subject: `🚨 Nueva Venta ${jobId}`,
+        // Email 2: Al Admin / Proveedor
+        if (ADMIN_EMAIL) {
+            await resend.emails.send({
+                from: `ETHERE4L System <${SENDER_EMAIL}>`,
+                to: [ADMIN_EMAIL],
+                subject: `🚨 NUEVA VENTA: #${jobId} (Dropshipping)`,
                 html: getEmailTemplate(cliente, pedido, jobId, true),
-                attachments: [{ filename: `Orden_${jobId}.pdf`, content: pdfBuffer }]
+                attachments: [{ filename: `PO_${jobId}_Proveedor.pdf`, content: pdfBufferProveedor }]
             });
         }
 
-        console.log(`✅ Emails enviados para ${jobId}`);
+        console.log(`✅ [JOB-${jobId}] Completado exitosamente.`);
+
+    } catch (error) {
+        console.error(`🔥 [CRITICAL] Fallo total en job ${jobId}:`, error);
     }
 }
 
-// ===============================
-// START SERVER
-// ===============================
-
-app.listen(portToUse, '0.0.0.0', () => {
-    console.log(`🟢 Server en puerto ${portToUse}`);
+// --- SERVER START ---
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Server corriendo en puerto ${PORT}`);
 });
