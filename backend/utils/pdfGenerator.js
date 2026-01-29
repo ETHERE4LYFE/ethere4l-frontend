@@ -124,27 +124,35 @@ async function buildPDF(cliente, pedido, jobId, type = 'CLIENTE') {
 
       pedido.items.forEach(item => {
         // -----------------------------------------------------
-// 🖼️ Imagen de producto (PDFKit NO soporta URLs remotas)
-// PDFKit solo acepta paths locales, buffers o streams.
-// Si la imagen es remota (https://), renderizamos
-// un placeholder limpio para NO romper el PDF.
+// 🖼️ Imagen de producto (SOLO PATH LOCAL)
+// PDFKit NO soporta URLs HTTPS.
+// Usamos fotos[0] desde filesystem local de forma segura.
 // -----------------------------------------------------
 const IMG_WIDTH = 40;
 const IMG_HEIGHT = 40;
 
 let imageRendered = false;
 
-// Intentar SOLO si parece path local
-if (item.image && typeof item.image === 'string' && !item.image.startsWith('http')) {
-  try {
-    doc.image(item.image, cols.img, y, { width: IMG_WIDTH });
-    imageRendered = true;
-  } catch (err) {
-    console.warn('[PDF] Imagen local no cargada:', item.image);
+// Resolver imagen local desde fotos[]
+if (Array.isArray(item.fotos) && item.fotos.length > 0) {
+  const localImagePath = path.join(
+    ROOT,           // raíz del backend
+    item.fotos[0]   // ej. images/catalogos/balenciaga/001/principal.png
+  );
+
+  if (fs.existsSync(localImagePath)) {
+    try {
+      doc.image(localImagePath, cols.img, y, { width: IMG_WIDTH });
+      imageRendered = true;
+    } catch (err) {
+      console.warn('[PDF] Error renderizando imagen local:', localImagePath);
+    }
+  } else {
+    console.warn('[PDF] Imagen no encontrada:', localImagePath);
   }
 }
 
-// Placeholder visual si no se pudo renderizar imagen
+// Placeholder limpio si no se pudo renderizar imagen
 if (!imageRendered) {
   doc
     .rect(cols.img, y, IMG_WIDTH, IMG_HEIGHT)
@@ -163,6 +171,8 @@ if (!imageRendered) {
       { width: IMG_WIDTH, align: 'center' }
     );
 }
+
+
 
 
         doc.text(item.nombre, cols.name, y, { width: 170 });
