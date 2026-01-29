@@ -71,7 +71,6 @@ app.use(cors({
 }));
 
 app.use(express.json());
-app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -105,7 +104,11 @@ app.post('/api/crear-pedido', (req, res) => {
 
     const jobId = `ORD-${Date.now().toString().slice(-6)}`;
 
-    res.json({ ok: true, jobId });
+    res.json({ 
+        succes: true, 
+        jobId,
+        message: "Pedido procesado correctamente"
+    });
 
     setImmediate(() => {
         processBackgroundOrder(jobId, cliente, pedido)
