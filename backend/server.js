@@ -67,7 +67,7 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
 // ⚠️ USA UN EMAIL REAL QUE EXISTA
-const SENDER_EMAIL = 'ethere4lyfe@gmail.com';
+const SENDER_EMAIL = 'orders@ethere4l.com';
 
 const resend = new Resend(RESEND_API_KEY);
 
