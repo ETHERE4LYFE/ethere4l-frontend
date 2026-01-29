@@ -5,6 +5,7 @@
 // URL Pública de Netlify para asegurar renderizado en Gmail/iOS
 const LOGO_URL = "https://ethereal-frontend.netlify.app/images/ui/header-logo.png";
 
+
 const styles = {
     container: "margin: 0; padding: 0; width: 100%; background-color: #f8f8f8; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;",
     wrapper: "max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #eeeeee;",
