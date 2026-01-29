@@ -82,4 +82,72 @@ function getEmailTemplate(cliente, pedido, jobId, isAdmin) {
     `;
 }
 
-module.exports = { getEmailTemplate };
+
+
+
+
+
+function getPaymentConfirmedEmail(cliente, pedido, jobId) {
+    const totalFormatted = new Intl.NumberFormat('es-MX', {
+        style: 'currency',
+        currency: 'MXN'
+    }).format(pedido.total);
+
+
+
+    return `
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <title>Pago Confirmado - ETHERE4L</title>
+    </head>
+    <body style="margin:0;padding:0;background:#f8f8f8;font-family:Helvetica,Arial,sans-serif;">
+        <div style="max-width:600px;margin:30px auto;background:#ffffff;border-radius:8px;overflow:hidden;">
+            
+            <div style="background:#000;padding:30px;text-align:center;">
+                <img src="https://ethereal-frontend.netlify.app/images/ui/header-logo.png"
+                     alt="ETHERE4L"
+                     style="width:160px;display:block;margin:0 auto;">
+            </div>
+
+            <div style="padding:35px;color:#333;">
+                <h2 style="margin-top:0;text-align:center;">
+                    Pago confirmado
+                </h2>
+
+                <p>Hola <b>${cliente.nombre}</b>,</p>
+
+                <p>
+                    Hemos confirmado correctamente tu pago.  
+                    Tu pedido ya está en proceso.
+                </p>
+
+                <div style="background:#f5f5f5;padding:20px;border-radius:6px;margin:25px 0;">
+                    <p><b>ID de pedido:</b> ${jobId}</p>
+                    <p><b>Total pagado:</b> ${totalFormatted}</p>
+                    <p><b>Estado:</b> PAGADO</p>
+                </div>
+
+                <p>
+                    En breve recibirás actualizaciones sobre el envío.
+                </p>
+
+                <p style="margin-top:30px;">
+                    — ETHERE4L
+                </p>
+            </div>
+
+            <div style="text-align:center;font-size:12px;color:#999;padding:20px;">
+                ETHERE4L • Ciudad Juárez, MX
+            </div>
+
+        </div>
+    </body>
+    </html>
+    `;
+}
+    module.exports = {
+    getEmailTemplate,
+    getPaymentConfirmedEmail
+};
