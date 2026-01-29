@@ -3,7 +3,10 @@
 // =========================================================
 
 // URL Pública de Netlify para asegurar renderizado en Gmail/iOS
-const LOGO_URL = "https://ethereal-frontend.netlify.app/images/ui/header-logo.png";
+// URL pública real servida por Netlify
+const LOGO_URL = "https://ethereal-frontend.netlify.app/logo-email.png";
+
+
 
 
 const styles = {
@@ -42,7 +45,7 @@ function getEmailTemplate(cliente, pedido, jobId, isAdmin) {
         ? '' 
         : `<p style="${styles.p}">Adjunto encontrarás un PDF con los detalles de tu compra y las instrucciones para realizar el pago (QR y CLABE).</p>
            <div style="text-align: center;">
-             <a href="https://ethereal-frontend.netlify.app" style="${styles.button}">VOLVER A LA TIENDA</a>
+             <a href="<img src="${LOGO_URL}" alt="ETHERE4L" style="${styles.logo}">" style="${styles.button}">VOLVER A LA TIENDA</a>
            </div>`;
 
     return `
@@ -57,7 +60,7 @@ function getEmailTemplate(cliente, pedido, jobId, isAdmin) {
         <div style="${styles.wrapper}">
             
             <div style="${styles.header}">
-                <img src="${LOGO_URL}" alt="ETHERE4L" style="${styles.logo}">
+            <img src="${LOGO_URL}" alt="ETHERE4L" style="${styles.logo}">
             </div>
 
             <div style="${styles.content}">
@@ -107,9 +110,8 @@ function getPaymentConfirmedEmail(cliente, pedido, jobId) {
         <div style="max-width:600px;margin:30px auto;background:#ffffff;border-radius:8px;overflow:hidden;">
             
             <div style="background:#000;padding:30px;text-align:center;">
-                <img src="https://ethereal-frontend.netlify.app/images/ui/header-logo.png"
-                     alt="ETHERE4L"
-                     style="width:160px;display:block;margin:0 auto;">
+            <img src="${LOGO_URL}" alt="ETHERE4L" style="${styles.logo}">
+
             </div>
 
             <div style="padding:35px;color:#333;">
