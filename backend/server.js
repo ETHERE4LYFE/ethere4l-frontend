@@ -105,7 +105,7 @@ app.post('/api/crear-pedido', (req, res) => {
     const jobId = `ORD-${Date.now().toString().slice(-6)}`;
 
     res.json({ 
-        succes: true, 
+        succes: true, ...
         jobId,
         message: "Pedido procesado correctamente"
     });
