@@ -1,183 +1,200 @@
 // =========================================================
-// PDF GENERATOR - ETHERE4L (DUAL MODE: CLIENT & VENDOR)
+// PDF GENERATOR - ETHERE4L (CLIENTE / PROVEEDOR)
+// DEFINITIVE LUXURY VERSION
 // =========================================================
 const PDFDocument = require('pdfkit');
 const path = require('path');
 const fs = require('fs');
 const QRCode = require('qrcode');
 
-/**
- * Genera PDF. Type puede ser 'CLIENTE' (Recibo) o 'PROVEEDOR' (Purchase Order)
- */
 async function buildPDF(cliente, pedido, jobId, type = 'CLIENTE') {
-    return new Promise(async (resolve, reject) => {
-        try {
-            // 1. Configuración de Rutas Seguras (Railway/Linux)
-            const ROOT = path.resolve(__dirname, '..');
-            const LOGO_PATH = path.join(ROOT, 'assets', 'branding', 'logo.png');
-            const FONT_PATH = path.join(ROOT, 'fonts', 'static', 'Cinzel-Bold.ttf');
+  return new Promise(async (resolve, reject) => {
+    try {
+      const ROOT = path.resolve(__dirname, '..');
+      const LOGO_PATH = path.join(ROOT, 'assets', 'branding', 'logo.png');
+      const FONT_PATH = path.join(ROOT, 'fonts', 'static', 'Cinzel-Bold.ttf');
 
-            // 2. Inicializar Documento
-            const doc = new PDFDocument({ size: 'A4', margin: 40 });
-            const buffers = [];
+      const doc = new PDFDocument({ size: 'A4', margin: 50 });
+      const buffers = [];
 
-            doc.on('data', buffers.push.bind(buffers));
-            doc.on('end', () => resolve(Buffer.concat(buffers)));
-            doc.on('error', (err) => reject(err));
+      doc.on('data', buffers.push.bind(buffers));
+      doc.on('end', () => resolve(Buffer.concat(buffers)));
+      doc.on('error', reject);
 
-            // 3. Configurar Fuente (SAFE)
-            let mainFont = 'Times-Roman';
-            if (fs.existsSync(FONT_PATH)) {
-                doc.registerFont('Cinzel', FONT_PATH);
-                mainFont = 'Cinzel';
-            }
+      // Fuente
+      let mainFont = 'Helvetica';
+      if (fs.existsSync(FONT_PATH)) {
+        doc.registerFont('Cinzel', FONT_PATH);
+        mainFont = 'Cinzel';
+      }
 
-            // Colores
-            const BLACK = '#000000';
-            const GRAY = '#555555';
+      const BLACK = '#000000';
+      const GRAY = '#666666';
+      const LIGHT_GRAY = '#F2F2F2';
 
-            // --- HEADER ---
-            // Logo Centrado
-            if (fs.existsSync(LOGO_PATH)) {
-                doc.image(LOGO_PATH, (doc.page.width - 120) / 2, 30, { width: 120 });
-            } else {
-                doc.font(mainFont).fontSize(24).text('ETHERE4L', { align: 'center' });
-            }
-            doc.moveDown(3);
+      // =====================================================
+      // 🖤 WATERMARK LOGO (FONDO)
+      // =====================================================
+      if (fs.existsSync(LOGO_PATH)) {
+        doc.opacity(0.07);
+        doc.image(
+          LOGO_PATH,
+          doc.page.width / 2 - 200,
+          doc.page.height / 2 - 200,
+          { width: 400 }
+        );
+        doc.opacity(1);
+      }
 
-            // Título Dinámico
-            const docTitle = type === 'PROVEEDOR' ? 'PURCHASE ORDER (DROPSHIPPING)' : 'CONFIRMACIÓN DE ORDEN';
-            doc.font('Helvetica-Bold').fontSize(12).text(docTitle, { align: 'center' });
-            doc.font('Helvetica').fontSize(10).text(`ID: ${jobId}`, { align: 'center' });
-            doc.text(`Fecha: ${new Date().toLocaleDateString('es-MX')}`, { align: 'center' });
-            doc.moveDown(2);
+      // =====================================================
+      // ENCABEZADO
+      // =====================================================
+      doc.font(mainFont).fontSize(18).fillColor(BLACK)
+        .text('CONFIRMACIÓN DE ORDEN', { align: 'center' });
 
-            // --- INFO CLIENTE / ENVÍO ---
-            const startY = doc.y;
-            
-            // Columna Izquierda (Datos Cliente)
-            doc.fontSize(10).font('Helvetica-Bold').text('DATOS DE ENVÍO:', 50, startY);
-            doc.font('Helvetica').fontSize(9).fillColor(GRAY);
-            doc.moveDown(0.5);
-            doc.text(`Nombre: ${cliente.nombre}`);
-            doc.text(`Email: ${cliente.email}`);
-            doc.text(`Tel: ${cliente.telefono}`);
-            
-            // Dirección estructurada
-            doc.moveDown(0.5);
-            doc.text(cliente.direccion, { width: 250 });
+      doc.moveDown(0.5);
+      doc.font('Helvetica').fontSize(10).fillColor(GRAY)
+        .text(`ID: ${jobId}`, { align: 'center' })
+        .text(`Fecha: ${new Date().toLocaleDateString('es-MX')}`, { align: 'center' });
 
-            // Columna Derecha (Resumen o Proveedor Info)
-            if (type === 'PROVEEDOR') {
-                doc.font('Helvetica-Bold').fillColor(BLACK).text('INSTRUCCIONES PROVEEDOR:', 300, startY);
-                doc.font('Helvetica').fillColor(GRAY);
-                doc.text('1. No incluir factura con precios.', 300, startY + 15);
-                doc.text('2. Verificar calidad antes de envío.', 300, startY + 30);
-                doc.text('3. Usar packaging estándar.', 300, startY + 45);
-            }
+      doc.moveDown(2);
 
-            doc.moveDown(4);
-            const tableTop = doc.y;
+      // =====================================================
+      // DATOS DE ENVÍO (TABLA)
+      // =====================================================
+      const tableX = 50;
+      let y = doc.y;
 
-            // --- TABLA DE PRODUCTOS ---
-            // Definir columnas
-            const colProduct = 50;
-            const colTalla = 250;
-            const colQty = 320;
-            const colPrice = 400; // Solo cliente
-            const colTotal = 480; // Solo cliente
+      doc.font('Helvetica-Bold').fontSize(11).fillColor(BLACK)
+        .text('DATOS DE ENVÍO');
 
-            // Encabezados
-            doc.font('Helvetica-Bold').fontSize(9).fillColor(BLACK);
-            doc.text('PRODUCTO', colProduct, tableTop);
-            doc.text('TALLA', colTalla, tableTop);
-            doc.text('CANT', colQty, tableTop);
-            
-            if (type === 'CLIENTE') {
-                doc.text('PRECIO', colPrice, tableTop);
-                doc.text('TOTAL', colTotal, tableTop);
-            }
+      y += 15;
 
-            // Línea separadora
-            doc.moveTo(50, tableTop + 15).lineTo(550, tableTop + 15).stroke();
+      const rows = [
+        ['Nombre', cliente.nombre],
+        ['Email', cliente.email],
+        ['Teléfono', cliente.telefono],
+        ['Dirección', cliente.direccion]
+      ];
 
-            // Items
-            let currentY = tableTop + 25;
-            doc.font('Helvetica').fontSize(9).fillColor(GRAY);
+      rows.forEach((row, i) => {
+        doc.rect(tableX, y, 500, 22).fill(i % 2 === 0 ? LIGHT_GRAY : '#FFFFFF');
+        doc.fillColor(BLACK).fontSize(9).font('Helvetica-Bold')
+          .text(row[0], tableX + 10, y + 7);
+        doc.font('Helvetica').fillColor(GRAY)
+          .text(row[1], tableX + 140, y + 7, { width: 340 });
+        y += 22;
+      });
 
-            pedido.items.forEach(item => {
-                // 🖼️ Imagen del producto (si existe)
-                if (item.image) {
-                    try {
-                        // Intentamos cargar la imagen, si falla no rompe el PDF
-                        doc.image(item.image, colProduct, currentY, { width: 40 });
-                    } catch (e) {
-                        console.warn('[PDF] No se pudo cargar imagen:', item.image);
-                    }
-                }
+      doc.moveDown(2);
 
-                // Texto del producto
-                doc.text(item.nombre, colProduct + 50, currentY, { width: 180 });
-                doc.text(item.talla, colTalla, currentY);
-                doc.text(item.cantidad, colQty, currentY);
+      // =====================================================
+      // TABLA DE PRODUCTOS
+      // =====================================================
+      doc.font('Helvetica-Bold').fontSize(11).fillColor(BLACK)
+        .text('PRODUCTOS');
 
-                if (type === 'CLIENTE') {
-                    doc.text(`$${item.precio}`, colPrice, currentY);
-                    doc.text(`$${item.precio * item.cantidad}`, colTotal, currentY);
-                }
+      y = doc.y + 10;
 
-                currentY += 60; // más espacio por la imagen
-            });
+      const cols = {
+        img: 50,
+        name: 120,
+        size: 300,
+        qty: 350,
+        price: 400,
+        total: 470
+      };
 
-            // Línea final
-            doc.moveTo(50, currentY).lineTo(550, currentY).stroke();
-            currentY += 20;
+      doc.fontSize(9).font('Helvetica-Bold').fillColor(BLACK);
+      doc.text('IMG', cols.img, y);
+      doc.text('PRODUCTO', cols.name, y);
+      doc.text('TALLA', cols.size, y);
+      doc.text('CANT', cols.qty, y);
 
-            // --- TOTALES Y PAGO (SOLO CLIENTE) ---
-            if (type === 'CLIENTE') {
-                // Total
-                doc.font('Helvetica-Bold').fontSize(14).fillColor(BLACK);
-                doc.text(`TOTAL A PAGAR: $${pedido.total.toLocaleString('es-MX')} MXN`, { align: 'right' });
+      if (type === 'CLIENTE') {
+        doc.text('PRECIO', cols.price, y);
+        doc.text('SUBTOTAL', cols.total, y);
+      }
 
-                // Bloque de Pago con QR
-                doc.moveDown(2);
-                const paymentY = doc.y;
-                
-                // Fondo gris
-                doc.rect(50, paymentY, 500, 100).fill('#F4F4F4');
-                
-                // Generar QR
-                try {
-                    // Datos para QR (Concepto + Monto)
-                    const qrData = `ETHERE4L|${jobId}|MXN|${pedido.total}`;
-                    const qrBase64 = await QRCode.toDataURL(qrData);
-                    doc.image(qrBase64, 60, paymentY + 10, { width: 80 });
-                } catch (e) { console.error("Error generando QR", e); }
+      y += 15;
+      doc.moveTo(50, y).lineTo(550, y).stroke();
 
-                // Textos Pago
-                doc.fillColor(BLACK).font('Helvetica-Bold').fontSize(10);
-                doc.text('DATOS PARA TRANSFERENCIA', 160, paymentY + 20);
-                
-                doc.font('Helvetica').fontSize(9).fillColor(GRAY);
-                doc.text('BANCO: BBVA', 160, paymentY + 40);
-                doc.text('CLABE: 0123 4567 8901 2345 67', 160, paymentY + 55);
-                doc.text(`CONCEPTO: ${jobId}`, 160, paymentY + 70);
-            }
+      y += 10;
+      doc.font('Helvetica').fontSize(9).fillColor(GRAY);
 
-            // --- FOOTER ---
-            const footerY = 750;
-            doc.fontSize(8).fillColor(GRAY).text('ETHERE4L - Streetwear & High Fashion', 50, footerY, { align: 'center' });
-            if (type === 'CLIENTE') {
-                doc.text('Gracias por tu compra. Envíanos tu comprobante por Instagram.', { align: 'center' });
-            }
-
-            doc.end();
-
-        } catch (error) {
-            console.error("Error crítico en PDF Generator:", error);
-            reject(error);
+      pedido.items.forEach(item => {
+        if (item.image) {
+          try {
+            doc.image(item.image, cols.img, y, { width: 40 });
+          } catch (e) {
+            console.warn('[PDF] Imagen no cargada:', item.image);
+          }
         }
-    });
+
+        doc.text(item.nombre, cols.name, y, { width: 170 });
+        doc.text(item.talla, cols.size, y);
+        doc.text(item.cantidad, cols.qty, y);
+
+        if (type === 'CLIENTE') {
+          doc.text(`$${item.precio}`, cols.price, y);
+          doc.text(`$${item.precio * item.cantidad}`, cols.total, y);
+        }
+
+        y += 55;
+      });
+
+      doc.moveDown(2);
+
+      // =====================================================
+      // TOTAL A PAGAR (DESTACADO)
+      // =====================================================
+      if (type === 'CLIENTE') {
+        doc.rect(300, y, 250, 70).fill('#000000');
+        doc.fillColor('#FFFFFF').font('Helvetica-Bold').fontSize(12)
+          .text('TOTAL A PAGAR', 300, y + 15, { align: 'center', width: 250 });
+
+        doc.fontSize(18)
+          .text(`$${pedido.total.toLocaleString('es-MX')} MXN`, 300, y + 35, {
+            align: 'center',
+            width: 250
+          });
+
+        y += 90;
+      }
+
+      // =====================================================
+      // BLOQUE DE PAGO
+      // =====================================================
+      if (type === 'CLIENTE') {
+        doc.font('Helvetica-Bold').fontSize(11).fillColor(BLACK)
+          .text('DATOS PARA TRANSFERENCIA');
+
+        const qrData = `ETHERE4L|${jobId}|MXN|${pedido.total}`;
+        const qr = await QRCode.toDataURL(qrData);
+
+        doc.image(qr, 50, y + 10, { width: 90 });
+
+        doc.font('Helvetica').fontSize(9).fillColor(GRAY);
+        doc.text('BANCO: BBVA', 160, y + 20);
+        doc.text('CLABE: 0123 4567 8901 2345 67', 160, y + 35);
+        doc.text(`CONCEPTO: ${jobId}`, 160, y + 50);
+      }
+
+      // =====================================================
+      // FOOTER
+      // =====================================================
+      doc.fontSize(8).fillColor(GRAY)
+        .text('ETHERE4L • STREETWEAR & HIGH FASHION', 50, 760, {
+          align: 'center'
+        });
+
+      doc.end();
+
+    } catch (err) {
+      console.error('[PDF ERROR]', err);
+      reject(err);
+    }
+  });
 }
 
 module.exports = { buildPDF };
