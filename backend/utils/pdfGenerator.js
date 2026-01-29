@@ -123,13 +123,47 @@ async function buildPDF(cliente, pedido, jobId, type = 'CLIENTE') {
       doc.font('Helvetica').fontSize(9).fillColor(GRAY);
 
       pedido.items.forEach(item => {
-        if (item.image) {
-          try {
-            doc.image(item.image, cols.img, y, { width: 40 });
-          } catch (e) {
-            console.warn('[PDF] Imagen no cargada:', item.image);
-          }
-        }
+        // -----------------------------------------------------
+// 🖼️ Imagen de producto (PDFKit NO soporta URLs remotas)
+// PDFKit solo acepta paths locales, buffers o streams.
+// Si la imagen es remota (https://), renderizamos
+// un placeholder limpio para NO romper el PDF.
+// -----------------------------------------------------
+const IMG_WIDTH = 40;
+const IMG_HEIGHT = 40;
+
+let imageRendered = false;
+
+// Intentar SOLO si parece path local
+if (item.image && typeof item.image === 'string' && !item.image.startsWith('http')) {
+  try {
+    doc.image(item.image, cols.img, y, { width: IMG_WIDTH });
+    imageRendered = true;
+  } catch (err) {
+    console.warn('[PDF] Imagen local no cargada:', item.image);
+  }
+}
+
+// Placeholder visual si no se pudo renderizar imagen
+if (!imageRendered) {
+  doc
+    .rect(cols.img, y, IMG_WIDTH, IMG_HEIGHT)
+    .strokeColor('#CCCCCC')
+    .lineWidth(0.5)
+    .stroke();
+
+  doc
+    .font('Helvetica')
+    .fontSize(8)
+    .fillColor('#999999')
+    .text(
+      'IMG',
+      cols.img,
+      y + IMG_HEIGHT / 2 - 4,
+      { width: IMG_WIDTH, align: 'center' }
+    );
+}
+
 
         doc.text(item.nombre, cols.name, y, { width: 170 });
         doc.text(item.talla, cols.size, y);
