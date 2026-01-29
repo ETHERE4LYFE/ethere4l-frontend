@@ -59,12 +59,23 @@ try {
 // APP CONFIG
 // ===============================
 const app = express();
-app.use(cors());
+// ✅ CORS ROBUSTO: Permitir explícitamente a Netlify
+app.use(cors({
+    origin: [
+        'https://ethereal-frontend.netlify.app', // Tu frontend en producción
+        'http://localhost:5500',                // Tu entorno local (por si acaso)
+        'http://127.0.0.1:5500'
+    ],
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.use(express.json());
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const ADMIN_EMAIL = 'ethere4lyfe@gmail.com';
 
 // ⚠️ USA UN EMAIL REAL QUE EXISTA
 const SENDER_EMAIL = 'orders@ethere4l.com';
