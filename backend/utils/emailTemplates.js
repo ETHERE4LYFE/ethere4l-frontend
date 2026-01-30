@@ -4,7 +4,8 @@
 
 // URL Pública de Netlify para asegurar renderizado en Gmail/iOS
 // URL pública real servida por Netlify
-const LOGO_URL = "https://ethereal-frontend.netlify.app/logo-email.png";
+const LOGO_URL = "https://ethereal-frontend.netlify.app/logo-email.png?v=2";
+
 
 
 
@@ -45,7 +46,11 @@ function getEmailTemplate(cliente, pedido, jobId, isAdmin) {
         ? '' 
         : `<p style="${styles.p}">Adjunto encontrarás un PDF con los detalles de tu compra y las instrucciones para realizar el pago (QR y CLABE).</p>
            <div style="text-align: center;">
-             <a href="<img src="${LOGO_URL}" alt="ETHERE4L" style="${styles.logo}">" style="${styles.button}">VOLVER A LA TIENDA</a>
+           <a href="https://ethereal-frontend.netlify.app"
+   style="${styles.button}">
+   VOLVER A LA TIENDA
+</a>
+
            </div>`;
 
     return `
