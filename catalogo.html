@@ -6,6 +6,27 @@
     <title>Catálogo | ETHEREAL</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        .nav-promo { 
+            color: #ff4757 !important; /* Color llamativo */
+            font-weight: bold; 
+            font-size: 0.9em; 
+            text-decoration: none; 
+            margin-left: 10px;
+            border: 1px solid #ff4757;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        .nav-promo:hover {
+            background: #ff4757;
+            color: white !important;
+        }
+        @media (max-width: 768px) {
+            .nav-promo { display: block; margin: 10px 0; text-align: center; border: none; }
+        }
+    </style>
 </head>
 <body class="fade-in-page">
 
@@ -41,6 +62,12 @@
             </ul>
         </li>
         <li><a href="catalogo.html">Catálogo</a></li>
+        
+        <li>
+            <a href="catalogo.html" class="nav-promo">
+                📦 Lotes: Envío -50% (2+ pzas)
+            </a>
+        </li>
     </ul>
 
 </nav>
@@ -49,7 +76,7 @@
     <a href="https://www.instagram.com/etheere4l" 
        target="_blank" 
        class="btn-buy">
-        CONSULTAR DISPONIBILIDAD
+       CONSULTAR DISPONIBILIDAD
     </a>
 </div>
 
