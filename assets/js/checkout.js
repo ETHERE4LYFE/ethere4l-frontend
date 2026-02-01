@@ -1,8 +1,12 @@
-const API_URL = 'https://ethereal-backend-production-6060.up.railway.app/api/crear-pedido';
+// ==========================================
+// CHECKOUT.JS - Lógica del formulario y pago
+// ==========================================
+
+const API_URL = 'https://ethereal-backend-production-6060.up.railway.app/api/crear-pedido'; // Mantenido por referencia
 const TIMEOUT_DURATION = 45000;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. CARGAR RESUMEN DEL CARRITO (Lógica Visual)
+    // 1. CARGAR RESUMEN DEL CARRITO (Lógica Visual Original)
     if (typeof getCart === 'function') {
         const cart = getCart();
         const container = document.getElementById('checkout-cart-items');
@@ -40,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const emailInput = document.getElementById('email');
         const emailValue = emailInput.value.trim();
 
-        // VALIDACIÓN
+        // VALIDACIÓN (Lógica Original)
         if (!emailValue || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
             alert("⚠️ Por favor ingresa un correo electrónico válido.");
             emailInput.focus();
@@ -53,69 +57,74 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // CAPTURA DE DIRECCIÓN DESGLOSADA
+        // CAPTURA DE DIRECCIÓN DESGLOSADA (Lógica Original Preservada)
         const calle = document.getElementById('calle').value.trim();
         const colonia = document.getElementById('colonia').value.trim();
         const cp = document.getElementById('cp').value.trim();
         const ciudad = document.getElementById('ciudad').value.trim();
         const estado = document.getElementById('estado').value.trim();
+        const nombre = document.getElementById('nombre').value.trim();
+        const telefono = document.getElementById('telefono').value.trim();
+        const notas = document.getElementById('notas').value.trim();
         
-        // UNIR DIRECCIÓN PARA BACKEND
+        // UNIR DIRECCIÓN PARA VISUALIZACIÓN/LEGACY
         const direccionCompleta = `${calle}, Col. ${colonia}, CP ${cp}, ${ciudad}, ${estado}`;
 
-        // UI LOADING
+        // UI LOADING (Lógica Original)
         btnSubmit.disabled = true;
-        btnSubmit.innerText = "PROCESANDO... (NO CIERRES)";
+        btnSubmit.innerText = "REDIRIGIENDO A STRIPE..."; // Texto actualizado para claridad
         btnSubmit.style.opacity = "0.7";
 
-        const controller = new AbortController();
+        // NOTA: El AbortController ya no es necesario aquí porque Stripe maneja su propio timeout,
+        // pero lo mantenemos para no romper la estructura try/catch existente si decidieras usarlo.
+        const controller = new AbortController(); 
         const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_DURATION);
 
         try {
-            const items = cart.map(item => ({
-                nombre: item.nombre,
-                talla: item.talla,
-                cantidad: Number(item.cantidad) || 1,
-                precio: Number(item.precio) || 0,
-                imagen: item.imagen
-            }));
+            // ============================================================
+            // NUEVA INTEGRACIÓN: STRIPE CHECKOUT
+            // ============================================================
 
-            const total = items.reduce((sum, i) => sum + i.precio * i.cantidad, 0);
-
-            const payload = {
-                cliente: {
-                    nombre: document.getElementById('nombre').value.trim(),
-                    email: emailValue,
-                    telefono: document.getElementById('telefono').value.trim(),
-                    direccion: direccionCompleta, // Dirección unida
-                    notas: document.getElementById('notas').value.trim()
+            // 1. Guardar datos del cliente en SessionStorage
+            // Esto permite que cart.js recupere la info para enviarla a Stripe
+            const clienteData = {
+                nombre: nombre,
+                email: emailValue,
+                telefono: telefono,
+                direccion: {
+                    calle: calle,
+                    colonia: colonia,
+                    cp: cp,
+                    ciudad: ciudad,
+                    estado: estado,
+                    completa: direccionCompleta // Enviamos también la versión formateada
                 },
-                pedido: { items, total }
+                notas: notas
             };
 
-            const res = await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-                signal: controller.signal
-            });
+            sessionStorage.setItem('checkout_cliente', JSON.stringify(clienteData));
 
-            const data = await res.json();
-
-            if (res.ok && data.success) {
-                // 1. Limpiar el carrito silenciosamente
-                clearCart();
+            // 2. Invocar la función segura de Stripe (definida en cart.js)
+            // Esta función llama a /api/create-checkout-session
+            if (typeof window.iniciarCheckoutSeguro === 'function') {
+                console.log("🔄 Iniciando pasarela de pago Stripe...");
                 
-                // 2. REDIRECCIÓN INMEDIATA (Sin alertas que estorben)
-                window.location.href = 'gracias.html';
+                // Pasamos el ID del botón para que cart.js maneje el estado de carga si es necesario
+                window.iniciarCheckoutSeguro('btn-comprar');
                 return;
-            }
 
-            throw new Error(data.message || 'Error del servidor');
+                
+                // NOTA: No hacemos redirect manual ni clearCart() aquí.
+                // Stripe redirige automáticamente a su página de pago.
+            } else {
+                throw new Error("Error crítico: La función 'iniciarCheckoutSeguro' no está disponible. Verifica que cart.js cargó correctamente.");
+            }
 
         } catch (err) {
             console.error(err);
-            alert("Error: " + (err.message || "Problema de conexión"));
+            alert("Error al iniciar pago: " + (err.message || "Intenta nuevamente."));
+            
+            // Restaurar estado del botón en caso de error
             btnSubmit.disabled = false;
             btnSubmit.innerText = originalText;
             btnSubmit.style.opacity = "1";

@@ -12,7 +12,8 @@
             "images/catalogos/balenciaga/001/details.png",
             "images/catalogos/balenciaga/001/details1.png"
         ],
-        "descripcion": "Material de piel."
+        "descripcion": "Material de piel.",
+        "image": "https://ethere4l.com/images/catalogos/balenciaga/001/principal.png"
     },
      {
         "id": "item-002",
@@ -30,7 +31,8 @@
             "images/catalogos/balenciaga/002/details6.png",
             "images/catalogos/balenciaga/002/details7.png"
         ],
-        "descripcion": "Chaqueta De Mezclilla."
+        "descripcion": "Chaqueta De Mezclilla.",
+        "image":"https://ethere4l.com/images/catalogos/balenciaga/002/principal.png"
     },
     {
         "id": "item-003",
@@ -49,7 +51,8 @@
             "images/catalogos/balenciaga/003/details7.png",
             "images/catalogos/balenciaga/003/details8.png"
         ],
-        "descripcion": "Balenciaga jeans."
+        "descripcion": "Balenciaga jeans.",
+        "image":"https://ethere4l.com/images/catalogos/balenciaga/003/principal.png"
     },
     {
         "id": "item-004",
@@ -65,7 +68,8 @@
             "images/catalogos/balenciaga/004/details1.png",
             "images/catalogos/balenciaga/004/details.png"
         ],
-        "descripcion": "Pantalon baggy balenciaga con diseño tribal."
+        "descripcion": "Pantalon baggy balenciaga con diseño tribal.",
+        "image":"https://ethere4l.com/images/catalogos/balenciaga/004/principal.png"
     },
             {
         "id": "item-005",
@@ -84,7 +88,8 @@
         "images/catalogos/balenciaga/005/details6.png"
 
         ],
-        "descripcion": "Flared Jeans Balenciaga con relieve."
+        "descripcion": "Flared Jeans Balenciaga con relieve.",
+        "image":"https://ethere4l.com/images/catalogos/balenciaga/005/principal.png"
     },
             {
         "id": "item-06",
@@ -102,7 +107,8 @@
         "images/catalogos/balenciaga/006/details4.png",
         "images/catalogos/balenciaga/006/details5.png"
         ],
-        "descripcion": "Balenciaga Jeans Baggy."
+        "descripcion": "Balenciaga Jeans Baggy.",
+        "image":"https://ethere4l.com/images/catalogos/balenciaga/6/principal.png"
     },
                 {
         "id": "item-07",
@@ -118,7 +124,8 @@
         "images/catalogos/balenciaga/007/details3.png",
         "images/catalogos/balenciaga/007/details4.png"
         ],
-        "descripcion": "Pantalonera Balenciaga con diseño tipo tribal."
+        "descripcion": "Pantalonera Balenciaga con diseño tipo tribal.",
+        "image":"https://ethere4l.com/images/catalogos/balenciaga/007/principal.png"
     },
     {
         "id": "item-08",
@@ -136,7 +143,8 @@
         "images/catalogos/balenciaga/008/details5.png"
 
         ],
-        "descripcion": "Balenciaga jeans."
+        "descripcion": "Balenciaga jeans.",
+        "image":"https://ethere4l.com/images/catalogos/balenciaga/008/principal.png"
     },
             {
         "id": "item-009",
@@ -154,7 +162,8 @@
         
 
         ],
-        "descripcion": "Balenciaga Jeans Baggy con diseño tribal."
+        "descripcion": "Balenciaga Jeans Baggy con diseño tribal.",
+        "image":"https://ethere4l.com/images/catalogos/balenciaga/009/principal.png"
     },
             {
         "id": "item-010",
@@ -171,7 +180,8 @@
         "images/catalogos/balenciaga/010/details3.png"    
 
         ],
-        "descripcion": "Chaqueta De Mezclilla Balenciaga con diseño tribal."
+        "descripcion": "Chaqueta De Mezclilla Balenciaga con diseño tribal.",
+        "image":"https://ethere4l.com/images/catalogos/balenciaga/010/principal.png"
     },
                 {
         "id": "item-011",
@@ -187,7 +197,8 @@
         "images/catalogos/balenciaga/011/details3.png"
 
         ],
-        "descripcion": "Balenciaga Hoddie."
+        "descripcion": "Balenciaga Hoddie.",
+        "image":"https://ethere4l.com/images/catalogos/balenciaga/011/principal.png"
     },
                 {
         "id": "item-012",
@@ -202,7 +213,8 @@
         "images/catalogos/balenciaga/012/details2.png"
 
         ],
-        "descripcion": "Balenciaga Bomber."
+        "descripcion": "Balenciaga Bomber.",
+        "image":"https://ethere4l.com/images/catalogos/balenciaga/012/principal.png"
     },
                 {
         "id": "item-013",
@@ -219,7 +231,8 @@
         "images/catalogos/balenciaga/013/details4.png"
 
         ],
-        "descripcion": "Balenciaga Jacket."
+        "descripcion": "Balenciaga Jacket.",
+        "image":"https://ethere4l.com/images/catalogos/balenciaga/013/principal.png"
     },
                 {
         "id": "item-014",
@@ -236,7 +249,8 @@
         "images/catalogos/balenciaga/014/details4.png"
 
         ],
-        "descripcion": "Balenciaga Jacket."
+        "descripcion": "Balenciaga Jacket.",
+        "image":"https://ethere4l.com/images/catalogos/balenciaga/014/principal.png"
     },
                 {
         "id": "item-015",
@@ -254,7 +268,8 @@
         "images/catalogos/balenciaga/015/details5.png"
 
         ],
-        "descripcion": "Sueter Balenciaga."
+        "descripcion": "Sueter Balenciaga.",
+        "image":"https://ethere4l.com/images/catalogos/balenciaga/015/principal.png"
     },
                 {
         "id": "item-016",
@@ -272,7 +287,8 @@
         "images/catalogos/balenciaga/016/details5.png"
 
         ],
-        "descripcion": "Balenciaga jeans."
+        "descripcion": "Balenciaga jeans.",
+        "image":"https://ethere4l.com/images/catalogos/balenciaga/016/principal.png"
     },
                 {
         "id": "item-017",
@@ -288,7 +304,8 @@
         "images/catalogos/balenciaga/017/details3.png"
 
         ],
-        "descripcion": "Sueter Balenciaga."
+        "descripcion": "Sueter Balenciaga.",
+        "image":"https://ethere4l.com/images/catalogos/balenciaga/017/principal.png"
     },            {
         "id": "item-018",
         "marca": "balenciaga",
@@ -304,7 +321,8 @@
         "images/catalogos/balenciaga/018/details4.png"
 
         ],
-        "descripcion": "Balenciaga jeans."
+        "descripcion": "Balenciaga jeans.",
+        "image":"https://ethere4l.com/images/catalogos/balenciaga/018/principal.png"
     },
                 {
         "id": "item-019",
@@ -319,7 +337,8 @@
         "images/catalogos/balenciaga/019/details2.png"
 
         ],
-        "descripcion": "Balenciaga Jacket."
+        "descripcion": "Balenciaga Jacket.",
+        "image":"https://ethere4l.com/images/catalogos/balenciaga/019/principal.png"
     },            {
         "id": "item-020",
         "marca": "balenciaga",
@@ -335,7 +354,8 @@
         "images/catalogos/balenciaga/020/details4.png"
 
         ],
-        "descripcion": "Balenciaga Jacket."
+        "descripcion": "Balenciaga Jacket.",
+        "image":"https://ethere4l.com/images/catalogos/balenciaga/020/principal.png"
     },
 
 
@@ -396,7 +416,8 @@
         "images/catalogos/chromehearts/001/details1.png"
 
         ],
-        "descripcion": "Hoddie Chrome Hearts."
+        "descripcion": "Hoddie Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/chromehearts/001/principal.png"
     },
         {
         "id": "item--002",
@@ -411,7 +432,8 @@
         "images/catalogos/chromehearts/002/details2.png",
         "images/catalogos/chromehearts/002/details3.png"
         ],
-        "descripcion": "Hoddie Chrome Hearts."
+        "descripcion": "Hoddie Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/chromehearts/002/principal.png"
     },
             {
         "id": "item--003",
@@ -429,7 +451,8 @@
         "images/catalogos/chromehearts/003/details4.png",
         "images/catalogos/chromehearts/003/details5.png"
         ],
-        "descripcion": "Hoddie Chrome Hearts."
+        "descripcion": "Hoddie Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/chromehearts/003/principal.png"
     },
             {
         "id": "item--004",
@@ -446,7 +469,8 @@
         "images/catalogos/chromehearts/004/details4.png",   
         "images/catalogos/chromehearts/004/details5.png"
         ],
-        "descripcion": "Hoddie Chrome Hearts Jeans."
+        "descripcion": "Hoddie Chrome Hearts Jeans.",
+        "image":"https://ethere4l.com/images/catalogos/chromehearts/004/principal.png"
     },
             {
         "id": "item--005",
@@ -460,7 +484,8 @@
         "images/catalogos/chromehearts/005/detail.png",
         "images/catalogos/chromehearts/005/details1.png"
         ],
-        "descripcion": "Sueter Chrome Hearts."
+        "descripcion": "Sueter Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/chromehearts/005/principal.png"
     },
             {
         "id": "item--006",
@@ -475,7 +500,8 @@
         "images/catalogos/chromehearts/006/details1.png"
         
         ],
-        "descripcion": "Jersey Chrome Hearts."
+        "descripcion": "Jersey Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/chromehearts/006/principal.png"
     },
             {
         "id": "item--007",
@@ -490,7 +516,8 @@
         "images/catalogos/chromehearts/007/details2.png",
         "images/catalogos/chromehearts/007/details3.png"
         ],
-        "descripcion": "Jacket Chrome Hearts."
+        "descripcion": "Jacket Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/chromehearts/007/principal.png"
     },
             {
         "id": "item--008",
@@ -508,7 +535,8 @@
         "images/catalogos/chromehearts/008/details4.png",
         "images/catalogos/chromehearts/008/details5.png"
         ],
-        "descripcion": "Hoddie Chrome Hearts."
+        "descripcion": "Hoddie Chrome Hearts." ,
+        "image":"https://ethere4l.com/images/catalogos/chromehearts/008/principal.png"
     },
             {
         "id": "item--009",
@@ -525,7 +553,8 @@
         "images/catalogos/chromehearts/009/details4.png",
         "images/catalogos/chromehearts/009/details5.png"
         ],
-        "descripcion": "Hoddie Chrome Hearts."
+        "descripcion": "Hoddie Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/chromehearts/009/principal.png"
     },
             {
         "id": "item--010",
@@ -540,7 +569,8 @@
         "images/catalogos/chromehearts/010/details1.png",
         "images/catalogos/chromehearts/010/details2.png"
         ],
-        "descripcion": "Hoddie Chrome Hearts."
+        "descripcion": "Hoddie Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/chromehearts/010/principal.png"
     },
                 {
         "id": "item--011",
@@ -557,7 +587,8 @@
         "images/catalogos/chromehearts/011/details4.png",
         "images/catalogos/chromehearts/011/details5.png"
         ],
-        "descripcion": "Hoddie Chrome Hearts."
+        "descripcion": "Hoddie Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/chromehearts/011/principal.png"
     },
                     {
         "id": "item--012",
@@ -573,7 +604,8 @@
         "images/catalogos/chromehearts/012/details3.png",
         "images/catalogos/chromehearts/012/details4.png"
         ],
-        "descripcion": "Hoddie Chrome Hearts."
+        "descripcion": "Hoddie Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/chromehearts/012/principal.png"
     },
                     {
         "id": "item--013",
@@ -589,7 +621,8 @@
         "images/catalogos/chromehearts/013/details3.png",
         "images/catalogos/chromehearts/013/details4.png"
         ],
-        "descripcion": "Chrome Hearts Jeans."
+        "descripcion": "Chrome Hearts Jeans.",
+        "image":"https://ethere4l.com/images/catalogos/chromehearts/013/principal.png"
     },
                     {
         "id": "item--014",
@@ -607,7 +640,8 @@
         "images/catalogos/chromehearts/014/details5.png",
         "images/catalogos/chromehearts/014/details6.png"
         ],
-        "descripcion": "Sueter Chrome Hearts."
+        "descripcion": "Sueter Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/chromehearts/014/principal.png"
     },
                         {
         "id": "item--015",
@@ -621,7 +655,8 @@
         "images/catalogos/chromehearts/015/detail.png",
         "images/catalogos/chromehearts/015/details2.png"
         ],
-        "descripcion": "Polo Chrome Hearts."
+        "descripcion": "Polo Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/chromehearts/015/principal.png"
     },
                         {
         "id": "item--016",
@@ -634,7 +669,8 @@
         "images/catalogos/chromehearts/016/back1.png",
         "images/catalogos/chromehearts/016/detail.png"
         ],
-        "descripcion": "Jacket Chrome Hearts."
+        "descripcion": "Jacket Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/chromehearts/016/principal.png"
     },
                         {
         "id": "item--017",
@@ -650,7 +686,8 @@
         "images/catalogos/chromehearts/017/details3.png",
         "images/catalogos/chromehearts/017/details4.png"
         ],
-        "descripcion": "Sueter Chrome Hearts."
+        "descripcion": "Sueter Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/chromehearts/017/principal.png"
     },
                         {
         "id": "item--018",
@@ -666,7 +703,8 @@
         "images/catalogos/chromehearts/018/details3.png",
         "images/catalogos/chromehearts/018/details4.png"
         ],
-        "descripcion": "Chrome Hearts Jeans."
+        "descripcion": "Chrome Hearts Jeans.",
+        "image":"https://ethere4l.com/images/catalogos/chromehearts/018/principal.png"
     },
                         {
         "id": "item--019",
@@ -681,7 +719,8 @@
         "images/catalogos/chromehearts/019/details2.png",
         "images/catalogos/chromehearts/019/details3.png"
         ],
-        "descripcion": "Hoddie Chrome Hearts."
+        "descripcion": "Hoddie Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/chromehearts/019/principal.png"
     },
                         {
         "id": "item--020",
@@ -697,7 +736,8 @@
         "images/catalogos/chromehearts/020/details3.png",
         "images/catalogos/chromehearts/020/details4.png"
         ],
-        "descripcion": "Chrome Hearts Jeans."
+        "descripcion": "Chrome Hearts Jeans.",
+        "image":"https://ethere4l.com/images/catalogos/chromehearts/020/principal.png"
     },
 
 
@@ -741,7 +781,8 @@
             "images/catalogos/hellstar/001/back.png",
             "images/catalogos/hellstar/001/detail.png"
         ],
-        "descripcion": "Hellstar Hoddie."
+        "descripcion": "Hellstar Hoddie.",
+        "image":"https://ethere4l.com/images/catalogos/hellstar/001/principal.png"
     },
         {
         "id": "item---002",
@@ -754,7 +795,8 @@
             "images/catalogos/hellstar/002/back1.png",
             "images/catalogos/hellstar/002/detail.png"
         ],
-        "descripcion": "Hellstar Hoddie."
+        "descripcion": "Hellstar Hoddie.",
+        "image":"https://ethere4l.com/images/catalogos/hellstar/002/principal.png"
     },
             {
         "id": "item---003",
@@ -770,7 +812,8 @@
             "images/catalogos/hellstar/003/details2.png"
 
         ],
-        "descripcion": "Hellstar Hoddie."
+        "descripcion": "Hellstar Hoddie.",
+        "image":"https://ethere4l.com/images/catalogos/hellstar/003/principal.png"
     },
             {
         "id": "item---004",
@@ -785,7 +828,8 @@
             "images/catalogos/hellstar/004/details1.png",
             "images/catalogos/hellstar/004/details2.png"
         ],
-        "descripcion": "Hellstar Hoddie."
+        "descripcion": "Hellstar Hoddie.",
+        "image":"https://ethere4l.com/images/catalogos/hellstar/004/principal.png"
     },
             {
         "id": "item---005",
@@ -798,7 +842,8 @@
             "images/catalogos/hellstar/005/back.png",
             "images/catalogos/hellstar/005/detail.png"
         ],
-        "descripcion": "Hellstar Hoddie."
+        "descripcion": "Hellstar Hoddie.",
+        "image":"https://ethere4l.com/images/catalogos/hellstar/005/principal.png"
     },
             {
         "id": "item---006",
@@ -813,7 +858,8 @@
             "images/catalogos/hellstar/006/details1.png",
             "images/catalogos/hellstar/006/details2.png"
         ],
-        "descripcion": "Hellstar Camisa."
+        "descripcion": "Hellstar Camisa.",
+        "image":"https://ethere4l.com/images/catalogos/hellstar/006/principal.png"
     },
             {
         "id": "item---007",
@@ -828,7 +874,8 @@
             "images/catalogos/hellstar/007/details2.png",
             "images/catalogos/hellstar/007/details3.png"
         ],
-        "descripcion": "Hellstar Hoddie."
+        "descripcion": "Hellstar Hoddie.",
+        "image":"https://ethere4l.com/images/catalogos/hellstar/007/principal.png"
     },
             {
         "id": "item---008",
@@ -843,7 +890,8 @@
             "images/catalogos/hellstar/008/details2.png",
             "images/catalogos/hellstar/008/details3.png"
         ],
-        "descripcion": "Hellstar Hoddie."
+        "descripcion": "Hellstar Hoddie.",
+        "image":"https://ethere4l.com/images/catalogos/hellstar/008/principal.png"
     },
             {
         "id": "item---009",
@@ -857,7 +905,8 @@
             "images/catalogos/hellstar/009/detail.png",
             "images/catalogos/hellstar/009/details2.png"
         ],
-        "descripcion": "Hellstar Camisa."
+        "descripcion": "Hellstar Camisa.",
+        "image":"https://ethere4l.com/images/catalogos/hellstar/009/principal.png"
     },
         {
         "id": "item---010",
@@ -873,7 +922,8 @@
             "images/catalogos/hellstar/010/details3.png"
 
         ],
-        "descripcion": "Hellstar Jeans."
+        "descripcion": "Hellstar Jeans.",
+        "image":"https://ethere4l.com/images/catalogos/hellstar/010/principal.png"
     },
                 {
         "id": "item---011",
@@ -889,7 +939,8 @@
             "images/catalogos/hellstar/011/details3.png",
             "images/catalogos/hellstar/011/details4.png"
         ],
-        "descripcion": "Hellstar Camisa."
+        "descripcion": "Hellstar Camisa.",
+        "image":"https://ethere4l.com/images/catalogos/hellstar/011/principal.png"
     },
                     {
         "id": "item---012",
@@ -903,7 +954,8 @@
             "images/catalogos/hellstar/012/detail.png",
             "images/catalogos/hellstar/012/details2.png"
         ],
-        "descripcion": "El precio es unicamente para el sueter, el pantalón es aparte."
+        "descripcion": "El precio es unicamente para el sueter, el pantalón es aparte.",
+        "image":"https://ethere4l.com/images/catalogos/hellstar/012/principal.png"
     },
                     {
         "id": "item---013",
@@ -918,7 +970,8 @@
             "images/catalogos/hellstar/013/details2.png",
             "images/catalogos/hellstar/013/details3.png"
         ],
-        "descripcion": "Hellstar Hoddie."
+        "descripcion": "Hellstar Hoddie.",
+        "image":"https://ethere4l.com/images/catalogos/hellstar/013/principal.png"
     },
                     {
         "id": "item---014",
@@ -932,7 +985,8 @@
             "images/catalogos/hellstar/014/detail.png",
             "images/catalogos/hellstar/014/details2.png"
         ],
-        "descripcion": "Hellstar Camisa."
+        "descripcion": "Hellstar Camisa.",
+        "image":"https://ethere4l.com/images/catalogos/hellstar/014/principal.png"
     },
                     {
         "id": "item---015",
@@ -949,7 +1003,8 @@
             "images/catalogos/hellstar/015/details4.png",
             "images/catalogos/hellstar/015/details5.png"
         ],
-        "descripcion": "Hellstar Hoddie."
+        "descripcion": "Hellstar Hoddie.",
+        "image":"https://ethere4l.com/images/catalogos/hellstar/015/principal.png"
     },
                     {
         "id": "item---016",
@@ -965,7 +1020,8 @@
             "images/catalogos/hellstar/016/details3.png",
             "images/catalogos/hellstar/016/details4.png"
         ],
-        "descripcion": "Hellstar Hoddie."
+        "descripcion": "Hellstar Hoddie.",
+        "image":"https://ethere4l.com/images/catalogos/hellstar/016/principal.png"
     },
                     {
         "id": "item---017",
@@ -980,7 +1036,8 @@
             "images/catalogos/hellstar/017/details2.png",
             "images/catalogos/hellstar/017/details3.png"
         ],
-        "descripcion": "Hellstar Short."
+        "descripcion": "Hellstar Short.",
+        "image":"https://ethere4l.com/images/catalogos/hellstar/017/principal.png"
     },
                     {
         "id": "item---018",
@@ -996,7 +1053,8 @@
             "images/catalogos/hellstar/018/details3.png",
             "images/catalogos/hellstar/018/details4.png"
         ],
-        "descripcion": "Hellstar Hoddie."
+        "descripcion": "Hellstar Hoddie.",
+        "image":"https://ethere4l.com/images/catalogos/hellstar/018/principal.png"
     },
                     {
         "id": "item---019",
@@ -1010,7 +1068,8 @@
             "images/catalogos/hellstar/019/detail.png",
             "images/catalogos/hellstar/019/details2.png"
         ],
-        "descripcion": "Hellstar Hoddie."
+        "descripcion": "Hellstar Hoddie.",
+        "image":"https://ethere4l.com/images/catalogos/hellstar/019/principal.png"
     },
                     {
         "id": "item---020",
@@ -1028,7 +1087,8 @@
             "images/catalogos/hellstar/020/details5.png",
             "images/catalogos/hellstar/020/details6.png"
         ],
-        "descripcion": "Hellstar Hoddie."
+        "descripcion": "Hellstar Hoddie.",
+        "image":"https://ethere4l.com/images/catalogos/hellstar/020/principal.png"
     },
 
 
@@ -1085,7 +1145,8 @@
             "images/catalogos/supreme/001/detail.png",
             "images/catalogos/supreme/001/details2.png"
         ],
-        "descripcion": "Supreme x MM6."
+        "descripcion": "Supreme x MM6.",
+        "image":"https://ethere4l.com/images/catalogos/supreme/001/principal.png"
     },
                 {
         "id": "item----002",
@@ -1099,7 +1160,8 @@
             "images/catalogos/supreme/002/details2.png",
             "images/catalogos/supreme/002/details3.png"
         ],
-        "descripcion": "Supreme Sueter."
+        "descripcion": "Supreme Sueter.",
+        "image":"https://ethere4l.com/images/catalogos/supreme/002/principal.png"
     },
                     {
         "id": "item----003",
@@ -1114,7 +1176,8 @@
             "images/catalogos/supreme/003/details2.png",
             "images/catalogos/supreme/003/details3.png"
         ],
-        "descripcion": "Jacket Supreme."
+        "descripcion": "Jacket Supreme.",
+        "image":"https://ethere4l.com/images/catalogos/supreme/003/principal.png"
     },
                 {
         "id": "item----004",
@@ -1128,7 +1191,8 @@
             "images/catalogos/supreme/004/detail.png",
             "images/catalogos/supreme/004/details2.png"
         ],
-        "descripcion": "Supreme Jacket."
+        "descripcion": "Supreme Jacket.",
+        "image":"https://ethere4l.com/images/catalogos/supreme/004/principal.png"
     },
                 {
         "id": "item----005",
@@ -1143,7 +1207,8 @@
             "images/catalogos/supreme/005/details2.png",
             "images/catalogos/supreme/005/details3.png"
         ],
-        "descripcion": "Supreme Jacket."
+        "descripcion": "Supreme Jacket.",
+        "image":"https://ethere4l.com/images/catalogos/supreme/005/principal.png"
     },
                     {
         "id": "item----006",
@@ -1155,7 +1220,8 @@
             "images/catalogos/supreme/006/principal.png",
             "images/catalogos/supreme/006/back1.png"
         ],
-        "descripcion": "Camisa Supreme x Carti."
+        "descripcion": "Camisa Supreme x Carti.",
+        "image":"https://ethere4l.com/images/catalogos/supreme/006/principal.png"
     },
                     {
         "id": "item----007",
@@ -1169,7 +1235,8 @@
             "images/catalogos/supreme/007/detail.png",
             "images/catalogos/supreme/007/details2.png"
         ],
-        "descripcion": "Supreme Sueter."
+        "descripcion": "Supreme Sueter.",
+        "image":"https://ethere4l.com/images/catalogos/supreme/007/principal.png"
     },
                 {
         "id": "item----008",
@@ -1181,7 +1248,8 @@
             "images/catalogos/supreme/008/principal.png",
             "images/catalogos/supreme/008/back1.png"
         ],
-        "descripcion": "Supreme Stick tee"
+        "descripcion": "Supreme Stick tee",
+        "image":"https://ethere4l.com/images/catalogos/supreme/008/principal.png"
     },
                     {
         "id": "item----009",
@@ -1200,7 +1268,8 @@
             "images/catalogos/supreme/009/details3.png"
         
         ],
-        "descripcion": "Supreme Jacket."
+        "descripcion": "Supreme Jacket.",
+        "image":"https://ethere4l.com/images/catalogos/supreme/009/principal.png"
     },
                 {
         "id": "item----010",
@@ -1216,7 +1285,8 @@
             "images/catalogos/supreme/010/details3.png",
             "images/catalogos/supreme/010/details4.png"
         ],
-        "descripcion": "Supreme Jacket."
+        "descripcion": "Supreme Jacket.",
+        "image":"https://ethere4l.com/images/catalogos/supreme/010/principal.png"
     },
 
 
@@ -1250,7 +1320,8 @@
             "images/catalogos/acnestudios/001/details3.png",
             "images/catalogos/acnestudios/001/details4.png"
         ],
-        "descripcion": "Acne Jeans."
+        "descripcion": "Acne Jeans.",
+        "image":"https://ethere4l.com/images/catalogos/acnestudios/001/principal.png"
     },
                 {
         "id": "item-----002",
@@ -1266,7 +1337,8 @@
             "images/catalogos/acnestudios/002/details3.png",
             "images/catalogos/acnestudios/002/details4.png"
         ],
-        "descripcion": "Acne Jeans."
+        "descripcion": "Acne Jeans.",
+        "image":"https://ethere4l.com/images/catalogos/acnestudios/002/principal.png"
     },
                     {
         "id": "item-----003",
@@ -1282,7 +1354,8 @@
             "images/catalogos/acnestudios/003/details3.png",
             "images/catalogos/acnestudios/003/details4.png"
         ],
-        "descripcion": "Acne Jeans."
+        "descripcion": "Acne Jeans.",
+        "image":"https://ethere4l.com/images/catalogos/acnestudios/003/principal.png"
     },
                 {
         "id": "item-----004",
@@ -1298,7 +1371,8 @@
             "images/catalogos/acnestudios/004/details3.png",
             "images/catalogos/acnestudios/004/details4.png"
         ],
-        "descripcion": "Acne Jeans."
+        "descripcion": "Acne Jeans.",
+        "image":"https://ethere4l.com/images/catalogos/acnestudios/004/principal.png"
     },
                     {
         "id": "item-----005",
@@ -1314,7 +1388,8 @@
             "images/catalogos/acnestudios/005/details3.png",
             "images/catalogos/acnestudios/005/details4.png"
         ],
-        "descripcion": "Acne Jeans."
+        "descripcion": "Acne Jeans.",
+        "image":"https://ethere4l.com/images/catalogos/acnestudios/005/principal.png"
     },
                     {
         "id": "item-----006",
@@ -1330,7 +1405,8 @@
             "images/catalogos/acnestudios/006/details3.png",
             "images/catalogos/acnestudios/006/details4.png"
         ],
-        "descripcion": "Acne Jeans."
+        "descripcion": "Acne Jeans.",
+        "image":"https://ethere4l.com/images/catalogos/acnestudios/006/principal.png"
     },
                         {
         "id": "item-----007",
@@ -1346,7 +1422,8 @@
             "images/catalogos/acnestudios/007/details3.png",
             "images/catalogos/acnestudios/007/details4.png"
         ],
-        "descripcion": "Acne Jeans."
+        "descripcion": "Acne Jeans.",
+        "image":"https://ethere4l.com/images/catalogos/acnestudios/007/principal.png"
     },
                             {
         "id": "item-----008",
@@ -1359,7 +1436,8 @@
             "images/catalogos/acnestudios/008/back1.png",
             "images/catalogos/acnestudios/008/detail.png"
         ],
-        "descripcion": "Acne Jeans."
+        "descripcion": "Acne Jeans.",
+        "image":"https://ethere4l.com/images/catalogos/acnestudios/008/principal.png"
     },
         {
         "id": "item-----009",
@@ -1375,7 +1453,8 @@
             "images/catalogos/acnestudios/009/details3.png",
             "images/catalogos/acnestudios/009/details4.png"
         ],
-        "descripcion": "Acne Jeans."
+        "descripcion": "Acne Jeans.",
+        "image":"https://ethere4l.com/images/catalogos/acnestudios/009/principal.png"
     },
                                     {
         "id": "item-----010",
@@ -1390,7 +1469,8 @@
             "images/catalogos/acnestudios/010/details2.png",
             "images/catalogos/acnestudios/010/details3.png"
         ],
-        "descripcion": "Acne Jeans."
+        "descripcion": "Acne Jeans.",
+        "image":"https://ethere4l.com/images/catalogos/acnestudios/010/principal.png"
     },
 
 
@@ -1423,7 +1503,8 @@
             "images/catalogos/maisonmargiela/001/details3.png",
             "images/catalogos/maisonmargiela/001/details4.png"
         ],
-        "descripcion": "Maison Margiela Hoddie."
+        "descripcion": "Maison Margiela Hoddie.",
+        "image":"https://ethere4l.com/images/catalogos/maisonmargiela/001/principal.png"
     },
                 {
         "id": "item------002",
@@ -1439,7 +1520,8 @@
             "images/catalogos/maisonmargiela/002/details3.png",
             "images/catalogos/maisonmargiela/002/details4.png"
         ],
-        "descripcion": "Maison Margiela Camisa."
+        "descripcion": "Maison Margiela Camisa.",
+        "image":"https://ethere4l.com/images/catalogos/maisonmargiela/002/principal.png"
     },
                 {
         "id": "item------003",
@@ -1455,7 +1537,8 @@
             "images/catalogos/maisonmargiela/003/details3.png",
             "images/catalogos/maisonmargiela/003/details4.png"
         ],
-        "descripcion": "Maison Margiela Hoddie."
+        "descripcion": "Maison Margiela Hoddie.",
+        "image":"https://ethere4l.com/images/catalogos/maisonmargiela/003/principal.png"
     },
                     {
         "id": "item------004",
@@ -1474,7 +1557,8 @@
             "images/catalogos/maisonmargiela/004/details6.png",
             "images/catalogos/maisonmargiela/004/details7.png"
         ],
-        "descripcion": "Maison Margiela Pants."
+        "descripcion": "Maison Margiela Pants.",
+        "image":"https://ethere4l.com/images/catalogos/maisonmargiela/004/principal.png"
     },
                     {
         "id": "item------005",
@@ -1492,7 +1576,8 @@
             "images/catalogos/maisonmargiela/005/details5.png",
             "images/catalogos/maisonmargiela/005/details6.png"
         ],
-        "descripcion": "Maison Margiela Jeans."
+        "descripcion": "Maison Margiela Jeans.",
+        "image":"https://ethere4l.com/images/catalogos/maisonmargiela/005/principal.png"
     },
                     {
         "id": "item------006",
@@ -1504,7 +1589,8 @@
             "images/catalogos/maisonmargiela/006/principal.png",
             "images/catalogos/maisonmargiela/006/back1.png"
         ],
-        "descripcion": "Maison Margiela Hoddie."
+        "descripcion": "Maison Margiela Hoddie.",
+        "image":"https://ethere4l.com/images/catalogos/maisonmargiela/006/principal.png"
     },
                     {
         "id": "item------007",
@@ -1521,7 +1607,8 @@
             "images/catalogos/maisonmargiela/007/details4.png",
             "images/catalogos/maisonmargiela/007/details5.png"
         ],
-        "descripcion": "Maison Margiela Camisa."
+        "descripcion": "Maison Margiela Camisa.",
+        "image":"https://ethere4l.com/images/catalogos/maisonmargiela/007/principal.png"
     },
                     {
         "id": "item------008",
@@ -1537,7 +1624,9 @@
             "images/catalogos/maisonmargiela/008/details3.png",
             "images/catalogos/maisonmargiela/008/details4.png"
         ],
-        "descripcion": "Maison Margiela Hoddie."
+        "descripcion": "Maison Margiela Hoddie.",
+        "image":"https://ethere4l.com/images/catalogos/maisonmargiela/008/principal.png"
+
     },
                     {
         "id": "item------009",
@@ -1552,7 +1641,8 @@
             "images/catalogos/maisonmargiela/009/details2.png",
             "images/catalogos/maisonmargiela/009/details3.png"
         ],
-        "descripcion": "Maison Margiela Hoddie."
+        "descripcion": "Maison Margiela Hoddie.",
+        "image":"https://ethere4l.com/images/catalogos/maisonmargiela/009/principal.png"
     },
                     {
         "id": "item------010",
@@ -1564,7 +1654,8 @@
             "images/catalogos/maisonmargiela/010/principal.png",
             "images/catalogos/maisonmargiela/010/back1.png"
         ],
-        "descripcion": "Maison Margiela Camisa."
+        "descripcion": "Maison Margiela Camisa.",
+        "image":"https://ethere4l.com/images/catalogos/maisonmargiela/010/principal.png"
     },
 
 
@@ -1600,7 +1691,8 @@
             "images/catalogos/designer-shoes/001/details3.png",
             "images/catalogos/designer-shoes/001/details4.png"
         ],
-        "descripcion": "Designer Shoes."
+        "descripcion": "Designer Shoes.",
+        "image":"https://ethere4l.com/images/catalogos/designer-shoes/001/principal.png"
     },
                     {
         "id": "item-------002",
@@ -1614,7 +1706,8 @@
             "images/catalogos/designer-shoes/002/detail.png",
             "images/catalogos/designer-shoes/002/details2.png"
         ],
-        "descripcion": "Designer Shoes."
+        "descripcion": "Designer Shoes.",
+        "image":"https://ethere4l.com/images/catalogos/designer-shoes/002/principal.png"
     },
                         {
         "id": "item-------003",
@@ -1635,7 +1728,8 @@
 
 
         ],
-        "descripcion": "Designer Shoes."
+        "descripcion": "Designer Shoes.",
+        "image":"https://ethere4l.com/images/catalogos/designer-shoes/003/principal.png"
     },
                 {
         "id": "item-------004",
@@ -1649,7 +1743,8 @@
             "images/catalogos/designer-shoes/004/details2.png",
             "images/catalogos/designer-shoes/004/details3.png"
         ],
-        "descripcion": "Designer Shoes."
+        "descripcion": "Designer Shoes.",
+        "image":"https://ethere4l.com/images/catalogos/designer-shoes/004/principal.png"
     },
                         {
         "id": "item-------005",
@@ -1668,7 +1763,8 @@
             "images/catalogos/designer-shoes/005/details7.png",
             "images/catalogos/designer-shoes/005/details8.png"
         ],
-        "descripcion": "Designer Shoes."
+        "descripcion": "Designer Shoes.",
+        "image":"https://ethere4l.com/images/catalogos/designer-shoes/005/principal.png"
     },
                             {
         "id": "item-------006",
@@ -1684,7 +1780,8 @@
             "images/catalogos/designer-shoes/006/details4.png",
             "images/catalogos/designer-shoes/006/details5.png"
         ],
-        "descripcion": "Designer Shoes."
+        "descripcion": "Designer Shoes.",
+        "image":"https://ethere4l.com/images/catalogos/designer-shoes/006/principal.png"
     },
                             {
         "id": "item-------007",
@@ -1697,7 +1794,8 @@
             "images/catalogos/designer-shoes/007/detail.png",
             "images/catalogos/designer-shoes/007/details2.png"
         ],
-        "descripcion": "Designer Shoes."
+        "descripcion": "Designer Shoes.",
+        "image":"https://ethere4l.com/images/catalogos/designer-shoes/007/principal.png"
     },
                             {
         "id": "item-------008",
@@ -1711,7 +1809,8 @@
             "images/catalogos/designer-shoes/008/details2.png",
             "images/catalogos/designer-shoes/008/details3.png"
         ],
-        "descripcion": "Designer Shoes."
+        "descripcion": "Designer Shoes.",
+        "image":"https://ethere4l.com/images/catalogos/designer-shoes/008/principal.png"
     },
                                 {
         "id": "item-------009",
@@ -1735,7 +1834,8 @@
             "images/catalogos/designer-shoes/009/details12.png"
 
         ],
-        "descripcion": "Designer Shoes."
+        "descripcion": "Designer Shoes.",
+        "image":"https://ethere4l.com/images/catalogos/designer-shoes/09/principal.png"
     },
                     {
         "id": "item-------010",
@@ -1751,7 +1851,8 @@
             "images/catalogos/designer-shoes/010/details4.png",
             "images/catalogos/designer-shoes/010/details5.png"
         ],
-        "descripcion": "Designer Shoes."
+        "descripcion": "Designer Shoes.",
+        "image":"https://ethere4l.com/images/catalogos/designer-shoes/010/principal.png"
     },
                         {
         "id": "item-------011",
@@ -1762,7 +1863,8 @@
         "fotos": [
             "images/catalogos/designer-shoes/011/principal.png"
         ],
-        "descripcion": "Designer Shoes."
+        "descripcion": "Designer Shoes.",
+        "image":"https://ethere4l.com/images/catalogos/designer-shoes/011/principal.png"
     },
 
 
@@ -1804,7 +1906,8 @@
             "images/catalogos/cozy-worldwide/001/details2.png"
 
         ],
-        "descripcion": "Cozy Worldwide."
+        "descripcion": "Cozy Worldwide.",
+        "image":"https://ethere4l.com/images/catalogos/cozy-worldwide/001/principal.png"
     },
                             {
         "id": "item--------002",
@@ -1819,7 +1922,8 @@
             "images/catalogos/cozy-worldwide/002/details2.png"
 
         ],
-        "descripcion": "Cozy Worldwide."
+        "descripcion": "Cozy Worldwide.",
+        "image":"https://ethere4l.com/images/catalogos/cozy-worldwide/002/principal.png"
     },
                             {
         "id": "item--------003",
@@ -1834,7 +1938,8 @@
             "images/catalogos/cozy-worldwide/003/details2.png"
 
         ],
-        "descripcion": "Cozy Worldwide."
+        "descripcion": "Cozy Worldwide.",
+        "image":"https://ethere4l.com/images/catalogos/cozy-worldwide/003/principal.png"
     },
 
 
@@ -1900,7 +2005,8 @@
             "images/catalogos/jaded-london/001/principal.png"
 
         ],
-        "descripcion": "Jaded London jeans."
+        "descripcion": "Jaded London jeans.",
+        "image:":"https://ethere4l.com/images/catalogos/jaded-london/001/principal.png"
     },
                         {
         "id": "item---------002",
@@ -1912,7 +2018,8 @@
             "images/catalogos/jaded-london/002/principal.png"
 
         ],
-        "descripcion": "Jaded London jeans."
+        "descripcion": "Jaded London jeans.",
+        "image:":"https://ethere4l.com/images/catalogos/jaded-london/002/principal.png"
     },
                         {
         "id": "item---------003",
@@ -1924,7 +2031,8 @@
             "images/catalogos/jaded-london/003/principal.png"
 
         ],
-        "descripcion": "Jaded London jeans."
+        "descripcion": "Jaded London jeans.",
+        "image:":"https://ethere4l.com/images/catalogos/jaded-london/003/principal.png"
     },
 
 
@@ -1972,7 +2080,8 @@
             "images/catalogos/accessories/001/details5.png"
 
         ],
-        "descripcion": "Lentes Chrome Hearts."
+        "descripcion": "Lentes Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/accessories/001/principal.png"
     },
                                 {
         "id": "item----------002",
@@ -1989,7 +2098,8 @@
             "images/catalogos/accessories/002/details5.png"
 
         ],
-        "descripcion": "Lentes Chrome Hearts."
+        "descripcion": "Lentes Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/accessories/002/principal.png"
     },
                                     {
         "id": "item----------003",
@@ -2009,7 +2119,8 @@
             "images/catalogos/accessories/003/details8.png"
 
         ],
-        "descripcion": "Lentes Chrome Hearts."
+        "descripcion": "Lentes Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/accessories/003/principal.png"
     },
                                         {
         "id": "item----------004",
@@ -2024,7 +2135,8 @@
             "images/catalogos/accessories/004/details3.png"
 
         ],
-        "descripcion": "Lentes Chrome Hearts."
+        "descripcion": "Lentes Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/accessories/004/principal.png"
     },
                                         {
         "id": "item----------005",
@@ -2040,7 +2152,8 @@
             "images/catalogos/accessories/005/details4.png"
 
         ],
-        "descripcion": "Lentes Chrome Hearts."
+        "descripcion": "Lentes Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/accessories/005/principal.png"
     },
                                         {
         "id": "item----------006",
@@ -2056,7 +2169,8 @@
             "images/catalogos/accessories/006/details4.png"
 
         ],
-        "descripcion": "Lentes Chrome Hearts."
+        "descripcion": "Lentes Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/accessories/006/principal.png"
     },
                                             {
         "id": "item----------007",
@@ -2070,7 +2184,8 @@
             "images/catalogos/accessories/007/details2.png"
 
         ],
-        "descripcion": "Lentes Chrome Hearts."
+        "descripcion": "Lentes Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/accessories/007/principal.png"
     },
                                                 {
         "id": "item----------008",
@@ -2084,7 +2199,8 @@
             "images/catalogos/accessories/008/details2.png"
 
         ],
-        "descripcion": "Lentes Chrome Hearts."
+        "descripcion": "Lentes Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/accessories/008/principal.png"
     },
                                                 {
         "id": "item----------009",
@@ -2097,7 +2213,8 @@
             "images/catalogos/accessories/009/detail.png"
 
         ],
-        "descripcion": "Lentes Chrome Hearts."
+        "descripcion": "Lentes Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/accessories/009/principal.png"
     },
                                                 {
         "id": "item----------010",
@@ -2111,7 +2228,8 @@
             "images/catalogos/accessories/010/details2.png"
 
         ],
-        "descripcion": "Lentes Chrome Hearts."
+        "descripcion": "Lentes Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/accessories/0010/principal.png"
     },
                                      {
         "id": "item----------011",
@@ -2125,7 +2243,8 @@
             "images/catalogos/accessories/011/details2.png"
 
         ],
-        "descripcion": "Cadena Chrome Hearts."
+        "descripcion": "Cadena Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/accessories/011/principal.png"
     },
                                          {
         "id": "item----------012",
@@ -2140,7 +2259,8 @@
             "images/catalogos/accessories/012/details3.png"
 
         ],
-        "descripcion": "Brazalete Chrome Hearts."
+        "descripcion": "Brazalete Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/accessories/012/principal.png"
     },
                                              {
         "id": "item----------013",
@@ -2155,7 +2275,8 @@
             "images/catalogos/accessories/013/details3.png"
 
         ],
-        "descripcion": "Anillo Chrome Hearts."
+        "descripcion": "Anillo Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/accessories/013/principal.png"
     },
                                              {
         "id": "item----------014",
@@ -2170,7 +2291,8 @@
             "images/catalogos/accessories/014/details3.png"
 
         ],
-        "descripcion": "Brazalete Chrome Hearts."
+        "descripcion": "Brazalete Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/accessories/014/principal.png"
     },
                                              {
         "id": "item----------015",
@@ -2182,7 +2304,8 @@
             "images/catalogos/accessories/015/principal.png"      
 
         ],
-        "descripcion": "Cadena Chrome Hearts."
+        "descripcion": "Cadena Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/accessories/015/principal.png"
     },
                                              {
         "id": "item----------016",
@@ -2196,7 +2319,8 @@
             "images/catalogos/accessories/016/details2.png"
 
         ],
-        "descripcion": "Cadena Chrome Hearts."
+        "descripcion": "Cadena Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/accessories/016/principal.png"
     },
                                              {
         "id": "item----------017",
@@ -2211,7 +2335,8 @@
             "images/catalogos/accessories/017/details3.png"
 
         ],
-        "descripcion": "Cadena Chrome Hearts."
+        "descripcion": "Cadena Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/accessories/017/principal.png"
     },
                                              {
         "id": "item----------018",
@@ -2226,7 +2351,8 @@
             "images/catalogos/accessories/018/details3.png"
 
         ],
-        "descripcion": "Anillo Chrome Hearts."
+        "descripcion": "Anillo Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/accessories/018/principal.png"
     },
                                              {
         "id": "item----------019",
@@ -2240,7 +2366,8 @@
             "images/catalogos/accessories/019/details2.png"
 
         ],
-        "descripcion": "Cadena Chrome Hearts."
+        "descripcion": "Cadena Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/accessories/019/principal.png"
     },
                                              {
         "id": "item----------020",
@@ -2253,7 +2380,8 @@
             "images/catalogos/accessories/020/detail.png"
 
         ],
-        "descripcion": "Cadena Chrome Hearts."
+        "descripcion": "Cadena Chrome Hearts.",
+        "image":"https://ethere4l.com/images/catalogos/accessories/020/principal.png"
     }
 
 

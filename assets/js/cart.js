@@ -143,7 +143,7 @@ window.iniciarCheckoutSeguro = async function(btnId = 'btn-checkout') {
         // Ajusta la URL si estás en local vs producción
         const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
             ? 'http://localhost:3000/api/create-checkout-session'
-            : 'https://tu-backend-railway.app/api/create-checkout-session'; // CAMBIAR ESTO POR TU URL REAL
+            : 'https://ethereal-backend-production-6060.up.railway.app/api/create-checkout-session'; // CAMBIAR ESTO POR TU URL REAL
 
         const response = await fetch(apiUrl, {
             method: 'POST',
