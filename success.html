@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido Recibido | ETHEREAL</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body style="background-color: #000; color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; margin: 0; text-align: center; overflow: hidden;">
+
+    <div class="fade-in-page" style="max-width: 600px; padding: 20px; z-index: 2;">
+        
+        <div style="font-size: 4rem; color: #2ecc71; margin-bottom: 20px; animation: popIn 0.5s ease;">
+            <i class="fa-regular fa-circle-check"></i>
+        </div>
+
+        <h1 style="font-family: 'Pirata One', cursive; font-size: 3.5rem; letter-spacing: 3px; margin: 0 0 20px 0; text-transform: uppercase;">
+            ORDEN RECIBIDA
+        </h1>
+
+        <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 8px; backdrop-filter: blur(5px); margin-bottom: 30px;">
+            <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 15px;">
+                Tu pedido ha sido generado correctamente y nuestro equipo ya tiene el PDF con tu selección de tallas.
+            </p>
+            <p style="font-size: 1rem; color: #ccc;">
+                📩 <strong>Siguiente paso:</strong><br>
+                Te contactaremos al <strong>WhatsApp</strong> que proporcionaste para enviarte los datos de transferencia bancaria y confirmar el envío.
+            </p>
+        </div>
+
+        <a href="catalogo.html" class="btn-buy" style="background: #fff; color: #000; text-decoration: none; padding: 15px 40px; display: inline-block; font-weight: bold; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;">
+            SEGUIR COMPRANDO
+        </a>
+    </div>
+
+    <div class="custom-cursor"></div>
+    
+    <style>
+        /* Animación simple de entrada */
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            80% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        
+        .btn-buy:hover {
+            background: #ccc !important;
+            transform: scale(1.05);
+        }
+
+        /* Asegurar estilos del cursor si no están en style.css */
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 1px solid white;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
+            z-index: 9999;
+            transition: left 0.1s, top 0.1s;
+        }
+    </style>
+
+    <script>
+        // Lógica del cursor
+        const cursor = document.querySelector('.custom-cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // Seguridad extra: Asegurar que el carrito esté vacío visualmente si el usuario vuelve atrás
+        localStorage.removeItem('ethereal_cart_v1');
+    </script>
+</body>
+</html>
