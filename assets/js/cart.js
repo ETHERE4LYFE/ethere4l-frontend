@@ -1,5 +1,11 @@
+// ==========================================
+// CART.JS - Lógica Global del Carrito
+// ==========================================
+
 // Clave para guardar en el navegador
 const CART_KEY = 'ethereal_cart_v1';
+// URL del Backend (Producción Railway)
+const PRODUCTION_API = 'https://ethereal-backend-production-6060.up.railway.app/api/create-checkout-session';
 
 // 1. Obtener carrito actual
 function getCart() {
@@ -14,10 +20,12 @@ function getCart() {
     }
 }
 
-// 2. Guardar carrito
+// 2. Guardar carrito y notificar eventos
 function saveCart(cart) {
     localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    // Dispara evento para que otros scripts (header, checkout) se enteren
     window.dispatchEvent(new Event('cartUpdated'));
+    // Si existe la función visual del contador, la ejecutamos
     if (typeof updateCartCount === 'function') updateCartCount();
 }
 
@@ -48,7 +56,7 @@ function addToCart(producto) {
     // Si falló la conversión o es NaN, forzar 0
     if (isNaN(precioNumerico)) precioNumerico = 0;
 
-    // Buscar existente
+    // Buscar si ya existe este item (mismo ID y misma Talla)
     const existingItem = cart.find(item => String(item.id) === prodId && item.talla === prodTalla);
 
     if (existingItem) {
@@ -62,14 +70,15 @@ function addToCart(producto) {
             talla: prodTalla,
             imagen: producto.imagen || "",
             cantidad: 1,
-            // --- NUEVO: Propiedades para cálculo logístico ---
-            peso: Number(producto.peso) || 0.6, // Default 0.6kg si no existe
+            // --- Propiedades para cálculo logístico ---
+            peso: Number(producto.peso) || 0.6, // Default 0.6kg
             sourcing: producto.sourcing || false
         });
     }
 
     saveCart(cart);
-    console.log(`Agregado: ${producto.nombre} | $${precioNumerico}`);
+    console.log(`✅ Agregado: ${producto.nombre} | $${precioNumerico}`);
+    alert("Producto agregado al carrito"); // Feedback visual simple
 }
 
 // 4. Calcular Total
@@ -79,15 +88,14 @@ function getCartTotal() {
         const p = Number(item.precio) || 0;
         const q = Number(item.cantidad) || 0;
         return total + (p * q);
-    }); // Nota: Se asume reduce inicia en 0, corregido abajo por seguridad
-    // return total + (p * q); }, 0); <--- Corrección implícita aplicada en la lógica original
+    }, 0); // ✅ CORRECCIÓN: Se agregó el 0 inicial para evitar errores en arrays vacíos
 }
 
-// 5. Funciones Auxiliares (Globales para usarse en pedido.html)
+// 5. Funciones Auxiliares Globales (Window)
 
 window.removeFromCart = function(id, talla) {
     let cart = getCart();
-    // Filtrar manteniendo tipos consistentes (String vs String)
+    // Filtrar manteniendo tipos consistentes
     cart = cart.filter(item => !(String(item.id) === String(id) && item.talla === talla));
     saveCart(cart);
 }
@@ -102,7 +110,7 @@ window.updateItemQuantity = function(id, talla, change) {
             item.cantidad = nuevaCantidad;
             saveCart(cart);
         } else {
-            // Si baja a 0, preguntar o eliminar (aquí eliminamos directo)
+            // Si baja a 0, eliminamos
             window.removeFromCart(id, talla);
         }
     }
@@ -115,11 +123,11 @@ window.clearCart = function() {
 }
 
 /* ==========================================================================
-   NUEVA FUNCIONALIDAD: INTEGRACIÓN STRIPE & BACKEND
+   INTEGRACIÓN STRIPE & BACKEND (Checkout Seguro)
    ========================================================================== */
 
 /**
- * Envía el carrito al backend para calcular pesos reales y generar link de pago.
+ * Envía el carrito + datos del cliente al backend para iniciar sesión de Stripe.
  * @param {string} btnId - ID del botón que dispara la acción (para efecto de carga)
  */
 window.iniciarCheckoutSeguro = async function(btnId = 'btn-checkout') {
@@ -130,38 +138,59 @@ window.iniciarCheckoutSeguro = async function(btnId = 'btn-checkout') {
         return;
     }
 
+    // UI Loading
     const btn = document.getElementById(btnId);
     let textoOriginal = "";
-    
     if(btn) {
         textoOriginal = btn.innerText;
-        btn.innerText = "Procesando...";
+        btn.innerText = "Conectando con Stripe...";
         btn.disabled = true;
     }
 
     try {
-        // Ajusta la URL si estás en local vs producción
-        const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-            ? 'http://localhost:3000/api/create-checkout-session'
-            : 'https://ethereal-backend-production-6060.up.railway.app/api/create-checkout-session'; // CAMBIAR ESTO POR TU URL REAL
+        // 1. Intentar recuperar datos del cliente (Si vienen desde checkout.js)
+        let clienteData = null;
+        try {
+            const storedData = sessionStorage.getItem('checkout_cliente');
+            if (storedData) {
+                clienteData = JSON.parse(storedData);
+            }
+        } catch (e) {
+            console.warn("No se encontraron datos de cliente en sessionStorage");
+        }
 
+        // 2. Determinar URL de la API
+        const apiUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+            ? 'http://localhost:3000/api/create-checkout-session'
+            : PRODUCTION_API;
+
+        console.log(`🔄 Iniciando Checkout hacia: ${apiUrl}`);
+
+        // 3. Petición al Backend
         const response = await fetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ items: cart })
+            body: JSON.stringify({ 
+                items: cart,
+                customer: clienteData // Enviamos los datos del formulario si existen
+            })
         });
 
         const data = await response.json();
 
+        // 4. Manejo de Respuesta
         if (response.ok && data.url) {
-            window.location.href = data.url; // Redirige a Stripe Checkout
+            console.log("✅ Sesión creada, redirigiendo...");
+            window.location.href = data.url; // Redirige a Stripe
         } else {
-            throw new Error(data.error || "Error iniciando pago");
+            throw new Error(data.error || "Error desconocido del servidor");
         }
 
     } catch (error) {
-        console.error("Checkout Error:", error);
-        alert("Error de conexión: " + error.message);
+        console.error("❌ Checkout Error:", error);
+        alert("No se pudo iniciar el pago: " + error.message);
+        
+        // Restaurar botón
         if(btn) {
             btn.innerText = textoOriginal;
             btn.disabled = false;
