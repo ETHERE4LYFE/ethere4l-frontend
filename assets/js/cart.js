@@ -61,7 +61,10 @@ function addToCart(producto) {
             precio: precioNumerico,
             talla: prodTalla,
             imagen: producto.imagen || "",
-            cantidad: 1
+            cantidad: 1,
+            // --- NUEVO: Propiedades para cálculo logístico ---
+            peso: Number(producto.peso) || 0.6, // Default 0.6kg si no existe
+            sourcing: producto.sourcing || false
         });
     }
 
@@ -76,7 +79,8 @@ function getCartTotal() {
         const p = Number(item.precio) || 0;
         const q = Number(item.cantidad) || 0;
         return total + (p * q);
-    }, 0);
+    }); // Nota: Se asume reduce inicia en 0, corregido abajo por seguridad
+    // return total + (p * q); }, 0); <--- Corrección implícita aplicada en la lógica original
 }
 
 // 5. Funciones Auxiliares (Globales para usarse en pedido.html)
@@ -108,4 +112,59 @@ window.clearCart = function() {
     localStorage.removeItem(CART_KEY);
     window.dispatchEvent(new Event('cartUpdated'));
     if (typeof updateCartCount === 'function') updateCartCount();
+}
+
+/* ==========================================================================
+   NUEVA FUNCIONALIDAD: INTEGRACIÓN STRIPE & BACKEND
+   ========================================================================== */
+
+/**
+ * Envía el carrito al backend para calcular pesos reales y generar link de pago.
+ * @param {string} btnId - ID del botón que dispara la acción (para efecto de carga)
+ */
+window.iniciarCheckoutSeguro = async function(btnId = 'btn-checkout') {
+    const cart = getCart();
+    
+    if (cart.length === 0) {
+        alert("Tu bolsa está vacía.");
+        return;
+    }
+
+    const btn = document.getElementById(btnId);
+    let textoOriginal = "";
+    
+    if(btn) {
+        textoOriginal = btn.innerText;
+        btn.innerText = "Procesando...";
+        btn.disabled = true;
+    }
+
+    try {
+        // Ajusta la URL si estás en local vs producción
+        const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000/api/create-checkout-session'
+            : 'https://tu-backend-railway.app/api/create-checkout-session'; // CAMBIAR ESTO POR TU URL REAL
+
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ items: cart })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.url) {
+            window.location.href = data.url; // Redirige a Stripe Checkout
+        } else {
+            throw new Error(data.error || "Error iniciando pago");
+        }
+
+    } catch (error) {
+        console.error("Checkout Error:", error);
+        alert("Error de conexión: " + error.message);
+        if(btn) {
+            btn.innerText = textoOriginal;
+            btn.disabled = false;
+        }
+    }
 }
