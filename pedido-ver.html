@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <title>Mi Pedido | ETHERE4L</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        /* CSS INYECTADO PARA TIMELINE (Fase 4 Requirement) */
+        .timeline-container { display: flex; justify-content: space-between; margin: 30px 0; position: relative; }
+        .timeline-container::before { content: ''; position: absolute; top: 15px; left: 0; right: 0; height: 2px; background: #eee; z-index: 1; }
+        .tl-step { position: relative; z-index: 2; text-align: center; background: #fff; padding: 0 5px; flex: 1; opacity: 0.5; }
+        .tl-step.active { opacity: 1; font-weight: bold; }
+        .tl-icon { width: 30px; height: 30px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; }
+        .tl-step.active .tl-icon { background: #000; color: #fff; }
+        .tl-text { font-size: 0.8rem; }
+        .invoice-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 15px 0; }
+        .item-left { display: flex; gap: 15px; align-items: center; }
+        .item-left img { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; background: #f0f0f0; }
+    </style>
 </head>
 <body>
 
@@ -17,40 +30,38 @@
 
 <div class="invoice-container">
     <div class="invoice-header">
-        <h2 id="order-id"></h2>
+        <h2 id="order-id">Cargando...</h2>
         <p id="order-status"></p>
 
-<!-- TIMELINE PRO -->
-<div class="timeline-container">
-    <div class="tl-step active" id="step-confirmed">
-        <div class="tl-icon">✓</div>
-        <div class="tl-text">Confirmado</div>
-    </div>
+        <div class="timeline-container">
+            <div class="tl-step active" id="step-confirmed">
+                <div class="tl-icon">✓</div>
+                <div class="tl-text">Confirmado</div>
+            </div>
 
-    <div class="tl-step" id="step-packed">
-        <div class="tl-icon">📦</div>
-        <div class="tl-text">Empaquetado</div>
-    </div>
+            <div class="tl-step" id="step-packed">
+                <div class="tl-icon">📦</div>
+                <div class="tl-text">Empaquetado</div>
+            </div>
 
-    <div class="tl-step" id="step-transit">
-        <div class="tl-icon">🚚</div>
-        <div class="tl-text">En tránsito</div>
-    </div>
+            <div class="tl-step" id="step-transit">
+                <div class="tl-icon">🚚</div>
+                <div class="tl-text">En tránsito</div>
+            </div>
 
-    <div class="tl-step" id="step-delivered">
-        <div class="tl-icon">🏠</div>
-        <div class="tl-text">Entregado</div>
-    </div>
-</div>
+            <div class="tl-step" id="step-delivered">
+                <div class="tl-icon">🏠</div>
+                <div class="tl-text">Entregado</div>
+            </div>
+        </div>
 
-<p id="tracking-info"></p>
-
+        <p id="tracking-info" style="margin-top: 20px; text-align: center; color: #666;"></p>
     </div>
 
     <div id="items-list" style="padding:20px"></div>
 
-    <div style="padding:20px; text-align:right">
-        <strong id="order-total"></strong>
+    <div style="padding:20px; text-align:right; border-top: 2px solid #000;">
+        <strong id="order-total" style="font-size: 1.2rem;"></strong>
     </div>
 </div>
 

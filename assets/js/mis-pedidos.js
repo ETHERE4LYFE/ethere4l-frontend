@@ -1,6 +1,6 @@
 /**
  * assets/js/mis-pedidos.js
- * Passwordless Orders – versión estable
+ * Passwordless Orders – versión estable (HOTFIX FASE 4)
  */
 
 const API_BASE = 'https://ethereal-backend-production-6060.up.railway.app';
@@ -12,8 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const token = tokenFromUrl || tokenFromSession;
 
-    if (!token) token = sessionStorage.getItem('magic_token');
-
+    if (tokenFromUrl) {
+        sessionStorage.setItem('magic_token', tokenFromUrl);
+    }
 
     if (token) {
         initOrdersView(token);
@@ -83,8 +84,8 @@ async function initOrdersView(token) {
 
         if (!res.ok) throw new Error('expired');
 
-        const data = await response.json();
-
+        // FIX: Variable 'res' usada correctamente
+        const data = await res.json();
 
         if (!data.orders || data.orders.length === 0) {
             list.innerHTML = '<p>No tienes pedidos registrados.</p>';
@@ -94,7 +95,8 @@ async function initOrdersView(token) {
         renderOrders(data.orders);
         gtag?.('event', 'my_orders_viewed', { count: data.orders.length });
 
-    } catch {
+    } catch (e) {
+        console.error(e);
         sessionStorage.removeItem('magic_token');
         document.getElementById('orders-view').innerHTML = `
             <div style="text-align:center;padding:40px">
@@ -112,17 +114,15 @@ function renderOrders(orders) {
     list.innerHTML = orders.map(o => {
         const date = new Date(o.date).toLocaleDateString('es-MX');
 
-        // 🔒 Defensive parsing
-        const firstItemImage =
-            o.items_summary && o.items_summary.length
-                ? o.items_summary.split(',')[0]
-                : null;
-
-                let imageUrl = 'https://via.placeholder.com/80/f3f4f6/9ca3af?text=ETHERE4L';
-                if (o.items_summary && o.items_summary.includes('http')) {
-                    imageUrl = o.items_summary.split(',')[0];
-                }
-
+        // 🔒 Defensive Image Logic
+        let imageUrl = 'https://placehold.co/80x80/f3f4f6/9ca3af?text=ETHERE4L';
+        
+        // Intentar parsear si viene data compleja o usar items_summary
+        if (o.items_summary) {
+             const parts = o.items_summary.split(',');
+             const potentialUrl = parts.find(p => p.includes('http'));
+             if (potentialUrl) imageUrl = potentialUrl;
+        }
 
         const badgeClass =
             o.status === 'PAGADO'
@@ -131,6 +131,7 @@ function renderOrders(orders) {
                 ? 'bg-transit'
                 : 'bg-pending';
 
+        // FIX: Estandarizado a ?id= para coincidir con pedido.js
         return `
         <div class="order-card">
             <div class="card-header">
@@ -140,26 +141,23 @@ function renderOrders(orders) {
 
             <div class="card-body">
                 <img src="${imageUrl}" class="thumb-img"
-                     onerror="this.src='https://via.placeholder.com/80?text=ETHERE4L'">
+                     onerror="this.onerror=null;this.src='https://placehold.co/80?text=IMG'">
                 <div>
-                    <h3 style="margin:0">Pedido #${o.id.slice(-6)}</h3>
-                    <p style="margin:.2rem 0;color:#666">${o.item_count} artículo(s)</p>
+                    <h3 style="margin:0">Pedido #${o.id.slice(0, 8)}</h3>
+                    <p style="margin:.2rem 0;color:#666">${o.item_count || 1} artículo(s)</p>
                 </div>
             </div>
 
             <div class="card-footer">
                 <strong>$${o.total.toLocaleString('es-MX')}</strong>
-                <a class="btn-view"href="pedido-ver.html?order=${o.id}">
+                <a class="btn-view" href="pedido-ver.html?id=${o.id}">
                 Ver pedido
                 </a>
-
             </div>
         </div>
         `;
     }).join('');
 }
-
-
 
 window.logout = () => {
     sessionStorage.removeItem('magic_token');

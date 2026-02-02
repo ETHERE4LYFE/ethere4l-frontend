@@ -1,85 +1,101 @@
 document.addEventListener('DOMContentLoaded', async () => {
+    // FIX: Estandarizado a 'id' (Fase 4)
     const params = new URLSearchParams(window.location.search);
-    const orderId = params.get('order');
+    const orderId = params.get('id') || params.get('order'); // Soporte retrocompatible
     let token = params.get('token');
+    
+    // Fallback a session storage
     if (!token) token = sessionStorage.getItem('magic_token');
+    
     if (!orderId || !token) {
-        document.body.innerHTML = '<p style="padding:40px">Acceso inválido</p>';
+        document.body.innerHTML = '<div style="padding:40px; text-align:center;"><h3>⚠️ Enlace incompleto</h3><p>Vuelve a "Mis Pedidos".</p></div>';
         return;
-}
-
+    }
 
     try {
+        // Fetch Defensivo
         const response = await fetch(
-  `https://ethereal-backend-production-6060.up.railway.app/api/orders/track/${orderId}?token=${token}`
-);
-        if (!response.ok) throw new Error();
+            `https://ethereal-backend-production-6060.up.railway.app/api/orders/track/${orderId}`,
+            {
+                headers: { 'Authorization': `Bearer ${token}` }
+            }
+        );
 
+        if (!response.ok) throw new Error('Error de red o permisos');
 
-        // 🔒 Defensive parsing
+        // FIX: Declaración correcta de 'data' antes de usarla
+        const data = await response.json();
+
+        // 🔒 Defensive parsing del string JSON anidado
         let orderMeta = data.data;
         if (typeof orderMeta === 'string') {
             try {
                 orderMeta = JSON.parse(orderMeta);
-            } catch {
+            } catch (e) {
+                console.warn("JSON Parse Error", e);
                 orderMeta = {};
             }
         }
 
-const items = orderMeta?.pedido?.items || [];
-const total = orderMeta?.pedido?.total || 0;
+        // Extracción segura (Null Coalescing)
+        const items = orderMeta?.pedido?.items || [];
+        const total = orderMeta?.pedido?.total || 0;
+        const shipping = data.shipping_cost || 0;
 
+        // --- Render Header ---
+        document.getElementById('order-id').innerText = `Pedido #${data.id.slice(0, 8)}`;
+        document.getElementById('order-status').innerText = `Estado: ${data.status}`;
 
-        document.getElementById('order-id').innerText =
-            `Pedido #${data.id.slice(-6)}`;
+        // --- Render Timeline Logic ---
+        // Paso 1 (Confirmado) siempre activo por HTML
+        
+        if (data.status === 'PAGADO' || data.tracking_number || data.status === 'ENTREGADO') {
+            document.getElementById('step-packed')?.classList.add('active');
+        }
+        
+        if (data.tracking_number) {
+            document.getElementById('step-packed')?.classList.add('active');
+            document.getElementById('step-transit')?.classList.add('active');
+            
+            document.getElementById('tracking-info').innerHTML = 
+                `Número de guía: <strong style="color:#000">${data.tracking_number}</strong>`;
+        }
+        
+        if (data.status === 'ENTREGADO') {
+            document.getElementById('step-packed')?.classList.add('active');
+            document.getElementById('step-transit')?.classList.add('active');
+            document.getElementById('step-delivered')?.classList.add('active');
+        }
 
-        document.getElementById('order-status').innerText =
-            `Estado: ${data.status}`;
+        // --- Render Items ---
+        document.getElementById('items-list').innerHTML = items.map(i => {
+            const img = (i.imagen && i.imagen.length > 5) 
+                ? i.imagen 
+                : 'https://placehold.co/60x60/eee/999?text=IMG';
 
-            if (data.tracking_number) {
-                document.getElementById('tracking-info').innerHTML =
-                `Guía: <strong>${data.tracking_number}</strong>`;
-
-    // Timeline logic
-        document.getElementById('step-packed')?.classList.add('active');
-        document.getElementById('step-transit')?.classList.add('active');
-}
-if (data.status === 'ENTREGADO') {
-    document.getElementById('step-delivered')?.classList.add('active');
-}
-
-
-  
-        document.getElementById('items-list').innerHTML =
-        items.map(i => {
-
-        const img = i.imagen && i.imagen.length > 5
-            ? i.imagen
-            : 'https://via.placeholder.com/60?text=ETHERE4L';
-
-        return `
-        <div class="invoice-item">
-            <div class="item-left">
-                <img src="${img}"
-                     onerror="this.src='https://via.placeholder.com/60?text=ETHERE4L'">
-                <div class="item-meta">
-                    <h4>${i.nombre}</h4>
-                    <p>Cantidad: ${i.cantidad} × $${i.precio}</p>
+            return `
+            <div class="invoice-item">
+                <div class="item-left">
+                    <img src="${img}" 
+                         onerror="this.onerror=null;this.src='https://placehold.co/60?text=Error'">
+                    <div class="item-meta">
+                        <h4 style="margin:0 0 5px 0">${i.nombre}</h4>
+                        <p style="margin:0; color:#666; font-size:0.9rem">Cant: ${i.cantidad} × $${i.precio}</p>
+                    </div>
                 </div>
+                <strong>$${(i.precio * i.cantidad).toLocaleString('es-MX')}</strong>
             </div>
-            <strong>$${(i.precio * i.cantidad).toLocaleString('es-MX')}</strong>
-        </div>
-        `;
-    }).join('');
-    
-    
-    document.getElementById('order-total').innerText =
-    `Total: $${total.toLocaleString('es-MX')}`;
+            `;
+        }).join('');
+        
+        // --- Render Total ---
+        const totalFinal = total + shipping;
+        document.getElementById('order-total').innerText = 
+            `Total: $${totalFinal.toLocaleString('es-MX')}`;
 
-
-    } catch {
-        document.body.innerHTML =
-            '<p style="padding:40px">No se pudo cargar el pedido</p>';
+    } catch (error) {
+        console.error(error);
+        document.body.innerHTML = 
+            '<div style="padding:40px; text-align:center; color:red"><h3>❌ No se pudo cargar el pedido</h3><p>Verifica tu conexión o intenta loguearte nuevamente.</p></div>';
     }
 });
-
