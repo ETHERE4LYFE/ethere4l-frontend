@@ -1,6 +1,6 @@
 /**
  * assets/js/mis-pedidos.js
- * Passwordless Orders History – ETHERE4L
+ * Passwordless Orders – versión estable
  */
 
 const API_BASE = 'https://ethereal-backend-production-6060.up.railway.app';
@@ -12,6 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const token = tokenFromUrl || tokenFromSession;
 
+    if (tokenFromUrl) {
+        sessionStorage.setItem('magic_token', tokenFromUrl);
+    }
+
     if (token) {
         initOrdersView(token);
     } else {
@@ -19,25 +23,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-/* ===============================
-   LOGIN / MAGIC LINK REQUEST
-================================ */
+// =====================
+// LOGIN VIEW
+// =====================
 function initLoginView() {
+    document.getElementById('login-view').style.display = 'block';
+    document.getElementById('orders-view').style.display = 'none';
+
     const form = document.getElementById('magic-form');
     const btn = document.getElementById('btn-send');
-    const msg = document.getElementById('msg-success');
     const loader = document.getElementById('loader');
+    const msg = document.getElementById('msg-success');
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('email-input').value.trim();
 
-        btn.style.display = 'none';
+        btn.disabled = true;
         loader.style.display = 'block';
         msg.style.display = 'none';
 
         try {
-            gtag('event', 'magic_link_requested');
+            gtag?.('event', 'magic_link_requested');
 
             await fetch(`${API_BASE}/api/magic-link`, {
                 method: 'POST',
@@ -47,62 +54,53 @@ function initLoginView() {
 
             loader.style.display = 'none';
             msg.style.display = 'block';
+            btn.disabled = false;
             form.reset();
 
-        } catch (err) {
-            console.error(err);
+        } catch {
             loader.style.display = 'none';
-            btn.style.display = 'block';
-            alert('Error de conexión. Intenta de nuevo.');
+            btn.disabled = false;
+            alert('Error de conexión. Intenta más tarde.');
         }
     });
 }
 
-/* ===============================
-   ORDERS VIEW
-================================ */
+// =====================
+// ORDERS VIEW
+// =====================
 async function initOrdersView(token) {
     document.getElementById('login-view').style.display = 'none';
+    document.getElementById('orders-view').style.display = 'block';
 
-    const container = document.getElementById('orders-view');
     const list = document.getElementById('orders-list');
-
-    container.style.display = 'block';
-    list.innerHTML = '<div class="loader" style="display:block"></div>';
+    list.innerHTML = '<p>Cargando pedidos...</p>';
 
     try {
-        gtag('event', 'magic_link_opened');
+        gtag?.('event', 'magic_link_opened');
 
         const res = await fetch(`${API_BASE}/api/my-orders`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
+            headers: { Authorization: `Bearer ${token}` }
         });
 
-        if (!res.ok) throw new Error('TOKEN_INVALID');
+        if (!res.ok) throw new Error('expired');
 
         const data = await res.json();
 
-        sessionStorage.setItem('magic_token', token);
-        window.history.replaceState({}, document.title, window.location.pathname);
-
         if (!data.orders || data.orders.length === 0) {
-            document.getElementById('empty-state').style.display = 'block';
-            list.innerHTML = '';
+            list.innerHTML = '<p>No tienes pedidos registrados.</p>';
             return;
         }
 
-        gtag('event', 'my_orders_viewed', { count: data.orders.length });
         renderOrders(data.orders);
+        gtag?.('event', 'my_orders_viewed', { count: data.orders.length });
 
-    } catch (err) {
-        container.innerHTML = `
-            <div style="text-align:center;padding:40px;">
+    } catch {
+        sessionStorage.removeItem('magic_token');
+        document.getElementById('orders-view').innerHTML = `
+            <div style="text-align:center;padding:40px">
                 <h3>🔒 Acceso expirado</h3>
-                <p>Tu enlace ya no es válido por seguridad.</p>
-                <a href="mis-pedidos.html" class="btn-black" style="margin-top:20px;display:inline-block">
-                    Solicitar nuevo enlace
-                </a>
+                <p>Por seguridad, solicita un nuevo enlace.</p>
+                <a href="mis-pedidos.html" class="btn-black">Solicitar enlace</a>
             </div>
         `;
     }
@@ -111,31 +109,19 @@ async function initOrdersView(token) {
 function renderOrders(orders) {
     const list = document.getElementById('orders-list');
 
-    list.innerHTML = orders.map(order => {
-        const date = new Date(order.date).toLocaleDateString('es-MX', {
-            year: 'numeric', month: 'long', day: 'numeric'
-        });
-
-        const statusClass = `status-${order.status.toLowerCase()}`;
-
+    list.innerHTML = orders.map(o => {
+        const date = new Date(o.date).toLocaleDateString('es-MX');
         return `
         <div class="order-card">
-            <div class="order-info">
-                <h3>Pedido #${order.id.slice(-6).toUpperCase()}</h3>
-                <div class="order-meta">${date} • ${order.item_count} artículos</div>
-                <span class="order-status ${statusClass}">${order.status}</span>
-                <div style="font-size:.85em;color:#888;margin-top:5px;">
-                    ${order.items_summary}
-                </div>
+            <div>
+                <h3>Pedido #${o.id.slice(-6)}</h3>
+                <small>${date} · ${o.item_count} artículos</small>
+                <div>${o.status}</div>
             </div>
             <div style="text-align:right">
-                <div style="font-weight:bold;font-size:1.1rem;margin-bottom:10px">
-                    $${order.total.toLocaleString('es-MX')}
-                </div>
-                <a href="pedido.html?order=${order.id}&token=${order.access_token}"
-                   class="btn-black"
-                   onclick="gtag('event','order_opened_from_list')">
-                   Ver pedido
+                <strong>$${o.total.toLocaleString('es-MX')}</strong><br>
+                <a class="btn-black" href="pedido.html?order=${o.id}&token=${o.access_token}">
+                    Ver pedido
                 </a>
             </div>
         </div>
@@ -145,5 +131,5 @@ function renderOrders(orders) {
 
 window.logout = () => {
     sessionStorage.removeItem('magic_token');
-    window.location.href = 'mis-pedidos.html';
+    location.href = 'mis-pedidos.html';
 };
