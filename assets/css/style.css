@@ -1341,3 +1341,117 @@ img:not([src]), img[src=""] {
 .step.active .step-dot {
     background: var(--success-color);
 }
+
+/* --- UI VARIABLES --- */
+:root {
+    --primary: #111;
+    --accent: #2563eb;
+    --success: #10b981;
+    --gray-light: #f3f4f6;
+    --gray-med: #9ca3af;
+    --border: #e5e7eb;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* --- FIX BOTÓN (CRÍTICO) --- */
+.btn-view {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--primary);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    transition: opacity 0.2s;
+    /* FIX DE DESBORDAMIENTO */
+    white-space: nowrap;
+    box-sizing: border-box;
+    max-width: 100%;
+    text-align: center;
+}
+.btn-view:hover { opacity: 0.9; }
+
+/* --- CARDS HISTORIAL (Grid) --- */
+.orders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem 0;
+}
+
+.order-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+.order-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.card-header { padding: 1rem; background: #fafafa; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.card-body { padding: 1rem; display: flex; gap: 1rem; align-items: center; flex: 1; }
+.card-footer { padding: 1rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+
+.thumb-img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 6px;
+    background: var(--gray-light);
+    border: 1px solid var(--border);
+}
+
+/* --- BADGES --- */
+.badge { padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+.bg-paid { background: #d1fae5; color: #065f46; } /* Pagado */
+.bg-transit { background: #dbeafe; color: #1e40af; } /* En camino */
+.bg-pending { background: #fffbeb; color: #92400e; } /* Pendiente */
+
+/* --- TIMELINE PRO (Amazon Style) --- */
+.timeline-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 3rem 0;
+    position: relative;
+    max-width: 800px;
+    margin-left: auto; 
+    margin-right: auto;
+}
+/* Línea conectora gris fondo */
+.timeline-container::before {
+    content: ''; position: absolute; top: 15px; left: 0; right: 0;
+    height: 3px; background: var(--gray-light); z-index: 0;
+}
+/* Paso individual */
+.tl-step {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; align-items: center;
+    width: 25%; text-align: center;
+}
+.tl-icon {
+    width: 32px; height: 32px;
+    background: var(--gray-light); border: 2px solid #fff;
+    border-radius: 50%; color: var(--gray-med);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; transition: all 0.3s;
+}
+.tl-text { font-size: 0.8rem; margin-top: 0.5rem; color: var(--gray-med); font-weight: 500; }
+
+/* Estado Activo */
+.tl-step.active .tl-icon { background: var(--success); color: #fff; box-shadow: 0 0 0 4px #d1fae5; }
+.tl-step.active .tl-text { color: var(--primary); font-weight: 700; }
+
+/* --- INVOICE DETAIL --- */
+.invoice-box { background: #fff; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.invoice-item { display: flex; align-items: center; justify-content: space-between; padding: 1rem; border-bottom: 1px solid var(--border); }
+.item-left { display: flex; align-items: center; gap: 1rem; }
+.item-meta h4 { margin: 0; font-size: 0.95rem; }
+.item-meta p { margin: 0; font-size: 0.8rem; color: var(--gray-med); }
+.invoice-totals { padding: 1.5rem; background: #fafafa; text-align: right; }
+.total-row { display: flex; justify-content: flex-end; gap: 2rem; margin-bottom: 0.5rem; font-size: 0.9rem; }
+.total-final { font-size: 1.2rem; font-weight: 700; color: var(--primary); margin-top: 1rem; border-top: 1px solid var(--border); padding-top: 1rem; }
