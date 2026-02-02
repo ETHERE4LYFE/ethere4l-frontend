@@ -23,18 +23,41 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('order-status').innerText =
             `Estado: ${data.status}`;
 
-        if (data.tracking_number) {
-            document.getElementById('step-shipped').classList.add('active');
-            document.getElementById('tracking-info').innerHTML =
+            if (data.tracking_number) {
+                document.getElementById('tracking-info').innerHTML =
                 `Guía: <strong>${data.tracking_number}</strong>`;
-        }
 
+    // Timeline logic
+        document.getElementById('step-packed')?.classList.add('active');
+        document.getElementById('step-transit')?.classList.add('active');
+}
+if (data.status === 'ENTREGADO') {
+    document.getElementById('step-delivered')?.classList.add('active');
+}
+
+
+  
         document.getElementById('items-list').innerHTML =
-            data.items.map(i => `
-                <div style="margin-bottom:10px">
-                    ${i.nombre} × ${i.cantidad}
+    data.items.map(i => {
+        const img = i.imagen && i.imagen.length > 5
+            ? i.imagen
+            : 'https://via.placeholder.com/60?text=ETHERE4L';
+
+        return `
+        <div class="invoice-item">
+            <div class="item-left">
+                <img src="${img}"
+                     onerror="this.src='https://via.placeholder.com/60?text=ETHERE4L'">
+                <div class="item-meta">
+                    <h4>${i.nombre}</h4>
+                    <p>Cantidad: ${i.cantidad} × $${i.precio}</p>
                 </div>
-            `).join('');
+            </div>
+            <strong>$${(i.precio * i.cantidad).toLocaleString('es-MX')}</strong>
+        </div>
+        `;
+    }).join('');
+
 
         document.getElementById('order-total').innerText =
             `Total: $${data.total.toLocaleString('es-MX')}`;
