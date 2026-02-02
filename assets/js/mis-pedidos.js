@@ -12,9 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const token = tokenFromUrl || tokenFromSession;
 
-    if (tokenFromUrl) {
-        sessionStorage.setItem('magic_token', tokenFromUrl);
-    }
+    if (!token) token = sessionStorage.getItem('magic_token');
+
 
     if (token) {
         initOrdersView(token);
@@ -84,7 +83,8 @@ async function initOrdersView(token) {
 
         if (!res.ok) throw new Error('expired');
 
-        const data = await res.json();
+        const data = await response.json();
+
 
         if (!data.orders || data.orders.length === 0) {
             list.innerHTML = '<p>No tienes pedidos registrados.</p>';
@@ -118,10 +118,11 @@ function renderOrders(orders) {
                 ? o.items_summary.split(',')[0]
                 : null;
 
-        const imageUrl =
-            o.image && typeof o.image === 'string'
-                ? o.image
-                : 'https://via.placeholder.com/80/f3f4f6/9ca3af?text=ETHERE4L';
+                let imageUrl = 'https://via.placeholder.com/80/f3f4f6/9ca3af?text=ETHERE4L';
+                if (o.items_summary && o.items_summary.includes('http')) {
+                    imageUrl = o.items_summary.split(',')[0];
+                }
+
 
         const badgeClass =
             o.status === 'PAGADO'
@@ -148,10 +149,10 @@ function renderOrders(orders) {
 
             <div class="card-footer">
                 <strong>$${o.total.toLocaleString('es-MX')}</strong>
-                <a class="btn-view"
-                   href="pedido-ver.html?order=${o.id}&token=${o.access_token}">
-                   Ver pedido
+                <a class="btn-view"href="pedido-ver.html?order=${o.id}">
+                Ver pedido
                 </a>
+
             </div>
         </div>
         `;
