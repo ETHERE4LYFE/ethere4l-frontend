@@ -3,8 +3,17 @@
 // ==========================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    initCheckout();
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get('order');
+    const token = params.get('token');
+
+    if (orderId && token) {
+        initTrackingMode(orderId, token);
+    } else {
+        initCheckout();
+    }
 });
+
 
 function initCheckout() {
     // 1. Render inicial
@@ -214,5 +223,34 @@ async function handleCheckoutSubmit(e) {
         btn.disabled = false;
         btn.innerText = originalText;
         btn.style.cursor = 'pointer';
+    }
+}
+
+
+async function initTrackingMode(orderId, token) {
+    const container = document.querySelector('.checkout-container');
+    if (!container) return;
+
+    container.innerHTML = `<p>🔐 Verificando pedido...</p>`;
+
+    try {
+        const res = await fetch(
+            `https://ethereal-backend-production-6060.up.railway.app/api/orders/track/${orderId}?token=${token}`
+        );
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.error);
+
+        container.innerHTML = `
+            <h2>Pedido #${data.id.slice(-6)}</h2>
+            <p><strong>Estado:</strong> ${data.status}</p>
+            ${data.tracking_number ? `<p><strong>Guía:</strong> ${data.tracking_number}</p>` : ''}
+            <hr>
+            ${data.items.map(i => `<p>${i.cantidad}x ${i.nombre}</p>`).join('')}
+            <h3>Total: $${data.total}</h3>
+            <a href="catalogo.html" class="btn-black">Seguir comprando</a>
+        `;
+    } catch (err) {
+        container.innerHTML = `<p>⛔ ${err.message}</p>`;
     }
 }
