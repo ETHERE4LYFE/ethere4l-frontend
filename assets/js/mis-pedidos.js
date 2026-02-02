@@ -111,16 +111,36 @@ function renderOrders(orders) {
 
     list.innerHTML = orders.map(o => {
         const date = new Date(o.date).toLocaleDateString('es-MX');
+
+        const badgeClass =
+            o.status === 'PAGADO' ? 'status-paid' :
+            o.status === 'ENVIADO' ? 'status-shipped' :
+            'status-pending';
+
         return `
         <div class="order-card">
-            <div>
-                <h3>Pedido #${o.id.slice(-6)}</h3>
-                <small>${date} · ${o.item_count} artículos</small>
-                <div>${o.status}</div>
+            <div class="order-header">
+                <span class="status-badge ${badgeClass}">
+                    ${o.status}
+                </span>
+                <small>${date}</small>
             </div>
-            <div style="text-align:right">
-                <strong>$${o.total.toLocaleString('es-MX')}</strong><br>
-                <a class="btn-black" href="pedido.html?order=${o.id}&token=${o.access_token}">
+
+            <div class="order-preview">
+                <img 
+                    src="assets/img/product-placeholder.png"
+                    class="product-thumb"
+                    alt="Producto"
+                >
+                <div>
+                    <strong>Pedido #${o.id.slice(-6)}</strong><br>
+                    ${o.item_count} artículo${o.item_count !== 1 ? 's' : ''}
+                </div>
+            </div>
+
+            <div class="order-footer">
+                <strong>$${o.total.toLocaleString('es-MX')}</strong>
+                <a class="btn-view" href="pedido-ver.html?order=${o.id}&token=${o.access_token}">
                     Ver pedido
                 </a>
             </div>
@@ -128,6 +148,7 @@ function renderOrders(orders) {
         `;
     }).join('');
 }
+
 
 window.logout = () => {
     sessionStorage.removeItem('magic_token');

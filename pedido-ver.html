@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Pedido | ETHERE4L</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo-nav">
+        <a href="index.html">
+            <span class="logo-text-gothic">ETHERE4L</span>
+        </a>
+    </div>
+</nav>
+
+<div class="invoice-container">
+    <div class="invoice-header">
+        <h2 id="order-id"></h2>
+        <p id="order-status"></p>
+
+        <div class="tracking-timeline">
+            <div class="step active">
+                <div class="step-dot"></div>
+                Confirmado
+            </div>
+            <div class="step" id="step-shipped">
+                <div class="step-dot"></div>
+                Enviado
+            </div>
+        </div>
+
+        <p id="tracking-info"></p>
+    </div>
+
+    <div id="items-list" style="padding:20px"></div>
+
+    <div style="padding:20px; text-align:right">
+        <strong id="order-total"></strong>
+    </div>
+</div>
+
+<script src="assets/js/pedido.js"></script>
+</body>
+</html>
