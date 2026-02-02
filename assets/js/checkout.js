@@ -3,6 +3,7 @@
 // ==========================================
 
 document.addEventListener('DOMContentLoaded', () => {
+    const API_URL = 'https://ethereal-backend-production-6060.up.railway.app';
     const params = new URLSearchParams(window.location.search);
     const orderId = params.get('order');
     const token = params.get('token');
@@ -231,26 +232,96 @@ async function initTrackingMode(orderId, token) {
     const container = document.querySelector('.checkout-container');
     if (!container) return;
 
-    container.innerHTML = `<p>🔐 Verificando pedido...</p>`;
+    container.innerHTML = `
+        <div class="tracking-loader-container">
+            <div class="spinner"></div>
+            <h3 id="loader-status">Verificando pedido...</h3>
+            <p>Estamos confirmando tu pago.</p>
+        </div>
+    `;
 
     try {
-        const res = await fetch(
-            `https://ethereal-backend-production-6060.up.railway.app/api/orders/track/${orderId}?token=${token}`
-        );
-        const data = await res.json();
+        const data = await waitForOrderAvailability(orderId, token);
 
-        if (!res.ok) throw new Error(data.error);
+        // === ANALYTICS (SAFE) ===
+        if (window.Analytics) {
+            Analytics.trackTrackingView(data.id, data.status);
 
-        container.innerHTML = `
-            <h2>Pedido #${data.id.slice(-6)}</h2>
-            <p><strong>Estado:</strong> ${data.status}</p>
-            ${data.tracking_number ? `<p><strong>Guía:</strong> ${data.tracking_number}</p>` : ''}
-            <hr>
-            ${data.items.map(i => `<p>${i.cantidad}x ${i.nombre}</p>`).join('')}
-            <h3>Total: $${data.total}</h3>
-            <a href="catalogo.html" class="btn-black">Seguir comprando</a>
-        `;
+            const key = `tracked_${data.id}`;
+            if (!sessionStorage.getItem(key)) {
+                Analytics.trackPurchase(data);
+                sessionStorage.setItem(key, '1');
+            }
+        }
+
+        renderTrackingResult(data);
+
     } catch (err) {
-        container.innerHTML = `<p>⛔ ${err.message}</p>`;
+        container.innerHTML = `
+            <p>⛔ ${err.message}</p>
+            <a href="index.html" class="btn-black">Volver al inicio</a>
+        `;
     }
 }
+
+
+
+
+async function waitForOrderAvailability(orderId, token) {
+    const API_URL = 'https://ethereal-backend-production-6060.up.railway.app';
+    const MAX_RETRIES = 6;
+    let attempt = 0;
+    let delay = 1000;
+
+    const statusMsg = document.getElementById('loader-status');
+
+    while (attempt < MAX_RETRIES) {
+        const res = await fetch(
+            `${API_URL}/api/orders/track/${orderId}?token=${token}`
+        );
+
+        if (res.ok) {
+            return await res.json();
+        }
+
+        if (res.status === 401 || res.status === 403) {
+            const err = await res.json();
+            throw new Error(err.error || 'Acceso inválido');
+        }
+
+        if (res.status === 404) {
+            attempt++;
+            if (statusMsg) {
+                statusMsg.innerText = attempt < 3
+                    ? 'Sincronizando pedido...'
+                    : 'Finalizando registro...';
+            }
+
+            if (attempt >= MAX_RETRIES) {
+                throw new Error('El pedido aún no aparece. Intenta recargar.');
+            }
+
+            await new Promise(r => setTimeout(r, delay));
+            delay = Math.min(delay * 1.5, 4000);
+            continue;
+        }
+
+        throw new Error('Error de conexión con el servidor.');
+    }
+}
+
+function renderTrackingResult(data) {
+    const container = document.querySelector('.checkout-container');
+    if (!container) return;
+
+    container.innerHTML = `
+        <h2>Pedido #${data.id.slice(-6)}</h2>
+        <p><strong>Estado:</strong> ${data.status}</p>
+        ${data.tracking_number ? `<p><strong>Guía:</strong> ${data.tracking_number}</p>` : ''}
+        <hr>
+        ${data.items.map(i => `<p>${i.cantidad}x ${i.nombre}</p>`).join('')}
+        <h3>Total: $${data.total}</h3>
+        <a href="catalogo.html" class="btn-black">Seguir comprando</a>
+    `;
+}
+
