@@ -17,21 +17,33 @@
 
 <div class="invoice-container">
     <div class="invoice-header">
-        <h2 id="order-id"></h2>
         <p id="order-status"></p>
 
-        <div class="tracking-timeline">
-            <div class="step active">
-                <div class="step-dot"></div>
-                Confirmado
-            </div>
-            <div class="step" id="step-shipped">
-                <div class="step-dot"></div>
-                Enviado
-            </div>
-        </div>
+<!-- TIMELINE PRO -->
+<div class="timeline-container">
+    <div class="tl-step active" id="step-confirmed">
+        <div class="tl-icon">✓</div>
+        <div class="tl-text">Confirmado</div>
+    </div>
 
-        <p id="tracking-info"></p>
+    <div class="tl-step" id="step-packed">
+        <div class="tl-icon">📦</div>
+        <div class="tl-text">Empaquetado</div>
+    </div>
+
+    <div class="tl-step" id="step-transit">
+        <div class="tl-icon">🚚</div>
+        <div class="tl-text">En tránsito</div>
+    </div>
+
+    <div class="tl-step" id="step-delivered">
+        <div class="tl-icon">🏠</div>
+        <div class="tl-text">Entregado</div>
+    </div>
+</div>
+
+<p id="tracking-info"></p>
+
     </div>
 
     <div id="items-list" style="padding:20px"></div>

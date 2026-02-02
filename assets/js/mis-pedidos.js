@@ -112,42 +112,52 @@ function renderOrders(orders) {
     list.innerHTML = orders.map(o => {
         const date = new Date(o.date).toLocaleDateString('es-MX');
 
+        // 🔒 Defensive parsing
+        const firstItemImage =
+            o.items_summary && o.items_summary.length
+                ? o.items_summary.split(',')[0]
+                : null;
+
+        const imageUrl =
+            o.image && typeof o.image === 'string'
+                ? o.image
+                : 'https://via.placeholder.com/80/f3f4f6/9ca3af?text=ETHERE4L';
+
         const badgeClass =
-            o.status === 'PAGADO' ? 'status-paid' :
-            o.status === 'ENVIADO' ? 'status-shipped' :
-            'status-pending';
+            o.status === 'PAGADO'
+                ? 'bg-paid'
+                : o.tracking_number
+                ? 'bg-transit'
+                : 'bg-pending';
 
         return `
         <div class="order-card">
-            <div class="order-header">
-                <span class="status-badge ${badgeClass}">
-                    ${o.status}
-                </span>
-                <small>${date}</small>
+            <div class="card-header">
+                <span class="badge ${badgeClass}">${o.status}</span>
+                <span style="font-size:.8rem;color:#666">${date}</span>
             </div>
 
-            <div class="order-preview">
-                <img 
-                    src="assets/img/product-placeholder.png"
-                    class="product-thumb"
-                    alt="Producto"
-                >
+            <div class="card-body">
+                <img src="${imageUrl}" class="thumb-img"
+                     onerror="this.src='https://via.placeholder.com/80?text=ETHERE4L'">
                 <div>
-                    <strong>Pedido #${o.id.slice(-6)}</strong><br>
-                    ${o.item_count} artículo${o.item_count !== 1 ? 's' : ''}
+                    <h3 style="margin:0">Pedido #${o.id.slice(-6)}</h3>
+                    <p style="margin:.2rem 0;color:#666">${o.item_count} artículo(s)</p>
                 </div>
             </div>
 
-            <div class="order-footer">
+            <div class="card-footer">
                 <strong>$${o.total.toLocaleString('es-MX')}</strong>
-                <a class="btn-view" href="pedido-ver.html?order=${o.id}&token=${o.access_token}">
-                    Ver pedido
+                <a class="btn-view"
+                   href="pedido-ver.html?order=${o.id}&token=${o.access_token}">
+                   Ver pedido
                 </a>
             </div>
         </div>
         `;
     }).join('');
 }
+
 
 
 window.logout = () => {
