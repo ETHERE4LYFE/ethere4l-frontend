@@ -1455,3 +1455,74 @@ img:not([src]), img[src=""] {
 .invoice-totals { padding: 1.5rem; background: #fafafa; text-align: right; }
 .total-row { display: flex; justify-content: flex-end; gap: 2rem; margin-bottom: 0.5rem; font-size: 0.9rem; }
 .total-final { font-size: 1.2rem; font-weight: 700; color: var(--primary); margin-top: 1rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+
+
+/* ============================= */
+/* ORDER DETAIL – PROFESSIONAL */
+/* ============================= */
+
+.eth-item-row {
+    display: flex;
+    gap: 15px;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+    align-items: center;
+}
+
+.eth-item-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    background: #f4f4f4;
+    border-radius: 4px;
+}
+
+.eth-item-info { flex: 1; }
+
+.eth-item-title {
+    font-weight: 600;
+    margin: 0 0 4px;
+    font-size: 0.95rem;
+}
+
+.eth-item-meta {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.eth-item-price {
+    font-weight: 600;
+    text-align: right;
+}
+
+.eth-summary-box {
+    background: #f9f9f9;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 4px;
+}
+
+.eth-summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.eth-summary-total {
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+    margin-top: 10px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #000;
+}
+
+.eth-trust-message {
+    background: #f8f9fa;
+    border-left: 4px solid #000;
+    padding: 12px;
+    font-size: 0.9rem;
+    margin: 20px 0;
+}
