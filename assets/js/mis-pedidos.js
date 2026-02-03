@@ -110,22 +110,55 @@ async function initOrdersView(token) {
 
 function renderOrders(orders) {
     const list = document.getElementById('orders-list');
+    const token = sessionStorage.getItem('magic_token');
+
+    // Imagen de marca estable (NO rutas locales)
+    const BRAND_IMAGE = 'https://placehold.co/120x120/000/FFF?text=ETHERE4L';
 
     list.innerHTML = orders.map(o => {
         const date = new Date(o.date).toLocaleDateString('es-MX');
 
-        // Imagen fija de marca (decisión correcta)
-        let imageUrl = 'assets/img/logo-ethereal.png';
+        const badgeClass =
+            o.status === 'PAGADO'
+                ? 'bg-paid'
+                : o.tracking_number
+                ? 'bg-transit'
+                : 'bg-pending';
+
+        // 🔐 Token handover
+        const detailUrl = `pedido-ver.html?id=${o.id}&token=${token}`;
+
+        return `
+        <div class="order-card">
+            <div class="card-header">
+                <span class="badge ${badgeClass}">${o.status}</span>
+                <span style="font-size:.8rem;color:#666">${date}</span>
+            </div>
+
+            <div class="card-body">
+                <img src="${BRAND_IMAGE}" class="thumb-img" alt="ETHERE4L">
+
+                <div>
+                    <h3 style="margin:0">Pedido #${o.id.slice(0, 8)}</h3>
+                    <p style="margin:.2rem 0;color:#666">
+                        ${o.item_count || 1} artículo(s)
+                    </p>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <strong>$${o.total.toLocaleString('es-MX')}</strong>
+                <a class="btn-view" href="${detailUrl}">Ver pedido</a>
+            </div>
+        </div>
+        `;
+    }).join('');
+}
+
 
 
 
         
-        // Intentar parsear si viene data compleja o usar items_summary
-        if (o.items_summary) {
-             const parts = o.items_summary.split(',');
-             const potentialUrl = parts.find(p => p.includes('http'));
-             if (potentialUrl) imageUrl = potentialUrl;
-        }
 
         const badgeClass =
             o.status === 'PAGADO'
@@ -155,7 +188,7 @@ function renderOrders(orders) {
 
             <div class="card-footer">
                 <strong>$${o.total.toLocaleString('es-MX')}</strong>
-                <a class="btn-view" href="pedido-ver.html?id=${o.id}">
+                <a class="btn-view" href="pedido-ver.html?id=${o.id}&token=${o.access_token}">          
                 Ver pedido
                 </a>
             </div>
