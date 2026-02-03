@@ -114,8 +114,10 @@ function renderOrders(orders) {
     list.innerHTML = orders.map(o => {
         const date = new Date(o.date).toLocaleDateString('es-MX');
 
-        // 🔒 Defensive Image Logic
-        let imageUrl = 'https://placehold.co/80x80/f3f4f6/9ca3af?text=ETHERE4L';
+        // Imagen fija de marca (decisión correcta)
+        const imageUrl = 'assets/img/logo-ethereal.png';
+
+
         
         // Intentar parsear si viene data compleja o usar items_summary
         if (o.items_summary) {
@@ -140,8 +142,10 @@ function renderOrders(orders) {
             </div>
 
             <div class="card-body">
-                <img src="${imageUrl}" class="thumb-img"
-                     onerror="this.onerror=null;this.src='https://placehold.co/80?text=IMG'">
+            <img src="${imageUrl}"class="thumb-img"
+            alt="ETHERE4L"
+            onerror="this.onerror=null;this.src='assets/img/logo-ethereal.png'">
+
                 <div>
                     <h3 style="margin:0">Pedido #${o.id.slice(0, 8)}</h3>
                     <p style="margin:.2rem 0;color:#666">${o.item_count || 1} artículo(s)</p>

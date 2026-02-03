@@ -2,15 +2,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     // FIX: Estandarizado a 'id' (Fase 4)
     const params = new URLSearchParams(window.location.search);
     const orderId = params.get('id') || params.get('order'); // Soporte retrocompatible
-    let token = params.get('token');
-    
-    // Fallback a session storage
-    if (!token) token = sessionStorage.getItem('magic_token');
-    
+// ⚠️ EL TOKEN SOLO VIENE DE sessionStorage (regla Fase 4)
+    const token = sessionStorage.getItem('magic_token');
+
     if (!orderId || !token) {
-        document.body.innerHTML = '<div style="padding:40px; text-align:center;"><h3>⚠️ Enlace incompleto</h3><p>Vuelve a "Mis Pedidos".</p></div>';
-        return;
-    }
+    document.body.innerHTML = `
+        <div style="padding:40px; text-align:center;">
+            <h3>⚠️ Sesión expirada</h3>
+            <p>Vuelve a Mis Pedidos para autenticarte nuevamente.</p>
+            <a href="mis-pedidos.html" class="btn-black">Ir a Mis Pedidos</a>
+        </div>
+    `;
+    return;
+}
+
 
     try {
         // Fetch Defensivo
