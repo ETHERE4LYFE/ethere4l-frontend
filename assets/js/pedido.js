@@ -6,34 +6,43 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const params = new URLSearchParams(window.location.search);
     const orderId = params.get('id');
-    const urlToken = params.get('token');
 
-    /* ============================= */
-    /* TOKEN GUARANTEE PATTERN */
-    /* ============================= */
-
-    // 1. Hydration desde URL (handover explícito)
-    if (urlToken) {
-        sessionStorage.setItem('magic_token', urlToken);
-
-        // Limpieza de URL (seguridad)
-        history.replaceState({}, '', `pedido-ver.html?id=${orderId}`);
-    }
-
-    // 2. Source of Truth
     const token = sessionStorage.getItem('magic_token');
 
-    // 3. Guard Clauses
+    // Guard Clauses
     if (!orderId) {
         document.body.innerHTML = '<h3>Error: Pedido no identificado</h3>';
         return;
     }
 
     if (!token) {
-        console.warn('⛔ Token no encontrado. Redirigiendo.');
+        console.warn('⛔ No hay sesión activa');
         window.location.href = 'mis-pedidos.html';
         return;
     }
+
+    try {
+        const res = await fetch(
+            `https://ethereal-backend-production-6060.up.railway.app/api/orders/track/${orderId}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        if (res.status === 401) {
+            showSessionExpired();
+            return;
+        }
+
+        if (!res.ok) throw new Error('Error API');
+
+        const order = await res.json();
+        renderOrder(order);
+
+    } catch (err) {
+        console.error(err);
+        document.body.innerHTML = '<h3>Error cargando pedido</h3>';
+    }
+});
+
 
     /* ============================= */
     /* FETCH SEGURO */
@@ -65,7 +74,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error(err);
         document.body.innerHTML = '<h3>Error cargando pedido</h3>';
     }
-});
+;
 
 
 function renderOrder(order) {
@@ -176,3 +185,16 @@ document.getElementById('financial-summary').innerHTML = `
 `;
 
 }
+
+function showSessionExpired() {
+    document.body.innerHTML = `
+        <div style="max-width:500px;margin:80px auto;text-align:center">
+            <h2>Sesión expirada</h2>
+            <p>Por seguridad, tu enlace de acceso ya no es válido.</p>
+            <a href="mis-pedidos.html" class="btn-black">
+                Solicitar nuevo acceso
+            </a>
+        </div>
+    `;
+}
+
