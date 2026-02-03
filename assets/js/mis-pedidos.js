@@ -115,7 +115,8 @@ function renderOrders(orders) {
         const date = new Date(o.date).toLocaleDateString('es-MX');
 
         // Imagen fija de marca (decisión correcta)
-        const imageUrl = 'assets/img/logo-ethereal.png';
+        let imageUrl = 'assets/img/logo-ethereal.png';
+
 
 
         

@@ -31,21 +31,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         // FIX: Declaración correcta de 'data' antes de usarla
         const data = await response.json();
 
-        // 🔒 Defensive parsing del string JSON anidado
-        let orderMeta = data.data;
-        if (typeof orderMeta === 'string') {
-            try {
-                orderMeta = JSON.parse(orderMeta);
-            } catch (e) {
-                console.warn("JSON Parse Error", e);
-                orderMeta = {};
-            }
-        }
-
-        // Extracción segura (Null Coalescing)
-        const items = orderMeta?.pedido?.items || [];
-        const total = orderMeta?.pedido?.total || 0;
+        // ❗ ESTE ENDPOINT NO DEVUELVE ITEMS
+        const items = [];
+        const total = data.total || 0;
         const shipping = data.shipping_cost || 0;
+
 
         // --- Render Header ---
         document.getElementById('order-id').innerText = `Pedido #${data.id.slice(0, 8)}`;
