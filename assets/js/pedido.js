@@ -7,39 +7,66 @@ document.addEventListener('DOMContentLoaded', async () => {
     const params = new URLSearchParams(window.location.search);
     const orderId = params.get('id');
     const urlToken = params.get('token');
- 
 
+    /* ============================= */
+    /* TOKEN GUARANTEE PATTERN */
+    /* ============================= */
 
-    // Hydration segura
+    // 1. Hydration desde URL (handover explícito)
     if (urlToken) {
         sessionStorage.setItem('magic_token', urlToken);
+
+        // Limpieza de URL (seguridad)
         history.replaceState({}, '', `pedido-ver.html?id=${orderId}`);
     }
 
+    // 2. Source of Truth
     const token = sessionStorage.getItem('magic_token');
 
-    if (!orderId || !token) {
-        document.body.innerHTML = '<h3>Sesión expirada</h3>';
+    // 3. Guard Clauses
+    if (!orderId) {
+        document.body.innerHTML = '<h3>Error: Pedido no identificado</h3>';
         return;
     }
+
+    if (!token) {
+        console.warn('⛔ Token no encontrado. Redirigiendo.');
+        window.location.href = 'mis-pedidos.html';
+        return;
+    }
+
+    /* ============================= */
+    /* FETCH SEGURO */
+    /* ============================= */
 
     try {
         const res = await fetch(
             `https://ethereal-backend-production-6060.up.railway.app/api/orders/track/${orderId}`,
-            { headers: { Authorization: `Bearer ${token}` } }
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
         );
 
-        if (!res.ok) throw new Error('Unauthorized');
+        if (res.status === 401) {
+            sessionStorage.removeItem('magic_token');
+            window.location.href = 'mis-pedidos.html';
+            return;
+        }
+
+        if (!res.ok) throw new Error('Error API');
 
         const order = await res.json();
 
         renderOrder(order);
 
-    } catch (e) {
-        console.error(e);
+    } catch (err) {
+        console.error(err);
         document.body.innerHTML = '<h3>Error cargando pedido</h3>';
     }
 });
+
 
 function renderOrder(order) {
     // --- HEADER ---
