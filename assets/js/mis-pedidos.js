@@ -110,45 +110,51 @@ async function initOrdersView(token) {
 
 function renderOrders(orders) {
     const list = document.getElementById('orders-list');
-    const token = sessionStorage.getItem('magic_token');
+    
+    // 1. CAPTURA CRÍTICA DEL TOKEN ACTUAL
+    // Este token es el que permitió ver la lista, por lo tanto es válido.
+    const activeToken = sessionStorage.getItem('magic_token');
 
-    // Imagen de marca estable (NO rutas locales)
-    const BRAND_IMAGE = 'https://placehold.co/120x120/000/FFF?text=ETHERE4L';
+    if (!activeToken) {
+        console.error("Critical: No token found for navigation linkage.");
+    }
+
+    // CDN de Imagen Corporativa (Fallback seguro)
+    const BRAND_IMAGE = "https://placehold.co/150x150/000000/FFFFFF/png?text=ETHERE4L";
 
     list.innerHTML = orders.map(o => {
-        const date = new Date(o.date).toLocaleDateString('es-MX');
+        const dateStr = new Date(o.date).toLocaleDateString('es-MX', {
+            year: 'numeric', month: 'short', day: 'numeric'
+        });
 
-        const badgeClass =
-            o.status === 'PAGADO'
-                ? 'bg-paid'
-                : o.tracking_number
-                ? 'bg-transit'
-                : 'bg-pending';
+        const statusMap = { 'PAGADO': 'bg-paid', 'ENVIADO': 'bg-transit', 'ENTREGADO': 'bg-delivered' };
+        const badgeClass = statusMap[o.status] || 'bg-pending';
 
-        // 🔐 Token handover
-        const detailUrl = `pedido-ver.html?id=${o.id}&token=${token}`;
+        // 2. CONSTRUCCIÓN DEL LINK SEGURO (HANDOVER PATTERN)
+        // Pasamos ID y TOKEN explícitamente.
+        const secureLink = `pedido-ver.html?id=${o.id}&token=${activeToken}`;
+
+        // Lógica de imagen defensiva
+        // Nota: El backend en /api/my-orders NO devuelve items, usamos placeholder o logo.
+        let imgUrl = BRAND_IMAGE; 
 
         return `
         <div class="order-card">
             <div class="card-header">
                 <span class="badge ${badgeClass}">${o.status}</span>
-                <span style="font-size:.8rem;color:#666">${date}</span>
+                <span class="date">${dateStr}</span>
             </div>
-
+            
             <div class="card-body">
-                <img src="${BRAND_IMAGE}" class="thumb-img" alt="ETHERE4L">
-
-                <div>
-                    <h3 style="margin:0">Pedido #${o.id.slice(0, 8)}</h3>
-                    <p style="margin:.2rem 0;color:#666">
-                        ${o.item_count || 1} artículo(s)
-                    </p>
+                <img src="${imgUrl}" class="thumb-img" alt="Pedido">
+                <div class="info">
+                    <h3>Pedido #${o.id.slice(0, 8)}</h3>
+                    <p class="total">$${o.total.toLocaleString('es-MX')}</p>
                 </div>
             </div>
 
             <div class="card-footer">
-                <strong>$${o.total.toLocaleString('es-MX')}</strong>
-                <a class="btn-view" href="${detailUrl}">Ver pedido</a>
+                <a href="${secureLink}" class="btn-view">Ver Detalles</a>
             </div>
         </div>
         `;
@@ -188,7 +194,7 @@ function renderOrders(orders) {
 
             <div class="card-footer">
                 <strong>$${o.total.toLocaleString('es-MX')}</strong>
-                <a class="btn-view" href="pedido-ver.html?id=${o.id}&token=${o.access_token}">          
+                <a class="btn-view" href="pedido-ver.html?id=${o.id}">
                 Ver pedido
                 </a>
             </div>
