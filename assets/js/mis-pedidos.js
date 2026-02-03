@@ -112,14 +112,14 @@ function renderOrders(orders) {
     const list = document.getElementById('orders-list');
     const token = sessionStorage.getItem('magic_token');
 
-    const BRAND_IMAGE = "https://placehold.co/150x150/000000/FFFFFF/png?text=ETHERE4L";
+    const BRAND_IMAGE = 'assets/img/logo-ethereal.png';
 
     list.innerHTML = orders.map(o => {
         const link = `pedido-ver.html?id=${o.id}&token=${token}`;
 
         return `
         <div class="order-card">
-            <img src="${BRAND_IMAGE}" class="thumb-img">
+            <img src="${BRAND_IMAGE}" class="thumb-img" alt="ETHERE4L">
             <h3>Pedido #${o.id.slice(0,8)}</h3>
             <p>$${o.total.toLocaleString('es-MX')}</p>
             <a class="btn-view" href="${link}">Ver pedido</a>
@@ -127,6 +127,7 @@ function renderOrders(orders) {
         `;
     }).join('');
 }
+
 
 window.logout = () => {
     sessionStorage.removeItem('magic_token');
