@@ -4,10 +4,19 @@
         currency: 'MXN'
     }).format(amount);
 document.addEventListener('DOMContentLoaded', async () => {
+
+
     const params = new URLSearchParams(window.location.search);
     const orderId = params.get('id');
+    const tokenFromUrl = params.get('token');
+    const tokenFromSession = sessionStorage.getItem('magic_token');
 
-    const token = sessionStorage.getItem('magic_token');
+const token = tokenFromUrl || tokenFromSession;
+
+if (tokenFromUrl) {
+    sessionStorage.setItem('magic_token', tokenFromUrl);
+}
+
 
     // Guard Clauses
     if (!orderId) {

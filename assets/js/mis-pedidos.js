@@ -115,7 +115,8 @@ function renderOrders(orders) {
     const BRAND_IMAGE = 'assets/img/logo-ethereal.png';
 
     list.innerHTML = orders.map(o => {
-        const link = `pedido-ver.html?id=${o.id}`;
+        const link = `pedido-ver.html?id=${o.id}&token=${o.access_token}`;
+
     
 
         return `
