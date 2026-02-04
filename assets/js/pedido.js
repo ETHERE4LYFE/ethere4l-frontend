@@ -43,40 +43,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-
-    /* ============================= */
-    /* FETCH SEGURO */
-    /* ============================= */
-
-    try {
-        const res = await fetch(
-            `https://ethereal-backend-production-6060.up.railway.app/api/orders/track/${orderId}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        );
-
-        if (res.status === 401) {
-            sessionStorage.removeItem('magic_token');
-            window.location.href = 'mis-pedidos.html';
-            return;
-        }
-
-        if (!res.ok) throw new Error('Error API');
-
-        const order = await res.json();
-
-        renderOrder(order);
-
-    } catch (err) {
-        console.error(err);
-        document.body.innerHTML = '<h3>Error cargando pedido</h3>';
-    }
-;
-
-
 function renderOrder(order) {
     // --- HEADER ---
     document.getElementById('order-id').innerText =
@@ -92,18 +58,50 @@ function renderOrder(order) {
         `<strong>${order.status}</strong><br>${orderDate}`;
 
     // --- TIMELINE ---
-    if (order.status === 'PAGADO') {
+    if (['PAGADO', 'paid', 'confirmed'].includes(order.status)) {
         document.getElementById('step-packed')?.classList.add('active');
     }
     if (order.tracking_number) {
         document.getElementById('step-packed')?.classList.add('active');
         document.getElementById('step-transit')?.classList.add('active');
-        document.getElementById('tracking-info').innerHTML =
-            `Guía: <strong>${order.tracking_number}</strong>`;
     }
     if (order.status === 'ENTREGADO') {
         document.getElementById('step-delivered')?.classList.add('active');
     }
+    const trackingBox = document.getElementById('tracking-info');
+
+if (!order.tracking_number) {
+    trackingBox.innerHTML = `
+        <div class="eth-trust-message">
+            📦 Tu pedido está siendo preparado.<br>
+            Te avisaremos por correo cuando sea enviado.
+        </div>
+    `;
+    return;
+}
+
+trackingBox.innerHTML = `
+    <p><strong>Carrier:</strong> ${order.carrier || 'Paquetería'}</p>
+    <p><strong>Guía:</strong> ${order.tracking_number}</p>
+`;
+
+if (order.tracking_history?.length) {
+    trackingBox.innerHTML += `
+        <ul class="timeline">
+            ${order.tracking_history.map((e, i) => `
+                <li class="timeline-item ${i === 0 ? 'active' : ''}">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <strong>${e.status}</strong><br>
+                        <small>${e.location || ''}</small><br>
+                        <small>${new Date(e.timestamp).toLocaleString('es-MX')}</small>
+                    </div>
+                </li>
+            `).join('')}
+        </ul>
+    `;
+}
+
 
 /* ============================= */
 /* HYDRATION LAYER (PRO) */
