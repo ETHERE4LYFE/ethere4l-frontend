@@ -121,18 +121,12 @@ if (order.tracking_history?.length) {
 /* HYDRATION LAYER (PRO) */
 /* ============================= */
 
-let items = [];
-let shippingCost = order.shipping_cost || 0;
+
 
 // Parse defensivo de order.data
-try {
-    if (order.data) {
-        const parsed = JSON.parse(order.data);
-        items = parsed?.pedido?.items || [];
-    }
-} catch (e) {
-    console.warn('No se pudo parsear order.data', e);
-}
+   const items = order.items || []; 
+   const shippingCost = order.shipping_cost || 0;
+
 
 /* --- TRUST MESSAGE --- */
 if (order.status !== 'ENTREGADO') {
@@ -199,7 +193,7 @@ document.getElementById('financial-summary').innerHTML = `
     </div>
 `;
 
-
+}
 
 function showSessionExpired() {
     document.body.innerHTML = `
@@ -212,4 +206,3 @@ function showSessionExpired() {
         </div>
     `;
 }
-
