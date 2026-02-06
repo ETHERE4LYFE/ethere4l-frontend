@@ -120,32 +120,32 @@ if (order.tracking_history?.length) {
         </ul>
     `;
 }
-    const actions = document.getElementById('pedido-actions');
-    if (tokenFromUrl) {
-        actions.innerHTML = `
-        <a href="index.html" class="btn-black">
-        Volver al inicio
-        </a>
-    `;
+const actions = document.getElementById('pedido-actions');
+
+if (tokenFromUrl && !sessionStorage.getItem('customer_session')) {
+  actions.innerHTML = `
+    <a href="index.html" class="btn-black">Volver al inicio</a>
+  `;
 } else {
-    actions.innerHTML = `
-        <a href="mis-pedidos.html" class="btn-black">
-            Volver a mis pedidos
-        </a>
-    `;
+  actions.innerHTML = `
+    <a href="mis-pedidos.html" class="btn-black">Volver a mis pedidos</a>
+  `;
 }
 
 
 
-/* ============================= */
-/* HYDRATION LAYER (PRO) */
-/* ============================= */
 
+let items = [];
+let shippingCost = order.shipping_cost || 0;
 
-
-// Parse defensivo de order.data
-   const items = order.items || []; 
-   const shippingCost = order.shipping_cost || 0;
+try {
+    if (order.data) {
+        const parsed = JSON.parse(order.data);
+        items = parsed?.pedido?.items || [];
+    }
+} catch (e) {
+    console.warn('No se pudo parsear order.data', e);
+}
 
 
 /* --- TRUST MESSAGE --- */
@@ -167,6 +167,7 @@ if (!items.length) {
     `;
     return;
 }
+
 
 items.forEach(item => {
     const img = item.imagen || 'assets/img/logo-ethereal.png';
@@ -214,6 +215,7 @@ document.getElementById('financial-summary').innerHTML = `
 `;
 
 }
+
 
 function showSessionExpired() {
     document.body.innerHTML = `
