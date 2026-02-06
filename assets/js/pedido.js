@@ -11,7 +11,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const tokenFromUrl = params.get('token');
     const tokenFromSession = sessionStorage.getItem('magic_token');
 
-const token = tokenFromUrl || tokenFromSession;
+const token =
+    localStorage.getItem('ethereal_customer_token') ||
+    tokenFromUrl ||
+    tokenFromSession;
+
 
 if (tokenFromUrl) {
     sessionStorage.setItem('magic_token', tokenFromUrl);

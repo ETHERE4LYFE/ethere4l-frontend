@@ -162,26 +162,48 @@ async function initOrdersView(token) {
 }
 
 function renderOrders(orders) {
+    document.getElementById('login-view').style.display = 'none';
+    document.getElementById('orders-view').style.display = 'block';
+
     const list = document.getElementById('orders-list');
-    const token = sessionStorage.getItem('magic_token');
+    list.innerHTML = '';
 
-    const BRAND_IMAGE = 'assets/img/logo-ethereal.png';
+    if (!orders.length) {
+        document.getElementById('empty-state').style.display = 'block';
+        return;
+    }
 
-    list.innerHTML = orders.map(o => {
-        const link = `pedido-ver.html?id=${o.id}&token=${o.access_token}`;
+    orders.forEach(order => {
+        const date = new Date(order.created_at).toLocaleDateString('es-MX');
+        const total = order.total.toLocaleString('es-MX', {
+            style: 'currency',
+            currency: 'MXN'
+        });
 
-    
+        const firstItem = order.items[0] || {};
+        const img = firstItem.imagen || 'assets/img/logo-ethereal.png';
 
-        return `
-        <div class="order-card">
-            <img src="${BRAND_IMAGE}" class="thumb-img" alt="ETHERE4L">
-            <h3>Pedido #${o.id.slice(0,8)}</h3>
-            <p>$${o.total.toLocaleString('es-MX')}</p>
-            <a class="btn-view" href="${link}">Ver pedido</a>
-        </div>
+        list.innerHTML += `
+            <div class="order-card">
+                <img src="${img}" class="thumb-img" onerror="this.src='assets/img/logo-ethereal.png'">
+                <div class="order-info">
+                    <h3>Pedido #${order.id.slice(0, 8)}</h3>
+                    <div class="order-meta">${date}</div>
+                    <span class="order-status status-${order.status.toLowerCase()}">
+                        ${order.status}
+                    </span>
+                </div>
+                <div>
+                    <strong>${total}</strong><br>
+                    <a class="btn-view" href="pedido-ver.html?id=${order.id}">
+                        Ver pedido
+                    </a>
+                </div>
+            </div>
         `;
-    }).join('');
+    });
 }
+
 
 
 window.logout = () => {
