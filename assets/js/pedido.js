@@ -11,7 +11,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const tokenFromUrl = params.get('token');
     const tokenFromSession = sessionStorage.getItem('magic_token');
 
-    const token = tokenFromUrl || sessionStorage.getItem('magic_token');
+    const token =
+    tokenFromUrl ||
+    sessionStorage.getItem('magic_token');
+
+
 
 
 
@@ -27,12 +31,13 @@ if (tokenFromUrl) {
     }
 
     if (!token) {
-        console.warn('⛔ No hay sesión activa');
-        sessionStorage.removeItem('magic_token');
-        window.location.href = 'mis-pedidos.html';
+    showSessionExpired();
+    return;
+}
 
-        return;
-    }
+       
+
+
 
     try {
         const res = await fetch(
@@ -115,6 +120,21 @@ if (order.tracking_history?.length) {
         </ul>
     `;
 }
+    const actions = document.getElementById('pedido-actions');
+    if (tokenFromUrl) {
+        actions.innerHTML = `
+        <a href="index.html" class="btn-black">
+        Volver al inicio
+        </a>
+    `;
+} else {
+    actions.innerHTML = `
+        <a href="mis-pedidos.html" class="btn-black">
+            Volver a mis pedidos
+        </a>
+    `;
+}
+
 
 
 /* ============================= */
