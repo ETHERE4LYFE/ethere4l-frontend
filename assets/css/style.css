@@ -1526,3 +1526,16 @@ img:not([src]), img[src=""] {
     font-size: 0.9rem;
     margin: 20px 0;
 }
+.pedido-actions-wrapper {
+    margin: 20px 0;
+}
+
+#pedido-actions {
+    display: flex;
+    justify-content: flex-start;
+}
+
+#pedido-actions .btn-black {
+    position: relative;
+    z-index: 1;
+}
