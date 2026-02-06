@@ -33,19 +33,14 @@ async function initCustomerOrders(token) {
     const orders = await res.json();
 
     if (!orders.length) {
-        document.getElementById('empty-state').style.display = 'block';
         list.innerHTML = '';
+        document.getElementById('empty-state').style.display = 'block';
         return;
     }
 
-    renderOrders(
-        orders.map(o => ({
-            id: o.id,
-            total: o.data.pedido.total,
-            access_token: generateLegacyToken(o.id) // 👇 ver punto 4
-        }))
-    );
+    renderOrders(orders);
 }
+
 
 
 const API_BASE = 'https://ethereal-backend-production-6060.up.railway.app';
@@ -195,9 +190,11 @@ function renderOrders(orders) {
                 </div>
                 <div>
                     <strong>${total}</strong><br>
-                    <a class="btn-view" href="pedido-ver.html?id=${order.id}">
-                        Ver pedido
+                    <a class="btn-view"
+                    href="pedido-ver.html?id=${order.id}&token=${order.order_token}">
+                    Ver pedido
                     </a>
+
                 </div>
             </div>
         `;
