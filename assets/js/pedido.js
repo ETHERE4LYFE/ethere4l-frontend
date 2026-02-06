@@ -1,43 +1,17 @@
-   const formatCurrency = (amount) =>
-    new Intl.NumberFormat('es-MX', {
-        style: 'currency',
-        currency: 'MXN'
-    }).format(amount);
 document.addEventListener('DOMContentLoaded', async () => {
-
 
     const params = new URLSearchParams(window.location.search);
     const orderId = params.get('id');
     const tokenFromUrl = params.get('token');
     const tokenFromSession = sessionStorage.getItem('magic_token');
 
-    const isEmailAccess = Boolean(tokenFromUrl);
     const token = tokenFromUrl || tokenFromSession;
+    const isEmailAccess = Boolean(tokenFromUrl);
 
-
-
-
-
-
-if (tokenFromUrl) {
-    sessionStorage.setItem('magic_token', tokenFromUrl);
-}
-
-
-    // Guard Clauses
-    if (!orderId) {
-        document.body.innerHTML = '<h3>Error: Pedido no identificado</h3>';
+    if (!orderId || !token) {
+        showSessionExpired();
         return;
     }
-
-    if (!token) {
-    showSessionExpired();
-    return;
-}
-
-       
-
-
 
     try {
         const res = await fetch(
@@ -45,7 +19,7 @@ if (tokenFromUrl) {
             { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        if (res.status === 401) {
+        if (res.status === 401 || res.status === 403) {
             showSessionExpired();
             return;
         }
@@ -53,7 +27,9 @@ if (tokenFromUrl) {
         if (!res.ok) throw new Error('Error API');
 
         const order = await res.json();
-        renderOrder(order);
+
+        // 👇 pasamos isEmailAccess correctamente
+        renderOrder(order, isEmailAccess);
 
     } catch (err) {
         console.error(err);
@@ -61,7 +37,8 @@ if (tokenFromUrl) {
     }
 });
 
-function renderOrder(order) {
+
+function renderOrder(order, isEmailAccess) {
     // --- HEADER ---
     document.getElementById('order-id').innerText =
         `Pedido #${order.id.slice(0,8)}`;
@@ -89,6 +66,48 @@ function renderOrder(order) {
         document.getElementById('step-delivered')?.classList.add('active');
     }
     const trackingBox = document.getElementById('tracking-info');
+    const itemsList = document.getElementById('items-list');
+itemsList.innerHTML = ''; // limpiar primero
+
+if (!order.items || !order.items.length) {
+    itemsList.innerHTML = `
+        <div style="padding:20px;color:#666;text-align:center">
+            No hay productos disponibles para mostrar.
+        </div>
+    `;
+} else {
+    order.items.forEach(item => {
+        const img = item.imagen || 'assets/img/logo-ethereal.png';
+
+        itemsList.innerHTML += `
+            <div class="eth-item-row">
+                <img src="${img}" class="eth-item-img"
+                     onerror="this.src='assets/img/logo-ethereal.png'">
+
+                <div class="eth-item-info">
+                    <div class="eth-item-title">${item.nombre}</div>
+                    <div class="eth-item-meta">
+                        Talla: ${item.talla || 'N/A'} · Cant: ${item.cantidad}
+                    </div>
+                </div>
+
+                <div class="eth-item-price">
+                    ${formatCurrency(item.subtotal || (item.precio * item.cantidad))}
+                </div>
+            </div>
+        `;
+    });
+}
+    
+    itemsList.innerHTML = ''; // 🔥 LIMPIA “Cargando productos…”
+   if (!order.items || !order.items.length) {
+        itemsList.innerHTML = `
+        <div style="padding:20px;color:#666;text-align:center">
+        No hay productos disponibles para mostrar.
+        </div>
+        `;
+        return;
+}
 
 if (!order.tracking_number) {
     trackingBox.innerHTML = `
@@ -120,79 +139,23 @@ if (order.tracking_history?.length) {
         </ul>
     `;
 }
-const actions = document.getElementById('pedido-actions');
+ const actions = document.getElementById('pedido-actions');
 
-if (tokenFromUrl && !sessionStorage.getItem('customer_session')) {
-  actions.innerHTML = `
-    <a href="index.html" class="btn-black">Volver al inicio</a>
-  `;
-} else {
-  actions.innerHTML = `
-    <a href="mis-pedidos.html" class="btn-black">Volver a mis pedidos</a>
-  `;
-}
-
-
-
-
-let items = [];
-let shippingCost = order.shipping_cost || 0;
-
-try {
-    if (order.data) {
-        items = parsed?.pedido?.items || [];
+    if (isEmailAccess) {
+        actions.innerHTML = `
+            <a href="index.html" class="btn-black">
+                Volver al inicio
+            </a>
+        `;
+    } else {
+        actions.innerHTML = `
+            <a href="mis-pedidos.html" class="btn-black">
+                Volver a mis pedidos
+            </a>
+        `;
     }
-} catch (e) {
-    console.warn('No se pudo parsear order.data', e);
-}
 
-
-/* --- TRUST MESSAGE --- */
-if (order.status !== 'ENTREGADO') {
-    const trustBox = document.getElementById('trust-message-container');
-    if (trustBox) trustBox.style.display = 'block';
-}
-
-/* --- RENDER ITEMS --- */
-const itemsList = document.getElementById('items-list');
-
-itemsList.innerHTML = ''; // 🔥 LIMPIA “Cargando productos…”
-
-if (!items.length) {
-    itemsList.innerHTML = `
-        <div style="padding:20px;color:#666;text-align:center">
-            No hay productos disponibles para mostrar.
-        </div>
-    `;
-    return;
-}
-
-
-items.forEach(item => {
-    const img = item.imagen || 'assets/img/logo-ethereal.png';
-
-    itemsList.innerHTML += `
-        <div class="eth-item-row">
-            <img src="${img}" class="eth-item-img"
-                 onerror="this.src='assets/img/logo-ethereal.png'">
-
-            <div class="eth-item-info">
-                <div class="eth-item-title">${item.nombre}</div>
-                <div class="eth-item-meta">
-                    Talla: ${item.talla || 'N/A'} · Cant: ${item.cantidad}
-                </div>
-            </div>
-
-            <div class="eth-item-price">
-                ${formatCurrency(item.subtotal || (item.precio * item.cantidad))}
-            </div>
-        </div>
-    `;
-});
-
-
-/* --- FINANCIAL SUMMARY --- */
-const subtotal = items.reduce(
+    const subtotal = order.items.reduce(
     (sum, i) => sum + (i.precio * i.cantidad), 0
 );
 
@@ -204,16 +167,26 @@ document.getElementById('financial-summary').innerHTML = `
         </div>
         <div class="eth-summary-row">
             <span>Envío</span>
-            <span>${shippingCost > 0 ? formatCurrency(shippingCost) : 'Gratis'}</span>
+            <span>${order.shipping_cost > 0 ? formatCurrency(order.shipping_cost) : 'Gratis'}</span>
         </div>
         <div class="eth-summary-row eth-summary-total">
             <span>Total</span>
-            <span>${formatCurrency(order.total)}</span>
+            <span>${formatCurrency(order.total || subtotal)}</span>
         </div>
     </div>
 `;
 
+if (order.status !== 'ENTREGADO') {
+    const trustBox = document.getElementById('trust-message-container');
+    if (trustBox) trustBox.style.display = 'block';
 }
+
+}
+
+
+
+
+
 
 
 function showSessionExpired() {
