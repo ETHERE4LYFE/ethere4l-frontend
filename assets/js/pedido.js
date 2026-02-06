@@ -92,7 +92,6 @@ if (!order.tracking_number) {
             Te avisaremos por correo cuando sea enviado.
         </div>
     `;
-    return;
 }
 
 trackingBox.innerHTML = `
