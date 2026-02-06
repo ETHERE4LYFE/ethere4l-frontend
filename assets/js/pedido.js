@@ -26,7 +26,9 @@ if (tokenFromUrl) {
 
     if (!token) {
         console.warn('⛔ No hay sesión activa');
+        sessionStorage.removeItem('magic_token');
         window.location.href = 'mis-pedidos.html';
+
         return;
     }
 

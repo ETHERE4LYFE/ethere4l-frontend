@@ -2,17 +2,25 @@
  * assets/js/mis-pedidos.js
  * Passwordless Orders – versión estable (HOTFIX FASE 4)
  */
-
+const CUSTOMER_TOKEN_KEY = 'ethereal_customer_token';
 async function startSession(magicToken) {
     const res = await fetch(`${API_BASE}/api/session/start?token=${magicToken}`);
     if (!res.ok) return initLoginView();
 
     const data = await res.json();
     localStorage.setItem(CUSTOMER_TOKEN_KEY, data.token);
-    location.href = 'mis-pedidos.html';
+    window.history.replaceState({}, document.title, 'mis-pedidos.html');
+    initCustomerOrders(data.token);
+    
 }
 
 async function initCustomerOrders(token) {
+    document.getElementById('login-view').style.display = 'none';
+    document.getElementById('orders-view').style.display = 'block';
+
+    const list = document.getElementById('orders-list');
+    list.innerHTML = '<p>Cargando pedidos...</p>';
+
     const res = await fetch(`${API_BASE}/api/customer/orders`, {
         headers: { Authorization: `Bearer ${token}` }
     });
@@ -23,18 +31,30 @@ async function initCustomerOrders(token) {
     }
 
     const orders = await res.json();
+
+    if (!orders.length) {
+        document.getElementById('empty-state').style.display = 'block';
+        list.innerHTML = '';
+        return;
+    }
+
     renderOrders(
         orders.map(o => ({
             id: o.id,
             total: o.data.pedido.total,
-            access_token: null
+            access_token: generateLegacyToken(o.id) // 👇 ver punto 4
         }))
     );
 }
 
+
 const API_BASE = 'https://ethereal-backend-production-6060.up.railway.app';
 
 document.addEventListener('DOMContentLoaded', () => {
+    function generateLegacyToken(orderId) {
+        return null;
+    }
+
     const params = new URLSearchParams(window.location.search);
     const tokenFromUrl = params.get('token');
     const customerToken = localStorage.getItem(CUSTOMER_TOKEN_KEY);
@@ -75,11 +95,15 @@ function initLoginView() {
         try {
             gtag?.('event', 'magic_link_requested');
 
-            await fetch(`${API_BASE}/api/magic-link`, {
+            const res = await fetch(`${API_BASE}/api/magic-link`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email })
             });
+            if (res.ok) {
+                msg.style.display = 'block';
+            }
+
 
             loader.style.display = 'none';
             msg.style.display = 'block';
@@ -162,5 +186,9 @@ function renderOrders(orders) {
 
 window.logout = () => {
     sessionStorage.removeItem('magic_token');
-    location.href = 'mis-pedidos.html';
+    window.history.replaceState({}, document.title, 'mis-pedidos.html');
+    initCustomerOrders(data.token);
+    window.history.replaceState({}, document.title, 'mis-pedidos.html');
+initCustomerOrders(data.token);
+
 };
