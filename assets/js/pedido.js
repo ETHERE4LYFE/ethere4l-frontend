@@ -60,12 +60,14 @@ function renderOrder(order) {
     // --- HEADER ---
     document.getElementById('order-id').innerText =
         `Pedido #${order.id.slice(0,8)}`;
-
-    const orderDate = order.date
-        ? new Date(order.date).toLocaleDateString('es-MX', {
-            day: 'numeric', month: 'long', year: 'numeric'
-        })
-        : 'Fecha no disponible';
+                const orderDate = order.date
+                ? new Date(order.date + 'Z').toLocaleDateString('es-MX', {
+                    timeZone: 'America/Mexico_City',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                })
+                : 'Fecha no disponible';
 
     document.getElementById('order-status').innerHTML =
         `<strong>${order.status}</strong><br>${orderDate}`;
@@ -141,37 +143,40 @@ if (order.status !== 'ENTREGADO') {
 
 /* --- RENDER ITEMS --- */
 const itemsList = document.getElementById('items-list');
-itemsList.innerHTML = '';
 
-if (items.length > 0) {
-    items.forEach(item => {
-        const img = item.imagen || 'assets/img/logo-ethereal.png';
+itemsList.innerHTML = ''; // 🔥 LIMPIA “Cargando productos…”
 
-        itemsList.innerHTML += `
-            <div class="eth-item-row">
-                <img src="${img}" class="eth-item-img"
-                     onerror="this.src='assets/img/logo-ethereal.png'">
-
-                <div class="eth-item-info">
-                    <div class="eth-item-title">${item.nombre}</div>
-                    <div class="eth-item-meta">
-                        Talla: ${item.talla || 'N/A'} · Cant: ${item.cantidad}
-                    </div>
-                </div>
-
-                <div class="eth-item-price">
-                    ${formatCurrency(item.precio * item.cantidad)}
-                </div>
-            </div>
-        `;
-    });
-} else {
+if (!items.length) {
     itemsList.innerHTML = `
         <div style="padding:20px;color:#666;text-align:center">
-            El detalle de productos fue enviado por correo.
+            No hay productos disponibles para mostrar.
         </div>
     `;
+    return;
 }
+
+items.forEach(item => {
+    const img = item.imagen || 'assets/img/logo-ethereal.png';
+
+    itemsList.innerHTML += `
+        <div class="eth-item-row">
+            <img src="${img}" class="eth-item-img"
+                 onerror="this.src='assets/img/logo-ethereal.png'">
+
+            <div class="eth-item-info">
+                <div class="eth-item-title">${item.nombre}</div>
+                <div class="eth-item-meta">
+                    Talla: ${item.talla || 'N/A'} · Cant: ${item.cantidad}
+                </div>
+            </div>
+
+            <div class="eth-item-price">
+                ${formatCurrency(item.subtotal || (item.precio * item.cantidad))}
+            </div>
+        </div>
+    `;
+});
+
 
 /* --- FINANCIAL SUMMARY --- */
 const subtotal = items.reduce(
@@ -195,7 +200,7 @@ document.getElementById('financial-summary').innerHTML = `
     </div>
 `;
 
-}
+
 
 function showSessionExpired() {
     document.body.innerHTML = `
