@@ -3,24 +3,53 @@
  * Passwordless Orders – versión estable (HOTFIX FASE 4)
  */
 
+async function startSession(magicToken) {
+    const res = await fetch(`${API_BASE}/api/session/start?token=${magicToken}`);
+    if (!res.ok) return initLoginView();
+
+    const data = await res.json();
+    localStorage.setItem(CUSTOMER_TOKEN_KEY, data.token);
+    location.href = 'mis-pedidos.html';
+}
+
+async function initCustomerOrders(token) {
+    const res = await fetch(`${API_BASE}/api/customer/orders`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (!res.ok) {
+        localStorage.removeItem(CUSTOMER_TOKEN_KEY);
+        return initLoginView();
+    }
+
+    const orders = await res.json();
+    renderOrders(
+        orders.map(o => ({
+            id: o.id,
+            total: o.data.pedido.total,
+            access_token: null
+        }))
+    );
+}
+
 const API_BASE = 'https://ethereal-backend-production-6060.up.railway.app';
 
 document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const tokenFromUrl = params.get('token');
-    const tokenFromSession = sessionStorage.getItem('magic_token');
+    const customerToken = localStorage.getItem(CUSTOMER_TOKEN_KEY);
 
-    const token = tokenFromUrl || tokenFromSession;
+    if (customerToken) {
+        initCustomerOrders(customerToken);
+        return;
+    }
 
     if (tokenFromUrl) {
-        sessionStorage.setItem('magic_token', tokenFromUrl);
+        startSession(tokenFromUrl);
+        return;
     }
 
-    if (token) {
-        initOrdersView(token);
-    } else {
-        initLoginView();
-    }
+    initLoginView();
 });
 
 // =====================
