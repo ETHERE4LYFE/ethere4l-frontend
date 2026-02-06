@@ -11,9 +11,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const tokenFromUrl = params.get('token');
     const tokenFromSession = sessionStorage.getItem('magic_token');
 
-    const token =
-    tokenFromUrl ||
-    sessionStorage.getItem('magic_token');
+    const isEmailAccess = Boolean(tokenFromUrl);
+    const token = tokenFromUrl || tokenFromSession;
+
 
 
 
@@ -140,7 +140,6 @@ let shippingCost = order.shipping_cost || 0;
 
 try {
     if (order.data) {
-        const parsed = JSON.parse(order.data);
         items = parsed?.pedido?.items || [];
     }
 } catch (e) {
