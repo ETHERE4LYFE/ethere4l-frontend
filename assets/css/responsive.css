@@ -73,10 +73,6 @@
         margin-bottom: 20px;
     }
 
-    .main-image-container {
-        height: 400px; /* Altura fija para evitar saltos */
-    }
-
     .product-info {
         width: 100%;
         padding: 0 10px;
@@ -92,7 +88,6 @@
         gap: 10px;
     }
     
-
     /* 5. CHECKOUT (PEDIDO.HTML) */
     .checkout-container {
         grid-template-columns: 1fr; /* Una sola columna */
@@ -111,6 +106,21 @@
     .modal-content {
         width: 95%;
         margin: 10% auto;
+    }
+
+    /* 6. NORMALIZACIÓN DE IMÁGENES EN MÓVIL */
+    /* Mantener el aspect-ratio también en móvil */
+    .img-container {
+        aspect-ratio: 4 / 5; /* Consistencia en todas las vistas */
+    }
+
+    .main-image-container {
+        aspect-ratio: 4 / 5; /* Mismo ratio en detalle */
+        height: auto !important; /* Eliminar cualquier height fijo */
+    }
+
+    .related-card img {
+        aspect-ratio: 4 / 5; /* Mismo ratio en relacionados */
     }
 }
 

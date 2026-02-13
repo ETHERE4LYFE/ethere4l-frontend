@@ -134,19 +134,6 @@ body {
 
 .producto-card:hover { transform: translateY(-10px); }
 
-.img-container {
-    width: 100%;
-    aspect-ratio: 3/4;
-    overflow: hidden;
-    background: #f9f9f9;
-}
-
-.img-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
 .producto-info { padding: 15px; text-align: center; }
 .producto-info h3 { font-size: 1rem; margin-bottom: 5px; }
 .marca-tag { color: #888; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 5px; }
@@ -189,13 +176,6 @@ body {
 /* Galería de Imágenes */
 .main-image-container {
     width: 100%;
-}
-
-.main-image-container img {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    border: 1px solid #eee;
 }
 
 .thumbnails-container {
@@ -285,13 +265,6 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px;
-}
-
-.related-card img {
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
-    margin-bottom: 10px;
 }
 
 .related-card h4 {
@@ -747,7 +720,6 @@ img:not([src]), img[src=""] {
 /* Contenedor principal de la imagen para evitar distorsión */
 .main-image-container {
     width: 100%;
-    height: 500px; /* Altura fija para uniformidad */
     background: #f9f9f9; /* Fondo gris claro elegante */
     display: flex;
     align-items: center;
@@ -1007,9 +979,6 @@ img:not([src]), img[src=""] {
     }
     .checkout-sidebar {
         position: static; /* Ya no es fijo en móvil */
-    }
-    .main-image-container {
-        height: 350px; /* Imagen más pequeña en móvil */
     }
 }
 /* Agregar al final de style.css */
@@ -1540,72 +1509,54 @@ img:not([src]), img[src=""] {
     z-index: 1;
 }
 
+
 /* =========================================
-   ETHERE4L IMAGE NORMALIZATION SYSTEM
-   Target: Zara/SSENSE Aesthetic
-   Author: Frontend Arch.
+   ETHERE4L IMAGE NORMALIZATION FIX (REAL)
+   ADAPTADO A LAS CLASES REALES DEL SISTEMA
    ========================================= */
 
-/* 1. RESET GLOBAL DE IMÁGENES DE PRODUCTO
-   Evita el "magic whitespace" y prepara el comportamiento de caja. */
-.product-card img,
-.product-gallery img {
-    display: block;
+/* -------- CATALOGO -------- */
+.img-container {
     width: 100%;
-    max-width: 100%;
-    height: auto; /* Fallback para navegadores antiguos */
+    aspect-ratio: 4 / 5; /* Ratio fashion más elegante */
+    overflow: hidden;
+    background: #f9f9f9;
 }
 
-/* 2. CATALOG VIEW (GRILLA)
-   Fuerza una proporción vertical estándar (3:4) típica en moda. */
-.product-card .product-image {
-    /* Define la relación de aspecto ANTES de cargar la imagen
-       para eliminar el Cumulative Layout Shift (CLS) */
-    aspect-ratio: 3 / 4;
-    
-    /* Recorta la imagen para llenar el espacio sin deformar */
-    object-fit: cover;
-    
-    /* Ancla la imagen arriba. En moda, es crítico que no se corte
-       la cabeza del modelo o el cuello de la prenda. */
-    object-position: top center;
-    
-    /* Opcional: transición suave si hay hover effects existentes */
-    transition: transform 0.3s ease;
-}
-
-/* 3. DETAIL VIEW (GALERÍA VERTICAL)
-   Mantiene la coherencia con el catálogo pero permite un
-   comportamiento más fluido en desktops grandes. */
-.product-gallery .detail-image {
-    /* Mantenemos el mismo ratio para consistencia visual */
-    aspect-ratio: 3 / 4;
+.img-container img,
+.img-primary,
+.img-secondary {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     object-position: top center;
-    
-    /* Restricción de altura en desktop para que la galería no sea infinita.
-       calc(100vh - header) es una buena aproximación, aquí usamos
-       un valor seguro para evitar scroll infinito en laptops. */
-    max-height: 80vh; 
-    
-    /* Centrado estético dentro del contenedor de detalle */
-    margin: 0 auto 20px auto; /* Margen inferior para separar fotos */
+    display: block;
 }
 
-/* 4. OPTIMIZACIÓN MOBILE (iPhone Viewport Focus) */
-@media (max-width: 768px) {
-    .product-card .product-image,
-    .product-gallery .detail-image {
-        /* En móviles, aseguramos que el ratio se respete estrictamente
-           incluso si el contenedor padre tiene comportamientos flex extraños */
-        height: auto; 
-        width: 100%;
-    }
-    
-    .product-gallery .detail-image {
-        /* En detalle móvil, quitamos la restricción de altura para
-           que la imagen ocupe todo el ancho disponible y sea inmersiva */
-        max-height: none;
-        margin-bottom: 16px;
-    }
+
+/* -------- PRODUCTO DETALLE -------- */
+.main-image-container {
+    width: 100%;
+    aspect-ratio: 4 / 5; /* MISMO RATIO PARA CONSISTENCIA */
+    background: #f9f9f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.main-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+}
+
+
+/* -------- RELACIONADOS -------- */
+.related-card img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: top center;
 }
