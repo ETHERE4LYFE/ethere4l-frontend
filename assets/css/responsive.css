@@ -92,9 +92,6 @@
         gap: 10px;
     }
     
-    .product-card img {
-        height: 250px; /* Ajustar altura de imágenes en catálogo */
-    }
 
     /* 5. CHECKOUT (PEDIDO.HTML) */
     .checkout-container {
