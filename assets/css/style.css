@@ -1539,3 +1539,73 @@ img:not([src]), img[src=""] {
     position: relative;
     z-index: 1;
 }
+
+/* =========================================
+   ETHERE4L IMAGE NORMALIZATION SYSTEM
+   Target: Zara/SSENSE Aesthetic
+   Author: Frontend Arch.
+   ========================================= */
+
+/* 1. RESET GLOBAL DE IMÁGENES DE PRODUCTO
+   Evita el "magic whitespace" y prepara el comportamiento de caja. */
+.product-card img,
+.product-gallery img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto; /* Fallback para navegadores antiguos */
+}
+
+/* 2. CATALOG VIEW (GRILLA)
+   Fuerza una proporción vertical estándar (3:4) típica en moda. */
+.product-card .product-image {
+    /* Define la relación de aspecto ANTES de cargar la imagen
+       para eliminar el Cumulative Layout Shift (CLS) */
+    aspect-ratio: 3 / 4;
+    
+    /* Recorta la imagen para llenar el espacio sin deformar */
+    object-fit: cover;
+    
+    /* Ancla la imagen arriba. En moda, es crítico que no se corte
+       la cabeza del modelo o el cuello de la prenda. */
+    object-position: top center;
+    
+    /* Opcional: transición suave si hay hover effects existentes */
+    transition: transform 0.3s ease;
+}
+
+/* 3. DETAIL VIEW (GALERÍA VERTICAL)
+   Mantiene la coherencia con el catálogo pero permite un
+   comportamiento más fluido en desktops grandes. */
+.product-gallery .detail-image {
+    /* Mantenemos el mismo ratio para consistencia visual */
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    object-position: top center;
+    
+    /* Restricción de altura en desktop para que la galería no sea infinita.
+       calc(100vh - header) es una buena aproximación, aquí usamos
+       un valor seguro para evitar scroll infinito en laptops. */
+    max-height: 80vh; 
+    
+    /* Centrado estético dentro del contenedor de detalle */
+    margin: 0 auto 20px auto; /* Margen inferior para separar fotos */
+}
+
+/* 4. OPTIMIZACIÓN MOBILE (iPhone Viewport Focus) */
+@media (max-width: 768px) {
+    .product-card .product-image,
+    .product-gallery .detail-image {
+        /* En móviles, aseguramos que el ratio se respete estrictamente
+           incluso si el contenedor padre tiene comportamientos flex extraños */
+        height: auto; 
+        width: 100%;
+    }
+    
+    .product-gallery .detail-image {
+        /* En detalle móvil, quitamos la restricción de altura para
+           que la imagen ocupe todo el ancho disponible y sea inmersiva */
+        max-height: none;
+        margin-bottom: 16px;
+    }
+}
