@@ -1560,3 +1560,25 @@ img:not([src]), img[src=""] {
     object-fit: cover;
     object-position: top center;
 }
+
+/* =========================================
+   ETHERE4L IMAGE CLS LOCK – PRO MODE
+========================================= */
+
+/* Forzamos ratio uniforme fashion */
+.img-container,
+.main-image-container,
+.related-card div {
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+}
+
+/* Todas las imágenes llenan el contenedor */
+.img-container img,
+.main-image-container img,
+.related-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}

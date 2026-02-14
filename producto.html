@@ -82,6 +82,48 @@
             margin-top: 15px; font-weight: bold; font-size: 1.1rem; color: #000;
             min-height: 20px;
         }
+
+        /* =========================================
+           ETHERE4L IMAGE CLS LOCK – PRO MODE
+           Core Web Vitals Optimization
+        ========================================= */
+
+        /* Forzamos ratio uniforme fashion 4:5 */
+        .main-image-container,
+        .thumbnails-container img,
+        .related-card > div {
+            aspect-ratio: 4 / 5;
+            overflow: hidden;
+        }
+
+        /* Todas las imágenes llenan el contenedor */
+        .main-image-container img,
+        .thumbnails-container img,
+        .related-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Thumbnails específico */
+        .thumbnails-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .thumbnails-container img {
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .thumbnails-container img:hover {
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="product-page-body">
@@ -259,7 +301,7 @@
         }
     }
 
-    // 2. RENDER PRODUCTO
+    // 2. RENDER PRODUCTO (✅ OPTIMIZADO PARA CORE WEB VITALS)
     function renderProduct(p) {
         document.getElementById('marca-producto').innerText = p.marca;
         document.getElementById('nombre-producto').innerText = p.nombre;
@@ -274,7 +316,12 @@
         }
         
         document.getElementById('desc-producto').innerText = p.descripcion || "Edición limitada. Sourcing internacional bajo demanda.";
-        document.getElementById('main-img').src = p.fotos[0];
+        
+        // ✅ OPTIMIZACIÓN 1: Imagen principal con eager loading + async decoding
+        const mainImg = document.getElementById('main-img');
+        mainImg.src = p.fotos[0];
+        mainImg.loading = "eager"; // Imagen principal carga inmediata (mejora LCP)
+        mainImg.decoding = "async"; // Decodificación asíncrona
 
         const thumbContainer = document.getElementById('thumbnails');
         thumbContainer.innerHTML = '';
@@ -282,13 +329,19 @@
             p.fotos.forEach(foto => {
                 const img = document.createElement('img');
                 img.src = foto;
-                img.onclick = () => document.getElementById('main-img').src = foto;
+                // ✅ OPTIMIZACIÓN 2: Miniaturas con lazy loading
+                img.loading = "lazy";
+                img.decoding = "async";
+                img.onclick = () => {
+                    const targetImg = document.getElementById('main-img');
+                    targetImg.src = foto;
+                };
                 thumbContainer.appendChild(img);
             });
         }
     }
 
-    // 3. RENDER RELACIONADOS
+    // 3. RENDER RELACIONADOS (✅ OPTIMIZADO PARA CORE WEB VITALS)
     function renderRelated(marca, currentId) {
         const grid = document.getElementById('related-grid');
         const related = allProducts.filter(p => p.marca === marca && p.id != currentId); 
@@ -303,10 +356,16 @@
                 ? "Ver detalle" 
                 : `$${p.precio.toString().replace('$','')}`;
 
+            // ✅ OPTIMIZACIÓN 3: Productos relacionados con lazy loading
             return `
                 <a href="producto.html?id=${p.id}" class="related-card">
                     <div style="background:#f4f4f4; margin-bottom:10px;">
-                        <img src="${p.fotos[0]}" alt="${p.nombre}">
+                        <img 
+                            src="${p.fotos[0]}" 
+                            alt="${p.nombre}"
+                            loading="lazy"
+                            decoding="async"
+                        >
                     </div>
                     <h4>${p.nombre}</h4>
                     <p>${displayPrice}</p>
