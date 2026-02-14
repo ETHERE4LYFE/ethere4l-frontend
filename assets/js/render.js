@@ -26,18 +26,17 @@ async function cargarProductos() {
             return;
         }
 
-        if (index === 0) {
-            const preload = document.getElementById('lcp-preload');
-            if (preload) {
-                preload.href = p.fotos[0];
-            }
-        }
-
-
         grid.innerHTML = ""; 
         productosAMostrar.forEach((p, index) => {
             const foto2 = p.fotos[1] ? p.fotos[1] : p.fotos[0];
             const isFirstImage = index === 0;
+            
+            if (index === 0) {
+                const preload = document.getElementById('lcp-preload');
+                if (preload) {
+                    preload.href = p.fotos[0];
+                }
+            }
             
             grid.innerHTML += `
                 <a href="producto.html?id=${p.id}" class="producto-card">
@@ -49,7 +48,7 @@ async function cargarProductos() {
                             width="600" 
                             height="800" 
                             decoding="async"
-                            ${isFirstImage ? 'fetchpriority="high"' : 'loading="lazy"'}
+                            ${isFirstImage ? 'fetchpriority="high"' : 'loading="lazy"'}>
                         <img 
                             src="${foto2}" 
                             class="img-secondary" 

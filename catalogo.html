@@ -12,7 +12,7 @@
     
     <style>
         .nav-promo { 
-            color: #ff4757 !important; /* Color llamativo */
+            color: #ff4757 !important;
             font-weight: bold; 
             font-size: 0.9em; 
             text-decoration: none; 
@@ -88,10 +88,19 @@
     <p>Calidad Ethereal en cada prenda.</p>
 </header>
 
-<section id="grid-productos" class="container-grid"></section>
+<section id="grid-productos" class="container-grid">
+    <div class="skeleton-card"></div>
+    <div class="skeleton-card"></div>
+    <div class="skeleton-card"></div>
+    <div class="skeleton-card"></div>
+    <div class="skeleton-card"></div>
+    <div class="skeleton-card"></div>
+    <div class="skeleton-card"></div>
+    <div class="skeleton-card"></div>
+</section>
 
-<script src="assets/js/render.js"></script>
-<script>
+<script src="assets/js/render.js" defer></script>
+<script defer>
     const menuToggle = document.getElementById('mobile-menu');
     const navList = document.querySelector('.nav-list');
     const dropdownToggle = document.querySelector('.dropdown-toggle');
@@ -108,14 +117,13 @@
 </script>
 
 <div class="custom-cursor"></div>
-<script>
+<script defer>
     const cursor = document.querySelector('.custom-cursor');
     document.addEventListener('mousemove', (e) => {
         cursor.style.left = e.clientX + 'px';
         cursor.style.top = e.clientY + 'px';
     });
 
-    // Detectar elementos clickeables para agrandar el cursor
     document.querySelectorAll('a, button, .producto-card').forEach(el => {
         el.addEventListener('mouseenter', () => cursor.classList.add('active'));
         el.addEventListener('mouseleave', () => cursor.classList.remove('active'));
@@ -143,17 +151,15 @@
     </div>
 </section>
 
-<script>
+<script defer>
   document.getElementById('form-piezas').onsubmit = function() {
     const pieza = document.getElementById('pieza').value;
     const user = document.getElementById('insta_user').value;
     
-    // Abre Instagram en paralelo al envío del formulario
     setTimeout(() => {
         window.open(`https://ig.me/m/etheere4l?text=Hola! Busco: ${pieza}. Mi usuario es ${user}`, '_blank');
     }, 100);
 
-    // Permitimos que el formulario se envíe a Netlify normalmente
     return true; 
   };
 </script>

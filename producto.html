@@ -240,9 +240,9 @@
     </div>
 </div>
 
-<script src="assets/js/cart.js"></script> 
-<script src="assets/js/main.js"></script> 
-<script>
+<script src="assets/js/cart.js" defer></script> 
+<script src="assets/js/main.js" defer></script> 
+<script defer>
     let allProducts = [];
     let currentProduct = null;
 
@@ -267,10 +267,10 @@
         }
 
         let score = 0;
-        if (peso < 60) score = 1;      // S
-        else if (peso < 75) score = 2; // M
-        else if (peso < 85) score = 3; // L
-        else score = 4;                // XL
+        if (peso < 60) score = 1;
+        else if (peso < 75) score = 2;
+        else if (peso < 85) score = 3;
+        else score = 4;
 
         if (altura > 185 && score < 4) score += 1;
 
@@ -293,14 +293,12 @@
         try {
             const res = await fetch('data/productos.json'); 
             allProducts = await res.json();
-            // Comparación laxa (==) por si id viene como string o number
             currentProduct = allProducts.find(p => p.id == productId);
 
             if (currentProduct) {
                 renderProduct(currentProduct);
                 renderRelated(currentProduct.marca, currentProduct.id);
             } else {
-                // Manejo básico de error si no encuentra ID
                 document.querySelector('.product-wrapper').innerHTML = '<p style="text-align:center; padding:50px;">Producto no encontrado.</p>';
             }
         } catch (error) {
@@ -313,22 +311,19 @@
         document.getElementById('marca-producto').innerText = p.marca;
         document.getElementById('nombre-producto').innerText = p.nombre;
         
-        // Manejo visual de precio
         if (typeof p.precio === 'string' && p.precio.toLowerCase().includes('none')) {
              document.getElementById('precio-producto').innerText = "Consultar Precio";
         } else {
-             // Aseguramos formato visual correcto
              const precioVisual = p.precio.toString().replace('$', ''); 
              document.getElementById('precio-producto').innerText = `$${precioVisual} MXN`;
         }
         
         document.getElementById('desc-producto').innerText = p.descripcion || "Edición limitada. Sourcing internacional bajo demanda.";
         
-        // ✅ OPTIMIZACIÓN 1: Imagen principal con eager loading + async decoding
         const mainImg = document.getElementById('main-img');
         mainImg.src = p.fotos[0];
-        mainImg.loading = "eager"; // Imagen principal carga inmediata (mejora LCP)
-        mainImg.decoding = "async"; // Decodificación asíncrona
+        mainImg.loading = "eager";
+        mainImg.decoding = "async";
 
         const thumbContainer = document.getElementById('thumbnails');
         thumbContainer.innerHTML = '';
@@ -336,7 +331,6 @@
             p.fotos.forEach(foto => {
                 const img = document.createElement('img');
                 img.src = foto;
-                // ✅ OPTIMIZACIÓN 2: Miniaturas con lazy loading
                 img.loading = "lazy";
                 img.decoding = "async";
                 img.onclick = () => {
@@ -363,7 +357,6 @@
                 ? "Ver detalle" 
                 : `$${p.precio.toString().replace('$','')}`;
 
-            // ✅ OPTIMIZACIÓN 3: Productos relacionados con lazy loading
             return `
                 <a href="producto.html?id=${p.id}" class="related-card">
                     <div style="background:#f4f4f4; margin-bottom:10px;">
@@ -385,7 +378,6 @@
     document.getElementById('btn-add-cart').addEventListener('click', function() {
         const sizeInput = document.querySelector('input[name="size"]:checked');
         
-        // VALIDACIÓN
         if (!sizeInput) {
             alert("⚠️ Por favor selecciona una talla antes de continuar.");
             document.querySelector('.size-options').style.border = "1px solid red";
@@ -394,24 +386,19 @@
         }
 
         if(typeof addToCart === 'function') {
-            // PREPARACIÓN DE DATA PARA CHECKOUT INTELIGENTE
-            // Usamos un fallback de peso (0.6kg) si el JSON no lo tiene, para no romper el cálculo de envío.
             const productWeight = currentProduct.peso ? parseFloat(currentProduct.peso) : 0.6;
             
             addToCart({
                 id: currentProduct.id,
                 nombre: currentProduct.nombre,
-                // Limpiamos el precio para guardar solo números o string limpio en el cart
                 precio: currentProduct.precio.toString().replace('$','').trim(), 
                 talla: sizeInput.value,
                 imagen: currentProduct.fotos[0],
-                // Nuevos campos críticos para el sistema de dropshipping
                 peso: productWeight,
                 sourcing: true,
-                cantidad: 1 // Default inicial
+                cantidad: 1
             });
 
-            // FEEDBACK VISUAL
             const btn = this;
             const originalText = btn.innerText;
             
@@ -429,7 +416,6 @@
         }
     });
 
-    // Cerrar modal al hacer click fuera
     window.onclick = function(event) {
         const modal = document.getElementById('modal-size');
         if (event.target == modal) {
