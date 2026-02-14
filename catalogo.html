@@ -119,10 +119,17 @@
 <div class="custom-cursor"></div>
 <script defer>
     const cursor = document.querySelector('.custom-cursor');
+    let rafId;
     document.addEventListener('mousemove', (e) => {
-        cursor.style.left = e.clientX + 'px';
-        cursor.style.top = e.clientY + 'px';
+        if (rafId) return;
+        rafId = requestAnimationFrame(() => {
+            cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+            rafId = null;
+        });
     });
+
+
+   
 
     document.querySelectorAll('a, button, .producto-card').forEach(el => {
         el.addEventListener('mouseenter', () => cursor.classList.add('active'));
