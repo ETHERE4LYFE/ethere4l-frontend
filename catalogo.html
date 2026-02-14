@@ -7,7 +7,6 @@
     <title>Catálogo | ETHEREAL</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-
     
     <style>
         .nav-promo { 
@@ -31,7 +30,6 @@
     </style>
 </head>
 <body class="fade-in-page">
-
 <nav class="navbar">
     <div class="logo-nav">
         <a href="index.html">
@@ -39,13 +37,11 @@
             <span class="logo-text-gothic">ETHERE4L</span>
         </a>
     </div>
-
     <div class="menu-toggle" id="mobile-menu">
         <span class="bar"></span>
         <span class="bar"></span>
         <span class="bar"></span>
     </div>
-
     <ul class="nav-list">
         <li><a href="index.html">Inicio</a></li>
         <li class="dropdown">
@@ -71,9 +67,7 @@
             </a>
         </li>
     </ul>
-
 </nav>
-
 <div class="btn-consulta-container">
     <a href="https://www.instagram.com/etheere4l" 
        target="_blank" 
@@ -81,40 +75,29 @@
        CONSULTAR DISPONIBILIDAD
     </a>
 </div>
-
 <header class="tienda-header" style="text-align: center; padding: 40px 0;">
     <h1 id="titulo-seccion">NUESTRAS COLECCIONES</h1> 
     <p>Calidad Ethereal en cada prenda.</p>
 </header>
-
+<!-- LCP HERO ESTÁTICO - PRIMER PRODUCTO DESTACADO -->
 <section id="lcp-hero" class="container-grid">
-    <!-- ============================================
-         LCP ESTÁTICO - PRIMER PRODUCTO DESTACADO
-         INSTRUCCIONES DE REEMPLAZO:
-         1. Reemplazar ID_PRODUCTO con el ID real del primer producto destacado
-         2. Reemplazar RUTA_IMAGEN.webp con la ruta real de la primera foto
-         3. Reemplazar NOMBRE_PRODUCTO con el nombre real
-         4. Reemplazar MARCA con la marca real
-         5. Reemplazar PRECIO con el precio real
-         ============================================ -->
-    <a href="producto.html?id=item-001" class="producto-card">
+    <a href="producto.html?id=ID_REEMPLAZAR" class="producto-card">
         <div class="img-container">
             <img 
-                src="images/catalogos/balenciaga/001/principal.webp"
-                alt="Balenciaga jacket 001"
+                src="RUTA_REAL_PRIMER_PRODUCTO.webp"
+                alt="NOMBRE_REAL_PRODUCTO"
                 width="600"
                 height="800"
                 fetchpriority="high"
                 decoding="async">
         </div>
         <div class="producto-info">
-            <p class="marca-tag">balenciaga</p>
-            <h3>Balenciaga jacket 001</h3>
-            <p class="precio">2800</p>
+            <p class="marca-tag">MARCA_REAL</p>
+            <h3>NOMBRE_REAL_PRODUCTO</h3>
+            <p class="precio">PRECIO_REAL</p>
         </div>
     </a>
 </section>
-
 <section id="grid-productos" class="container-grid">
     <div class="skeleton-card"></div>
     <div class="skeleton-card"></div>
@@ -125,16 +108,13 @@
     <div class="skeleton-card"></div>
     <div class="skeleton-card"></div>
 </section>
-
 <script src="assets/js/render.js" defer></script>
 <script defer>
     const menuToggle = document.getElementById('mobile-menu');
     const navList = document.querySelector('.nav-list');
     const dropdownToggle = document.querySelector('.dropdown-toggle');
     const dropdownParent = document.querySelector('.dropdown');
-
     menuToggle.addEventListener('click', () => navList.classList.toggle('active'));
-
     dropdownToggle.addEventListener('click', (e) => {
         if (window.innerWidth <= 768) {
             e.preventDefault();
@@ -142,21 +122,23 @@
         }
     });
 </script>
-
 <div class="custom-cursor"></div>
 <script defer>
     const cursor = document.querySelector('.custom-cursor');
+    let rafId;
     document.addEventListener('mousemove', (e) => {
-        cursor.style.left = e.clientX + 'px';
-        cursor.style.top = e.clientY + 'px';
+        if (rafId) return;
+        rafId = requestAnimationFrame(() => {
+            cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+            rafId = null;
+        });
     });
-
+   
     document.querySelectorAll('a, button, .producto-card').forEach(el => {
         el.addEventListener('mouseenter', () => cursor.classList.add('active'));
         el.addEventListener('mouseleave', () => cursor.classList.remove('active'));
     });
 </script>
-
 <section class="contacto-footer">
     <div class="contacto-container">
         <h2>¿BUSCAS ALGO EN ESPECIAL?</h2>
@@ -168,16 +150,13 @@
             <div class="form-group">
                 <input type="text" name="pieza" id="pieza" placeholder="Ej. Chrome Hearts chain" required>
             </div>
-
             <div class="form-group">
                 <input type="text" name="instagram" id="insta_user" placeholder="Tu usuario de Instagram (@...)" required>
             </div>
-
             <button type="submit" class="btn-buy">ENVIAR SOLICITUD</button>
         </form>
     </div>
 </section>
-
 <script defer>
   document.getElementById('form-piezas').onsubmit = function() {
     const pieza = document.getElementById('pieza').value;
@@ -186,7 +165,6 @@
     setTimeout(() => {
         window.open(`https://ig.me/m/etheere4l?text=Hola! Busco: ${pieza}. Mi usuario es ${user}`, '_blank');
     }, 100);
-
     return true; 
   };
 </script>
