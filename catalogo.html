@@ -7,7 +7,6 @@
     <title>Catálogo | ETHEREAL</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="preload" as="image" id="lcp-preload">
 
     
     <style>
@@ -88,6 +87,34 @@
     <p>Calidad Ethereal en cada prenda.</p>
 </header>
 
+<section id="lcp-hero" class="container-grid">
+    <!-- ============================================
+         LCP ESTÁTICO - PRIMER PRODUCTO DESTACADO
+         INSTRUCCIONES DE REEMPLAZO:
+         1. Reemplazar ID_PRODUCTO con el ID real del primer producto destacado
+         2. Reemplazar RUTA_IMAGEN.webp con la ruta real de la primera foto
+         3. Reemplazar NOMBRE_PRODUCTO con el nombre real
+         4. Reemplazar MARCA con la marca real
+         5. Reemplazar PRECIO con el precio real
+         ============================================ -->
+    <a href="producto.html?id=item-001" class="producto-card">
+        <div class="img-container">
+            <img 
+                src="images/catalogos/balenciaga/001/principal.webp"
+                alt="Balenciaga jacket 001"
+                width="600"
+                height="800"
+                fetchpriority="high"
+                decoding="async">
+        </div>
+        <div class="producto-info">
+            <p class="marca-tag">balenciaga</p>
+            <h3>Balenciaga jacket 001</h3>
+            <p class="precio">2800</p>
+        </div>
+    </a>
+</section>
+
 <section id="grid-productos" class="container-grid">
     <div class="skeleton-card"></div>
     <div class="skeleton-card"></div>
@@ -119,17 +146,10 @@
 <div class="custom-cursor"></div>
 <script defer>
     const cursor = document.querySelector('.custom-cursor');
-    let rafId;
     document.addEventListener('mousemove', (e) => {
-        if (rafId) return;
-        rafId = requestAnimationFrame(() => {
-            cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-            rafId = null;
-        });
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
     });
-
-
-   
 
     document.querySelectorAll('a, button, .producto-card').forEach(el => {
         el.addEventListener('mouseenter', () => cursor.classList.add('active'));

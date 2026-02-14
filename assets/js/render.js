@@ -1,6 +1,8 @@
 async function cargarProductos() {
     const grid = document.getElementById('grid-productos');
     const titulo = document.getElementById('titulo-seccion');
+    const hero = document.getElementById('lcp-hero');
+    
     if (!grid) return;
 
     try {
@@ -10,61 +12,52 @@ async function cargarProductos() {
         const params = new URLSearchParams(window.location.search);
         const marcaFiltro = params.get('marca');
 
-        let productosAMostrar = marcaFiltro
-            ? productos.filter(p => p.marca.toLowerCase() === marcaFiltro.toLowerCase())
-            : productos.filter(p => p.destacado === true);
+        let productosAMostrar;
 
-        if (titulo) {
-            titulo.innerText = marcaFiltro
-                ? marcaFiltro.replace(/-/g, ' ').toUpperCase()
-                : "PRODUCTOS DESTACADOS";
+        if (marcaFiltro) {
+            productosAMostrar = productos.filter(p => p.marca.toLowerCase() === marcaFiltro.toLowerCase());
+            if (titulo) titulo.innerText = marcaFiltro.replace(/-/g, ' ').toUpperCase();
+            
+            // Ocultar hero estático cuando hay filtro de marca
+            if (hero) hero.style.display = 'none';
+        } else {
+            productosAMostrar = productos.filter(p => p.destacado === true);
+            if (titulo) titulo.innerText = "PRODUCTOS DESTACADOS";
+            
+            // Mostrar hero estático en página principal
+            if (hero) hero.style.display = 'grid';
         }
 
-        if (!productosAMostrar.length) {
-            grid.innerHTML = `<p style="grid-column:1/-1;text-align:center;padding:50px;">Próximamente más productos de esta colección.</p>`;
+        if (productosAMostrar.length === 0) {
+            grid.innerHTML = `<p style="grid-column: 1/-1; text-align:center; padding: 50px;">Próximamente más productos de esta colección.</p>`;
             return;
         }
 
-        grid.innerHTML = "";
-
-        const CHUNK_SIZE = 12;
-        let index = 0;
-
-        function renderChunk() {
-            const fragment = document.createDocumentFragment();
-
-            for (let i = 0; i < CHUNK_SIZE && index < productosAMostrar.length; i++, index++) {
-                const p = productosAMostrar[index];
-                const foto2 = p.fotos[1] || p.fotos[0];
-                const isFirst = index === 0;
-
-                if (isFirst) {
-                    const preload = document.getElementById('lcp-preload');
-                    if (preload) preload.href = p.fotos[0];
-                }
-
-                const card = document.createElement('a');
-                card.href = `producto.html?id=${p.id}`;
-                card.className = 'producto-card';
-
-                card.innerHTML = `
+        // Limpiar skeleton SOLO del grid secundario
+        grid.innerHTML = ""; 
+        
+        // SKIP primer producto - ya está hardcoded en HTML
+        productosAMostrar.slice(1).forEach((p, index) => {
+            const foto2 = p.fotos[1] ? p.fotos[1] : p.fotos[0];
+            
+            grid.innerHTML += `
+                <a href="producto.html?id=${p.id}" class="producto-card">
                     <div class="img-container">
                         <img 
                             src="${p.fotos[0]}" 
                             class="img-primary" 
                             alt="${p.nombre}" 
                             width="600" 
-                            height="800"
-                            decoding="async"
-                            ${isFirst ? 'fetchpriority="high"' : 'loading="lazy"'}>
-
+                            height="800" 
+                            loading="lazy"
+                            decoding="async">
                         <img 
                             src="${foto2}" 
                             class="img-secondary" 
                             alt="${p.nombre}" 
                             width="600" 
-                            height="800"
-                            loading="lazy"
+                            height="800" 
+                            loading="lazy" 
                             decoding="async">
                     </div>
                     <div class="producto-info">
@@ -72,21 +65,9 @@ async function cargarProductos() {
                         <h3>${p.nombre}</h3>
                         <p class="precio">${p.precio}</p>
                     </div>
-                `;
-
-                fragment.appendChild(card);
-            }
-
-            grid.appendChild(fragment);
-
-            if (index < productosAMostrar.length) {
-                requestIdleCallback
-                    ? requestIdleCallback(renderChunk)
-                    : setTimeout(renderChunk, 50);
-            }
-        }
-
-        renderChunk();
+                </a>
+            `;
+        });
 
     } catch (error) {
         console.error("Error al cargar productos:", error);
@@ -94,39 +75,21 @@ async function cargarProductos() {
     }
 }
 
-
-/* ========================= */
-/* SCROLL OPTIMIZADO (TBT FIX) */
-/* ========================= */
-
-let ticking = false;
-
 function revealOnScroll() {
-    if (window.innerWidth > 768) return;
+    if (window.innerWidth > 768) return; 
+    const cards = document.querySelectorAll('.producto-card');
+    const triggerBottom = window.innerHeight * 0.5; 
 
-    if (!ticking) {
-        requestAnimationFrame(() => {
-            const cards = document.querySelectorAll('.producto-card');
-            const trigger = window.innerHeight * 0.5;
-
-            cards.forEach(card => {
-                const rect = card.getBoundingClientRect();
-                if (rect.top < trigger && rect.bottom > trigger) {
-                    card.classList.add('reveal-back');
-                }
-            });
-
-            ticking = false;
-        });
-
-        ticking = true;
-    }
+    cards.forEach(card => {
+        const cardTop = card.getBoundingClientRect().top;
+        const cardBottom = card.getBoundingClientRect().bottom;
+        if (cardTop < triggerBottom && cardBottom > triggerBottom) {
+            card.classList.add('reveal-back');
+        } else {
+            card.classList.remove('reveal-back');
+        }
+    });
 }
-
-
-/* ========================= */
-/* EVENT LISTENERS */
-/* ========================= */
 
 document.addEventListener('DOMContentLoaded', cargarProductos);
 window.addEventListener('scroll', revealOnScroll);
