@@ -25,6 +25,11 @@ async function cargarProductos() {
         if (marcaFiltro && heroSection) {
             heroSection.style.display = 'none';
         }
+        // Si NO hay filtro, mostrar hero (por si el usuario vuelve atrás)
+        if (!marcaFiltro && heroSection) {
+            heroSection.style.display = '';
+        }
+        // Limpiar skeletons del grid (el hero está FUERA del grid, no se destruye)
         grid.innerHTML = "";
         // Saltar el primer producto (ya está en el hero estático) solo cuando NO hay filtro de marca
         const productosParaGrid = marcaFiltro
