@@ -62,9 +62,18 @@ function renderResumenInteractivo() {
             `<option value="${s}" ${item.talla === s ? 'selected' : ''}>${s}</option>`
         ).join('');
 
+        const itemAlt = item.nombre || 'Producto ETHEREAL';
+
         return `
         <div class="cart-item-interactive" data-id="${item.id}" data-talla="${item.talla}">
-            <img src="${item.imagen}" alt="${item.nombre}" onerror="this.style.display='none'">
+            <img 
+                src="${item.imagen}" 
+                alt="${itemAlt}" 
+                width="600" 
+                height="800" 
+                loading="lazy" 
+                decoding="async" 
+                onerror="this.style.display='none'">
             <div class="item-details">
                 <h4>${item.nombre}</h4>
                 <div class="controls-row">
@@ -125,7 +134,13 @@ function renderUpsells() {
         <div class="upsell-grid">
             ${recommended.map(prod => `
                 <div class="upsell-card">
-                    <img src="${prod.imagen}" alt="${prod.nombre}">
+                    <img 
+                        src="${prod.imagen}" 
+                        alt="${prod.nombre}" 
+                        width="600" 
+                        height="800" 
+                        loading="lazy" 
+                        decoding="async">
                     <div>
                         <p>${prod.nombre}</p>
                         <span>$${prod.precio}</span>
@@ -324,4 +339,3 @@ function renderTrackingResult(data) {
         <a href="catalogo.html" class="btn-black">Seguir comprando</a>
     `;
 }
-

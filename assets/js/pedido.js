@@ -133,7 +133,7 @@ function renderOrder(order, isEmailAccess) {
 
     /* --- ITEMS --- */
     const itemsList = document.getElementById('items-list');
-    itemsList.innerHTML = ''; // limpiar “Cargando productos…”
+    itemsList.innerHTML = ''; // limpiar "Cargando productos…"
 
     if (!order.items || !order.items.length) {
         itemsList.innerHTML = `
@@ -144,11 +144,19 @@ function renderOrder(order, isEmailAccess) {
     } else {
         order.items.forEach(item => {
             const img = item.imagen || 'assets/img/logo-ethereal.png';
+            const itemAlt = item.nombre || 'Producto ETHEREAL';
 
             itemsList.innerHTML += `
                 <div class="eth-item-row">
-                    <img src="${img}" class="eth-item-img"
-                         onerror="this.src='assets/img/logo-ethereal.png'">
+                    <img 
+                        src="${img}" 
+                        class="eth-item-img" 
+                        alt="${itemAlt}" 
+                        width="600" 
+                        height="800" 
+                        loading="lazy" 
+                        decoding="async" 
+                        onerror="this.src='assets/img/logo-ethereal.png'">
 
                     <div class="eth-item-info">
                         <div class="eth-item-title">${item.nombre}</div>

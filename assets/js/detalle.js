@@ -28,12 +28,24 @@ function renderizarProducto(producto) {
     const mainImg = document.getElementById('main-img');
     const thumbnails = document.getElementById('thumbnails');
 
-    if (mainImg) mainImg.src = producto.fotos[0];
+    if (mainImg) {
+        mainImg.src = producto.fotos[0];
+        mainImg.alt = producto.nombre;
+        mainImg.width = 600;
+        mainImg.height = 800;
+        mainImg.decoding = "async";
+    }
+    
     if (thumbnails) {
         thumbnails.innerHTML = ""; 
         producto.fotos.forEach((foto, index) => {
             const img = document.createElement('img');
             img.src = foto;
+            img.alt = producto.nombre;
+            img.width = 600;
+            img.height = 800;
+            img.loading = "lazy";
+            img.decoding = "async";
             img.classList.add('thumb');
             if (index === 0) img.classList.add('active');
             img.addEventListener('click', () => {
@@ -73,7 +85,13 @@ function renderizarRelacionados(productoActual, todosLosProductos) {
         contenedor.innerHTML += `
             <a href="producto.html?id=${p.id}" class="producto-card">
                 <div class="img-container">
-                    <img src="${p.fotos[0]}" alt="${p.nombre}">
+                <img 
+                    src="${p.fotos[0]}"
+                    alt="${p.nombre}"
+                    width="600"
+                    height="800"
+                    loading="lazy"
+                    decoding="async">
                 </div>
                 <div class="producto-info">
                     <p class="marca-tag">${p.marca}</p>

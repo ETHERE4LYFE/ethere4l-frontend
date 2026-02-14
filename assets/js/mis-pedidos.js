@@ -177,10 +177,19 @@ function renderOrders(orders) {
 
         const firstItem = order.items[0] || {};
         const img = firstItem.imagen || 'assets/img/logo-ethereal.png';
+        const imgAlt = firstItem.nombre || 'Pedido ETHEREAL';
 
         list.innerHTML += `
             <div class="order-card">
-                <img src="${img}" class="thumb-img" onerror="this.src='assets/img/logo-ethereal.png'">
+                <img 
+                    src="${img}" 
+                    class="thumb-img" 
+                    alt="${imgAlt}" 
+                    width="600" 
+                    height="800" 
+                    loading="lazy" 
+                    decoding="async" 
+                    onerror="this.src='assets/img/logo-ethereal.png'">
                 <div class="order-info">
                     <h3>Pedido #${order.id.slice(0, 8)}</h3>
                     <div class="order-meta">${date}</div>
@@ -204,10 +213,7 @@ function renderOrders(orders) {
 
 
 window.logout = () => {
+    localStorage.removeItem(CUSTOMER_TOKEN_KEY);
     sessionStorage.removeItem('magic_token');
-    window.history.replaceState({}, document.title, 'mis-pedidos.html');
-    initCustomerOrders(data.token);
-    window.history.replaceState({}, document.title, 'mis-pedidos.html');
-initCustomerOrders(data.token);
-
+    window.location.href = 'mis-pedidos.html';
 };

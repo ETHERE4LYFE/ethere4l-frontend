@@ -26,16 +26,38 @@ async function cargarProductos() {
             return;
         }
 
+        if (index === 0) {
+            const preload = document.getElementById('lcp-preload');
+            if (preload) {
+                preload.href = p.fotos[0];
+            }
+        }
+
+
         grid.innerHTML = ""; 
-        productosAMostrar.forEach(p => {
-            // Verificamos si hay segunda foto para el efecto
+        productosAMostrar.forEach((p, index) => {
             const foto2 = p.fotos[1] ? p.fotos[1] : p.fotos[0];
+            const isFirstImage = index === 0;
             
             grid.innerHTML += `
                 <a href="producto.html?id=${p.id}" class="producto-card">
                     <div class="img-container">
-                        <img src="${p.fotos[0]}" class="img-primary" alt="${p.nombre}" loading="lazy">
-                        <img src="${foto2}" class="img-secondary" alt="${p.nombre}">
+                        <img 
+                            src="${p.fotos[0]}" 
+                            class="img-primary" 
+                            alt="${p.nombre}" 
+                            width="600" 
+                            height="800" 
+                            decoding="async"
+                            ${isFirstImage ? 'fetchpriority="high"' : 'loading="lazy"'}
+                        <img 
+                            src="${foto2}" 
+                            class="img-secondary" 
+                            alt="${p.nombre}" 
+                            width="600" 
+                            height="800" 
+                            loading="lazy" 
+                            decoding="async">
                     </div>
                     <div class="producto-info">
                         <p class="marca-tag">${p.marca}</p>
@@ -52,7 +74,6 @@ async function cargarProductos() {
     }
 }
 
-// Función funcional para celular (Scroll revela espalda)
 function revealOnScroll() {
     if (window.innerWidth > 768) return; 
     const cards = document.querySelectorAll('.producto-card');
