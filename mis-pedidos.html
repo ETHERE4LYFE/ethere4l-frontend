@@ -410,21 +410,28 @@
         // ===============================
         // CONFIG
         // ===============================
-        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        var API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
             ? 'http://localhost:3000'
             : 'https://ethere4l-backend-production.up.railway.app';
 
-        const SESSION_KEY = 'ethere4l_customer_token';
+        // ===============================
+        // SECURITY: Clear ALL legacy localStorage/sessionStorage JWT data
+        // Phase 0 migration: ensure no token persists client-side
+        // ===============================
+        localStorage.removeItem('ethere4l_session');
+        localStorage.removeItem('ethere4l_customer_token');
+        sessionStorage.removeItem('ethere4l_session');
+        sessionStorage.removeItem('ethere4l_customer_token');
 
         // ===============================
         // DOM REFS
         // ===============================
-        const viewLoading = document.getElementById('view-loading');
-        const viewExpired = document.getElementById('view-expired');
-        const viewOrders = document.getElementById('view-orders');
-        const ordersList = document.getElementById('orders-list');
-        const displayEmail = document.getElementById('display-email');
-        const btnLogout = document.getElementById('btn-logout');
+        var viewLoading = document.getElementById('view-loading');
+        var viewExpired = document.getElementById('view-expired');
+        var viewOrders = document.getElementById('view-orders');
+        var ordersList = document.getElementById('orders-list');
+        var displayEmail = document.getElementById('display-email');
+        var btnLogout = document.getElementById('btn-logout');
 
         // ===============================
         // INIT: AUTHENTICATION FLOW
@@ -433,74 +440,62 @@
 
         async function init() {
             // 1. Check URL for magic link token
-            const params = new URLSearchParams(window.location.search);
-            const magicToken = params.get('token');
+            var params = new URLSearchParams(window.location.search);
+            var magicToken = params.get('token');
 
             if (magicToken) {
                 // Clean URL immediately (security: remove token from URL bar)
                 window.history.replaceState({}, '', window.location.pathname);
 
-                // Exchange magic link token for session token
+                // Exchange magic link token for HttpOnly session cookie
+                // The backend will SET the cookie — we just need credentials: 'include'
                 try {
-                    const res = await fetch(`${API_BASE}/api/session/start?token=${encodeURIComponent(magicToken)}`);
+                    var res = await fetch(API_BASE + '/api/session/start?token=' + encodeURIComponent(magicToken), {
+                        method: 'GET',
+                        credentials: 'include'  // ← CRITICAL: allows browser to accept Set-Cookie from cross-origin
+                    });
                     
                     if (!res.ok) {
                         showExpired();
                         return;
                     }
 
-                    const data = await res.json();
-                    if (data.token) {
-                        localStorage.setItem(SESSION_KEY, data.token);
-                        loadOrders(data.token);
-                        return;
-                    }
-                } catch (e) {
-                    showExpired();
-                    return;
-                }
-            }
+                    var data = await res.json();
 
-            // 2. Check existing session
-            const existingToken = localStorage.getItem(SESSION_KEY);
-            if (existingToken) {
-                // Validate token is not expired client-side (basic check)
-                try {
-                    const payload = JSON.parse(atob(existingToken.split('.')[1]));
-                    const expiresAt = payload.exp * 1000;
-                    
-                    if (Date.now() >= expiresAt) {
-                        // Token expired — clear and redirect
-                        localStorage.removeItem(SESSION_KEY);
+                    if (data.success) {
+                        // Session cookie is now set by browser automatically
+                        // We store email for display only (NOT a secret)
+                        if (data.email) {
+                            displayEmail.textContent = data.email;
+                        }
+                        loadOrders();
+                        return;
+                    } else {
                         showExpired();
                         return;
                     }
-
-                    // Token seems valid — try loading orders
-                    loadOrders(existingToken);
-                    return;
                 } catch (e) {
-                    localStorage.removeItem(SESSION_KEY);
                     showExpired();
                     return;
                 }
             }
 
-            // 3. No token at all — show expired/login
-            showExpired();
+            // 2. No magic token in URL — try loading orders with existing cookie
+            // If the HttpOnly session cookie exists, the browser will send it automatically
+            loadOrders();
         }
 
         // ===============================
-        // LOAD ORDERS FROM API
+        // LOAD ORDERS FROM API (Cookie-based auth)
         // ===============================
-        async function loadOrders(token) {
+        async function loadOrders() {
             try {
-                const res = await fetch(`${API_BASE}/api/customer/orders`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
+                var res = await fetch(API_BASE + '/api/customer/orders', {
+                    method: 'GET',
+                    credentials: 'include'  // ← CRITICAL: sends HttpOnly cookie automatically
                 });
 
                 if (res.status === 401 || res.status === 403) {
-                    localStorage.removeItem(SESSION_KEY);
                     showExpired();
                     return;
                 }
@@ -510,15 +505,14 @@
                     return;
                 }
 
-                const orders = await res.json();
+                var responseData = await res.json();
 
-                // Extract email from token for display
-                try {
-                    const payload = JSON.parse(atob(token.split('.')[1]));
-                    displayEmail.textContent = payload.email || '';
-                } catch (e) { /* silent */ }
+                // The backend now returns { email, orders } 
+                if (responseData.email) {
+                    displayEmail.textContent = responseData.email;
+                }
 
-                renderOrders(orders);
+                renderOrders(responseData.orders || responseData);
                 showOrders();
 
             } catch (e) {
@@ -531,49 +525,49 @@
         // ===============================
         function renderOrders(orders) {
             if (!orders || orders.length === 0) {
-                ordersList.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">📦</div>
-                        <h2>No tienes pedidos aún</h2>
-                        <p>Cuando realices tu primera compra, podrás ver el estado de tu pedido aquí.</p>
-                        <a href="catalogo.html" class="btn-shop">EXPLORAR CATÁLOGO</a>
-                    </div>
-                `;
+                ordersList.innerHTML = 
+                    '<div class="empty-state">' +
+                        '<div class="empty-icon">📦</div>' +
+                        '<h2>No tienes pedidos aún</h2>' +
+                        '<p>Cuando realices tu primera compra, podrás ver el estado de tu pedido aquí.</p>' +
+                        '<a href="catalogo.html" class="btn-shop">EXPLORAR CATÁLOGO</a>' +
+                    '</div>';
                 return;
             }
 
-            ordersList.innerHTML = orders.map(order => {
-                const date = new Date(order.created_at).toLocaleDateString('es-MX', {
+            ordersList.innerHTML = orders.map(function(order) {
+                var date = new Date(order.created_at).toLocaleDateString('es-MX', {
                     year: 'numeric',
                     month: 'short',
                     day: 'numeric'
                 });
 
-                const itemCount = order.items ? order.items.length : 0;
-                const statusLabel = formatStatus(order.status);
-                const shortId = order.id.slice(-8).toUpperCase();
+                var itemCount = order.items ? order.items.length : 0;
+                var statusLabel = formatStatus(order.status);
+                var shortId = order.id.slice(-8).toUpperCase();
 
-                // Build tracking URL with order_token
-                const trackUrl = `pedido-ver.html?id=${order.id}`;
+                // order_token is a short-lived per-order JWT for viewing order detail
+                // It's passed as URL param (NOT stored in localStorage)
+                var trackUrl = order.order_token 
+                    ? 'pedido-ver.html?id=' + order.id + '&token=' + order.order_token
+                    : '#';
 
-                return `
-                    <a href="${trackUrl}" class="order-card">
-                        <div class="order-card-top">
-                            <span class="order-id">#${shortId}</span>
-                            <span class="order-status status-${order.status}">${statusLabel}</span>
-                        </div>
-                        <div class="order-card-body">
-                            <div class="order-meta">
-                                <span>${date}</span>
-                                <span>${itemCount} artículo${itemCount !== 1 ? 's' : ''}</span>
-                            </div>
-                            <div style="display:flex;align-items:center;">
-                                <span class="order-total">$${formatPrice(order.total)}</span>
-                                <span class="order-arrow">→</span>
-                            </div>
-                        </div>
-                    </a>
-                `;
+                return '<a href="' + trackUrl + '" class="order-card">' +
+                    '<div class="order-card-top">' +
+                        '<span class="order-id">#' + shortId + '</span>' +
+                        '<span class="order-status status-' + order.status + '">' + statusLabel + '</span>' +
+                    '</div>' +
+                    '<div class="order-card-body">' +
+                        '<div class="order-meta">' +
+                            '<span>' + date + '</span>' +
+                            '<span>' + itemCount + ' artículo' + (itemCount !== 1 ? 's' : '') + '</span>' +
+                        '</div>' +
+                        '<div style="display:flex;align-items:center;">' +
+                            '<span class="order-total">$' + formatPrice(order.total) + '</span>' +
+                            '<span class="order-arrow">→</span>' +
+                        '</div>' +
+                    '</div>' +
+                '</a>';
             }).join('');
         }
 
@@ -593,11 +587,23 @@
         }
 
         // ===============================
-        // LOGOUT
+        // LOGOUT — Server-side cookie clearing
         // ===============================
-        btnLogout.addEventListener('click', function() {
-            localStorage.removeItem(SESSION_KEY);
+        btnLogout.addEventListener('click', async function() {
+            try {
+                await fetch(API_BASE + '/api/session/logout', {
+                    method: 'POST',
+                    credentials: 'include'  // ← sends cookie so server can revoke session
+                });
+            } catch (e) {
+                // Even if logout call fails, redirect to login
+            }
+
+            // Clear any legacy client-side data
+            localStorage.removeItem('ethere4l_session');
+            localStorage.removeItem('ethere4l_customer_token');
             sessionStorage.clear();
+
             window.location.href = 'login.html';
         });
 
@@ -605,7 +611,7 @@
         // HELPERS
         // ===============================
         function formatStatus(status) {
-            const map = {
+            var map = {
                 'PENDIENTE': 'Pendiente',
                 'PAGADO': 'Pagado',
                 'EXPIRADO': 'Expirado',
@@ -618,7 +624,7 @@
         }
 
         function formatPrice(price) {
-            const num = parseFloat(price) || 0;
+            var num = parseFloat(price) || 0;
             return num.toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
         }
 
