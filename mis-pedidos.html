@@ -3,73 +3,626 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis Pedidos | ETHEREAL</title>
+    <title>Mis Pedidos | ETHERE4L</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <link rel="stylesheet" href="assets/css/style.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .auth-container { max-width: 500px; margin: 80px auto; padding: 20px; text-align: center; }
-        .orders-container { max-width: 800px; margin: 60px auto; padding: 20px; display: none; }
-        
-        /* Auth Form */
-        .magic-form { margin-top: 30px; }
-        .magic-input { width: 100%; padding: 12px; border: 1px solid #ccc; margin-bottom: 15px; font-family: inherit; }
-        .success-message { background: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 4px; display: none; }
-        
-        /* Order List */
-        .order-card { border: 1px solid #eee; padding: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
-        .order-card:hover { border-color: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .order-info h3 { margin: 0 0 5px 0; font-size: 1.1rem; }
-        .order-meta { font-size: 0.9rem; color: #666; }
-        .order-status { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; margin-top: 5px; }
-        .status-pagado { background: #e3f2fd; color: #0d47a1; }
-        .status-enviado { background: #e8f5e9; color: #1b5e20; }
-        
-        .loader { display: none; margin: 20px auto; border: 4px solid #f3f3f3; border-top: 4px solid #000; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0a0a0a;
+            color: #111;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ========================= */
+        /* LAYOUT WRAPPER            */
+        /* ========================= */
+        .page-wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px;
+        }
+
+        /* ========================= */
+        /* HEADER BAR                */
+        /* ========================= */
+        .orders-header {
+            width: 100%;
+            max-width: 720px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0;
+            margin-bottom: 8px;
+        }
+
+        .orders-header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            color: #fff;
+        }
+
+        .orders-header .user-email {
+            font-size: 13px;
+            color: #888;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .btn-logout {
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #999;
+            background: transparent;
+            border: 1px solid #333;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-logout:hover {
+            color: #fff;
+            border-color: #666;
+        }
+
+        /* ========================= */
+        /* ORDERS LIST               */
+        /* ========================= */
+        .orders-container {
+            width: 100%;
+            max-width: 720px;
+        }
+
+        .order-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px 28px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            transition: box-shadow 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            color: inherit;
+        }
+
+        .order-card:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+        }
+
+        .order-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .order-id {
+            font-size: 15px;
+            font-weight: 600;
+            color: #111;
+            letter-spacing: -0.3px;
+        }
+
+        .order-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .status-PENDIENTE { background: #fef3c7; color: #92400e; }
+        .status-PAGADO { background: #d1fae5; color: #065f46; }
+        .status-EXPIRADO { background: #fee2e2; color: #991b1b; }
+        .status-CONFIRMADO { background: #dbeafe; color: #1e40af; }
+        .status-EMPAQUETADO { background: #e0e7ff; color: #3730a3; }
+        .status-EN_TRANSITO { background: #fef3c7; color: #92400e; }
+        .status-ENTREGADO { background: #d1fae5; color: #065f46; }
+
+        .order-card-body {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .order-meta {
+            font-size: 13px;
+            color: #888;
+            line-height: 1.6;
+        }
+
+        .order-meta span {
+            display: block;
+        }
+
+        .order-total {
+            font-size: 20px;
+            font-weight: 700;
+            color: #111;
+            letter-spacing: -0.5px;
+        }
+
+        .order-arrow {
+            font-size: 18px;
+            color: #ccc;
+            margin-left: 12px;
+            transition: transform 0.2s;
+        }
+
+        .order-card:hover .order-arrow {
+            transform: translateX(4px);
+            color: #111;
+        }
+
+        /* ========================= */
+        /* EMPTY STATE               */
+        /* ========================= */
+        .empty-state {
+            text-align: center;
+            padding: 60px 24px;
+        }
+
+        .empty-state .empty-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h2 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            font-size: 15px;
+            color: #888;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        .btn-shop {
+            display: inline-block;
+            padding: 14px 28px;
+            background: #fff;
+            color: #111;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.2s;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-shop:hover {
+            background: #f5f5f5;
+            transform: translateY(-1px);
+        }
+
+        /* ========================= */
+        /* SESSION EXPIRED CARD      */
+        /* ========================= */
+        .expired-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: #0a0a0a;
+        }
+
+        .expired-card {
+            max-width: 480px;
+            width: 100%;
+            background: #fff;
+            border-radius: 16px;
+            padding: 48px 40px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .expired-icon {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 28px;
+            background: #fef2f2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .expired-card h1 {
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            color: #111;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .expired-card .expired-desc {
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 1.7;
+            color: #666;
+            margin-bottom: 32px;
+        }
+
+        .btn-reauth {
+            display: inline-block;
+            padding: 14px 32px;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: #fff;
+            background: #111;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.1s ease;
+            text-decoration: none;
+        }
+
+        .btn-reauth:hover {
+            background: #333;
+        }
+
+        .btn-reauth:active {
+            transform: scale(0.98);
+        }
+
+        .expired-footer {
+            margin-top: 24px;
+        }
+
+        .expired-footer a {
+            font-size: 13px;
+            color: #999;
+            text-decoration: none;
+        }
+
+        .expired-footer a:hover {
+            color: #111;
+            text-decoration: underline;
+        }
+
+        /* ========================= */
+        /* LOADING STATE             */
+        /* ========================= */
+        .loading-state {
+            text-align: center;
+            padding: 80px 24px;
+        }
+
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid #333;
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #888;
+            font-size: 14px;
+        }
+
+        /* ========================= */
+        /* RESPONSIVE                */
+        /* ========================= */
+        @media (max-width: 520px) {
+            .orders-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .orders-header .user-email {
+                max-width: 100%;
+            }
+            .order-card {
+                padding: 20px;
+            }
+            .order-total {
+                font-size: 18px;
+            }
+            .expired-card {
+                padding: 36px 24px;
+                border-radius: 12px;
+            }
+            .expired-card h1 {
+                font-size: 24px;
+            }
+        }
     </style>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXX"></script>
-    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());</script>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="logo-nav">
-            <a href="index.html"><span class="logo-text-gothic">ETHERE4L</span></a>
-        </div>
-    </nav>
-
-    <div id="login-view" class="auth-container">
-        <div class="auth-icon"><i class="fa-regular fa-envelope" style="font-size: 3rem;"></i></div>
-        <h1>Acceder a mis pedidos</h1>
-        <p>Ingresa tu correo para recibir un enlace de acceso seguro.</p>
-        
-        <form id="magic-form" class="magic-form">
-            <input type="email" id="email-input" class="magic-input" placeholder="tu@email.com" required>
-            <button type="submit" id="btn-send" class="btn-black" style="width:100%">ENVIAR ENLACE MÁGICO</button>
-        </form>
-
-        <div id="loader" class="loader"></div>
-        
-        <div id="msg-success" class="success-message">
-            <i class="fa-solid fa-check"></i> 
-            Si tu correo está registrado, recibirás el enlace en unos momentos. Revisa tu bandeja de entrada (y spam).
+    <!-- LOADING STATE (shown first) -->
+    <div id="view-loading" class="page-wrapper">
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p class="loading-text">Verificando sesión...</p>
         </div>
     </div>
 
-    <div id="orders-view" class="orders-container">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-            <h2>Historial de Compras</h2>
-            <div id="orders-container" class="orders-grid"></div>
-            <button onclick="logout()" style="background:none; border:none; text-decoration:underline; cursor:pointer;">Salir</button>
-        </div>
-        <div id="orders-list">
+    <!-- SESSION EXPIRED STATE (hidden by default) -->
+    <div id="view-expired" class="expired-wrapper" style="display:none;">
+        <div class="expired-card">
+            <div class="expired-icon">🔒</div>
+
+            <h1>Sesión expirada</h1>
+
+            <p class="expired-desc">
+                Tu enlace de acceso ha expirado o no es válido. Por seguridad, necesitas solicitar uno nuevo para ver tus pedidos.
+            </p>
+
+            <a href="login.html" class="btn-reauth">
+                SOLICITAR NUEVO ACCESO
+            </a>
+
+            <div class="expired-footer">
+                <a href="catalogo.html">← Volver a la tienda</a>
             </div>
-        <div id="empty-state" style="display:none; text-align:center; padding: 40px;">
-            <p>No se encontraron pedidos recientes.</p>
-            <a href="catalogo.html" class="btn-black">Ir a la tienda</a>
         </div>
     </div>
 
-    <script src="assets/js/mis-pedidos.js" defer></script>
+    <!-- ORDERS STATE (hidden by default) -->
+    <div id="view-orders" class="page-wrapper" style="display:none;">
+        <div class="orders-header">
+            <div>
+                <h1>Mis Pedidos</h1>
+                <span class="user-email" id="display-email"></span>
+            </div>
+            <button class="btn-logout" id="btn-logout">Cerrar sesión</button>
+        </div>
+
+        <div class="orders-container" id="orders-list">
+            <!-- Orders rendered here by JS -->
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        'use strict';
+
+        // ===============================
+        // CONFIG
+        // ===============================
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000'
+            : 'https://ethere4l-backend-production.up.railway.app';
+
+        const SESSION_KEY = 'ethere4l_customer_token';
+
+        // ===============================
+        // DOM REFS
+        // ===============================
+        const viewLoading = document.getElementById('view-loading');
+        const viewExpired = document.getElementById('view-expired');
+        const viewOrders = document.getElementById('view-orders');
+        const ordersList = document.getElementById('orders-list');
+        const displayEmail = document.getElementById('display-email');
+        const btnLogout = document.getElementById('btn-logout');
+
+        // ===============================
+        // INIT: AUTHENTICATION FLOW
+        // ===============================
+        init();
+
+        async function init() {
+            // 1. Check URL for magic link token
+            const params = new URLSearchParams(window.location.search);
+            const magicToken = params.get('token');
+
+            if (magicToken) {
+                // Clean URL immediately (security: remove token from URL bar)
+                window.history.replaceState({}, '', window.location.pathname);
+
+                // Exchange magic link token for session token
+                try {
+                    const res = await fetch(`${API_BASE}/api/session/start?token=${encodeURIComponent(magicToken)}`);
+                    
+                    if (!res.ok) {
+                        showExpired();
+                        return;
+                    }
+
+                    const data = await res.json();
+                    if (data.token) {
+                        localStorage.setItem(SESSION_KEY, data.token);
+                        loadOrders(data.token);
+                        return;
+                    }
+                } catch (e) {
+                    showExpired();
+                    return;
+                }
+            }
+
+            // 2. Check existing session
+            const existingToken = localStorage.getItem(SESSION_KEY);
+            if (existingToken) {
+                // Validate token is not expired client-side (basic check)
+                try {
+                    const payload = JSON.parse(atob(existingToken.split('.')[1]));
+                    const expiresAt = payload.exp * 1000;
+                    
+                    if (Date.now() >= expiresAt) {
+                        // Token expired — clear and redirect
+                        localStorage.removeItem(SESSION_KEY);
+                        showExpired();
+                        return;
+                    }
+
+                    // Token seems valid — try loading orders
+                    loadOrders(existingToken);
+                    return;
+                } catch (e) {
+                    localStorage.removeItem(SESSION_KEY);
+                    showExpired();
+                    return;
+                }
+            }
+
+            // 3. No token at all — show expired/login
+            showExpired();
+        }
+
+        // ===============================
+        // LOAD ORDERS FROM API
+        // ===============================
+        async function loadOrders(token) {
+            try {
+                const res = await fetch(`${API_BASE}/api/customer/orders`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.status === 401 || res.status === 403) {
+                    localStorage.removeItem(SESSION_KEY);
+                    showExpired();
+                    return;
+                }
+
+                if (!res.ok) {
+                    showExpired();
+                    return;
+                }
+
+                const orders = await res.json();
+
+                // Extract email from token for display
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    displayEmail.textContent = payload.email || '';
+                } catch (e) { /* silent */ }
+
+                renderOrders(orders);
+                showOrders();
+
+            } catch (e) {
+                showExpired();
+            }
+        }
+
+        // ===============================
+        // RENDER ORDERS
+        // ===============================
+        function renderOrders(orders) {
+            if (!orders || orders.length === 0) {
+                ordersList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📦</div>
+                        <h2>No tienes pedidos aún</h2>
+                        <p>Cuando realices tu primera compra, podrás ver el estado de tu pedido aquí.</p>
+                        <a href="catalogo.html" class="btn-shop">EXPLORAR CATÁLOGO</a>
+                    </div>
+                `;
+                return;
+            }
+
+            ordersList.innerHTML = orders.map(order => {
+                const date = new Date(order.created_at).toLocaleDateString('es-MX', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+
+                const itemCount = order.items ? order.items.length : 0;
+                const statusLabel = formatStatus(order.status);
+                const shortId = order.id.slice(-8).toUpperCase();
+
+                // Build tracking URL with order_token
+                const trackUrl = `pedido-ver.html?id=${order.id}`;
+
+                return `
+                    <a href="${trackUrl}" class="order-card">
+                        <div class="order-card-top">
+                            <span class="order-id">#${shortId}</span>
+                            <span class="order-status status-${order.status}">${statusLabel}</span>
+                        </div>
+                        <div class="order-card-body">
+                            <div class="order-meta">
+                                <span>${date}</span>
+                                <span>${itemCount} artículo${itemCount !== 1 ? 's' : ''}</span>
+                            </div>
+                            <div style="display:flex;align-items:center;">
+                                <span class="order-total">$${formatPrice(order.total)}</span>
+                                <span class="order-arrow">→</span>
+                            </div>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+        }
+
+        // ===============================
+        // VIEW TOGGLES
+        // ===============================
+        function showExpired() {
+            viewLoading.style.display = 'none';
+            viewOrders.style.display = 'none';
+            viewExpired.style.display = 'flex';
+        }
+
+        function showOrders() {
+            viewLoading.style.display = 'none';
+            viewExpired.style.display = 'none';
+            viewOrders.style.display = 'flex';
+        }
+
+        // ===============================
+        // LOGOUT
+        // ===============================
+        btnLogout.addEventListener('click', function() {
+            localStorage.removeItem(SESSION_KEY);
+            sessionStorage.clear();
+            window.location.href = 'login.html';
+        });
+
+        // ===============================
+        // HELPERS
+        // ===============================
+        function formatStatus(status) {
+            const map = {
+                'PENDIENTE': 'Pendiente',
+                'PAGADO': 'Pagado',
+                'EXPIRADO': 'Expirado',
+                'CONFIRMADO': 'Confirmado',
+                'EMPAQUETADO': 'Empaquetado',
+                'EN_TRANSITO': 'En tránsito',
+                'ENTREGADO': 'Entregado'
+            };
+            return map[status] || status;
+        }
+
+        function formatPrice(price) {
+            const num = parseFloat(price) || 0;
+            return num.toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+        }
+
+    })();
+    </script>
 </body>
 </html>

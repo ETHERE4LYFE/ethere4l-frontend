@@ -2,85 +2,800 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Mi Pedido | ETHERE4L</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Pedido | ETHERE4L</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
-        /* CSS INYECTADO PARA TIMELINE (Fase 4 Requirement) */
-        .timeline-container { display: flex; justify-content: space-between; margin: 30px 0; position: relative; }
-        .timeline-container::before { content: ''; position: absolute; top: 15px; left: 0; right: 0; height: 2px; background: #eee; z-index: 1; }
-        .tl-step { position: relative; z-index: 2; text-align: center; background: #fff; padding: 0 5px; flex: 1; opacity: 0.5; }
-        .tl-step.active { opacity: 1; font-weight: bold; }
-        .tl-icon { width: 30px; height: 30px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; }
-        .tl-step.active .tl-icon { background: #000; color: #fff; }
-        .tl-text { font-size: 0.8rem; }
-        .invoice-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 15px 0; }
-        .item-left { display: flex; gap: 15px; align-items: center; }
-        .item-left img { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; background: #f0f0f0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0a0a0a;
+            color: #111;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ========================= */
+        /* LAYOUT                    */
+        /* ========================= */
+        .page-wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px;
+        }
+
+        .detail-container {
+            width: 100%;
+            max-width: 640px;
+        }
+
+        /* ========================= */
+        /* BACK NAV                  */
+        /* ========================= */
+        .back-nav {
+            margin-bottom: 24px;
+        }
+
+        .back-nav a {
+            font-size: 14px;
+            color: #888;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+
+        .back-nav a:hover {
+            color: #fff;
+        }
+
+        /* ========================= */
+        /* ORDER HEADER CARD         */
+        /* ========================= */
+        .order-header-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 32px 28px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .order-header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .order-id-large {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #111;
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .badge-PENDIENTE { background: #fef3c7; color: #92400e; }
+        .badge-PAGADO { background: #d1fae5; color: #065f46; }
+        .badge-EXPIRADO { background: #fee2e2; color: #991b1b; }
+        .badge-CONFIRMADO { background: #dbeafe; color: #1e40af; }
+        .badge-EMPAQUETADO { background: #e0e7ff; color: #3730a3; }
+        .badge-EN_TRANSITO { background: #fef3c7; color: #92400e; }
+        .badge-ENTREGADO { background: #d1fae5; color: #065f46; }
+
+        .order-meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .meta-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-value {
+            font-size: 15px;
+            font-weight: 600;
+            color: #111;
+        }
+
+        /* ========================= */
+        /* TRACKING TIMELINE         */
+        /* ========================= */
+        .tracking-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 28px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .tracking-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111;
+            margin-bottom: 20px;
+            letter-spacing: -0.3px;
+        }
+
+        .tracking-number-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: #f9fafb;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tracking-number-row .label {
+            font-size: 12px;
+            color: #888;
+            font-weight: 500;
+        }
+
+        .tracking-number-row .value {
+            font-size: 14px;
+            font-weight: 700;
+            color: #111;
+            letter-spacing: 0.5px;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 28px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 8px;
+            bottom: 8px;
+            width: 2px;
+            background: #e5e7eb;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 24px;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -24px;
+            top: 4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            border: 3px solid #fff;
+            box-shadow: 0 0 0 2px #e5e7eb;
+        }
+
+        .timeline-item:first-child .timeline-dot {
+            background: #111;
+            box-shadow: 0 0 0 2px #111;
+        }
+
+        .timeline-status {
+            font-size: 14px;
+            font-weight: 600;
+            color: #111;
+            margin-bottom: 4px;
+        }
+
+        .timeline-desc {
+            font-size: 13px;
+            color: #888;
+            line-height: 1.5;
+        }
+
+        .timeline-date {
+            font-size: 12px;
+            color: #bbb;
+            margin-top: 4px;
+        }
+
+        /* ========================= */
+        /* ITEMS CARD                */
+        /* ========================= */
+        .items-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 28px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .items-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111;
+            margin-bottom: 20px;
+            letter-spacing: -0.3px;
+        }
+
+        .item-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .item-row:last-child {
+            border-bottom: none;
+        }
+
+        .item-thumb {
+            width: 56px;
+            height: 56px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #f5f5f5;
+            flex-shrink: 0;
+        }
+
+        .item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #111;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .item-detail {
+            font-size: 12px;
+            color: #888;
+            margin-top: 3px;
+        }
+
+        .item-price {
+            font-size: 15px;
+            font-weight: 700;
+            color: #111;
+            white-space: nowrap;
+        }
+
+        /* ========================= */
+        /* TOTALS                    */
+        /* ========================= */
+        .totals-section {
+            padding-top: 16px;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 8px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .total-row.grand {
+            font-size: 18px;
+            font-weight: 700;
+            color: #111;
+            padding-top: 12px;
+            border-top: 2px solid #111;
+            margin-top: 8px;
+        }
+
+        /* ========================= */
+        /* SESSION EXPIRED           */
+        /* ========================= */
+        .expired-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: #0a0a0a;
+        }
+
+        .expired-card {
+            max-width: 480px;
+            width: 100%;
+            background: #fff;
+            border-radius: 16px;
+            padding: 48px 40px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .expired-icon {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 28px;
+            background: #fef2f2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .expired-card h1 {
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            color: #111;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .expired-card .expired-desc {
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 1.7;
+            color: #666;
+            margin-bottom: 32px;
+        }
+
+        .btn-reauth {
+            display: inline-block;
+            padding: 14px 32px;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: #fff;
+            background: #111;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.1s ease;
+            text-decoration: none;
+        }
+
+        .btn-reauth:hover { background: #333; }
+        .btn-reauth:active { transform: scale(0.98); }
+
+        .expired-footer {
+            margin-top: 24px;
+        }
+
+        .expired-footer a {
+            font-size: 13px;
+            color: #999;
+            text-decoration: none;
+        }
+
+        .expired-footer a:hover {
+            color: #111;
+            text-decoration: underline;
+        }
+
+        /* ========================= */
+        /* LOADING                   */
+        /* ========================= */
+        .loading-state {
+            text-align: center;
+            padding: 80px 24px;
+        }
+
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid #333;
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loading-text {
+            color: #888;
+            font-size: 14px;
+        }
+
+        /* ========================= */
+        /* ERROR CARD                */
+        /* ========================= */
+        .error-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 40px 28px;
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .error-card h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #111;
+            margin-bottom: 12px;
+        }
+
+        .error-card p {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        /* ========================= */
+        /* RESPONSIVE                */
+        /* ========================= */
+        @media (max-width: 520px) {
+            .order-header-card { padding: 24px 20px; }
+            .order-meta-grid { grid-template-columns: 1fr; gap: 12px; }
+            .tracking-card, .items-card { padding: 20px; }
+            .order-id-large { font-size: 18px; }
+            .expired-card { padding: 36px 24px; border-radius: 12px; }
+            .expired-card h1 { font-size: 24px; }
+        }
     </style>
 </head>
 <body>
 
-<nav class="navbar">
-    <div class="logo-nav">
-        <a href="index.html">
-            <span class="logo-text-gothic">ETHERE4L</span>
-        </a>
+    <!-- LOADING -->
+    <div id="view-loading" class="page-wrapper">
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p class="loading-text">Cargando pedido...</p>
+        </div>
     </div>
-</nav>
 
-<div class="invoice-container">
-    <div class="invoice-header">
-        <h2 id="order-id">Cargando...</h2>
-        <p id="order-status"></p>
+    <!-- SESSION EXPIRED -->
+    <div id="view-expired" class="expired-wrapper" style="display:none;">
+        <div class="expired-card">
+            <div class="expired-icon">🔒</div>
 
-        <div class="timeline-container">
-            <div class="tl-step active" id="step-confirmed">
-                <div class="tl-icon">✓</div>
-                <div class="tl-text">Confirmado</div>
-            </div>
+            <h1>Acceso no autorizado</h1>
 
-            <div class="tl-step" id="step-packed">
-                <div class="tl-icon">📦</div>
-                <div class="tl-text">Empaquetado</div>
-            </div>
+            <p class="expired-desc">
+                El enlace para ver este pedido ha expirado o no es válido. Solicita un nuevo enlace de acceso desde tu email.
+            </p>
 
-            <div class="tl-step" id="step-transit">
-                <div class="tl-icon">🚚</div>
-                <div class="tl-text">En tránsito</div>
-            </div>
+            <a href="login.html" class="btn-reauth">
+                SOLICITAR NUEVO ACCESO
+            </a>
 
-            <div class="tl-step" id="step-delivered">
-                <div class="tl-icon">🏠</div>
-                <div class="tl-text">Entregado</div>
+            <div class="expired-footer">
+                <a href="catalogo.html">← Volver a la tienda</a>
             </div>
         </div>
-
-        <div id="tracking-info" style="margin-top:20px"></div>
-        
-        <div id="trust-message-container" class="eth-trust-message" style="display:none">
-            📦 Cuando tu pedido avance de estado, recibirás una notificación automática por correo.
     </div>
 
+    <!-- ORDER DETAIL -->
+    <div id="view-detail" class="page-wrapper" style="display:none;">
+        <div class="detail-container">
+
+            <div class="back-nav">
+                <a href="mis-pedidos.html">← Volver a mis pedidos</a>
+            </div>
+
+            <!-- HEADER -->
+            <div class="order-header-card" id="order-header">
+                <!-- Rendered by JS -->
+            </div>
+
+            <!-- TRACKING -->
+            <div class="tracking-card" id="order-tracking" style="display:none;">
+                <!-- Rendered by JS -->
+            </div>
+
+            <!-- ITEMS -->
+            <div class="items-card" id="order-items">
+                <!-- Rendered by JS -->
+            </div>
+
+        </div>
     </div>
-    <div class="pedido-actions-wrapper">
-    <div id="pedido-actions"></div>
-</div>
-<h3>Detalle de productos</h3>
-<div id="items-list">
-    <p style="color:#999">Cargando productos...</p>
-</div>
 
+    <script>
+    (function() {
+        'use strict';
 
-</div>
+        // ===============================
+        // CONFIG
+        // ===============================
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000'
+            : 'https://ethere4l-backend-production.up.railway.app';
 
-<div id="financial-summary" style="padding:20px"></div>
+        // ===============================
+        // DOM
+        // ===============================
+        const viewLoading = document.getElementById('view-loading');
+        const viewExpired = document.getElementById('view-expired');
+        const viewDetail = document.getElementById('view-detail');
+        const orderHeader = document.getElementById('order-header');
+        const orderTracking = document.getElementById('order-tracking');
+        const orderItems = document.getElementById('order-items');
 
+        // ===============================
+        // INIT
+        // ===============================
+        init();
 
-    <div style="padding:20px; text-align:right; border-top: 2px solid #000;">
-        <strong id="order-total" style="font-size: 1.2rem;"></strong>
-    </div>
-</div>
+        async function init() {
+            const params = new URLSearchParams(window.location.search);
+            const orderId = params.get('id');
+            const token = params.get('token');
 
-<script src="assets/js/pedido.js" defer></script>
+            // Security: clean URL after extracting params
+            if (token) {
+                window.history.replaceState({}, '', `${window.location.pathname}?id=${orderId}`);
+            }
+
+            // Validate required params
+            if (!orderId || !token) {
+                showExpired();
+                return;
+            }
+
+            // Validate token structure (basic JWT check)
+            if (token.split('.').length !== 3) {
+                showExpired();
+                return;
+            }
+
+            // Check token expiration client-side
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                if (Date.now() >= payload.exp * 1000) {
+                    showExpired();
+                    return;
+                }
+            } catch (e) {
+                showExpired();
+                return;
+            }
+
+            // Fetch order data from API
+            try {
+                const res = await fetch(`${API_BASE}/api/orders/track/${orderId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.status === 401 || res.status === 403) {
+                    showExpired();
+                    return;
+                }
+
+                if (res.status === 404) {
+                    showError('Pedido no encontrado', 'El pedido solicitado no existe o fue eliminado.');
+                    return;
+                }
+
+                if (!res.ok) {
+                    showError('Error', 'No se pudo cargar la información del pedido.');
+                    return;
+                }
+
+                const order = await res.json();
+                renderOrder(order);
+                showDetail();
+
+            } catch (e) {
+                showError('Error de conexión', 'No se pudo conectar con el servidor. Intenta de nuevo.');
+            }
+        }
+
+        // ===============================
+        // RENDER ORDER
+        // ===============================
+        function renderOrder(order) {
+            const shortId = order.id.slice(-8).toUpperCase();
+            const date = new Date(order.date).toLocaleDateString('es-MX', {
+                year: 'numeric', month: 'long', day: 'numeric'
+            });
+
+            const statusLabel = formatStatus(order.payment_status || order.status);
+            const statusClass = order.payment_status || order.status;
+
+            // HEADER
+            orderHeader.innerHTML = `
+                <div class="order-header-top">
+                    <span class="order-id-large">#${shortId}</span>
+                    <span class="status-badge badge-${statusClass}">${statusLabel}</span>
+                </div>
+                <div class="order-meta-grid">
+                    <div class="meta-item">
+                        <span class="meta-label">Fecha</span>
+                        <span class="meta-value">${date}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Total</span>
+                        <span class="meta-value">$${formatPrice(order.total)}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Envío</span>
+                        <span class="meta-value">$${formatPrice(order.shipping_cost)}</span>
+                    </div>
+                    ${order.tracking_number ? `
+                    <div class="meta-item">
+                        <span class="meta-label">Guía</span>
+                        <span class="meta-value">${order.tracking_number}</span>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+
+            // TRACKING TIMELINE
+            const history = order.tracking_history || [];
+            if (history.length > 0) {
+                orderTracking.style.display = 'block';
+
+                let trackingHTML = '<h3>Seguimiento de envío</h3>';
+
+                if (order.tracking_number) {
+                    trackingHTML += `
+                        <div class="tracking-number-row">
+                            <span class="label">Número de guía</span>
+                            <span class="value">${order.tracking_number}</span>
+                        </div>
+                    `;
+                }
+
+                trackingHTML += '<div class="timeline">';
+
+                for (const event of history) {
+                    const eventDate = new Date(event.timestamp).toLocaleDateString('es-MX', {
+                        month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                    });
+
+                    trackingHTML += `
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-status">${formatStatus(event.status)}</div>
+                            <div class="timeline-desc">${event.description || ''}</div>
+                            <div class="timeline-date">${eventDate}</div>
+                        </div>
+                    `;
+                }
+
+                trackingHTML += '</div>';
+                orderTracking.innerHTML = trackingHTML;
+            }
+
+            // ITEMS
+            const items = order.items || [];
+            let itemsHTML = '<h3>Artículos</h3>';
+
+            for (const item of items) {
+                const imgSrc = item.imagen || '';
+                const imgTag = imgSrc 
+                    ? `<img src="${imgSrc}" alt="${item.nombre}" class="item-thumb" loading="lazy">`
+                    : `<div class="item-thumb" style="display:flex;align-items:center;justify-content:center;font-size:20px;">📦</div>`;
+
+                itemsHTML += `
+                    <div class="item-row">
+                        ${imgTag}
+                        <div class="item-info">
+                            <div class="item-name">${item.nombre || 'Producto'}</div>
+                            <div class="item-detail">
+                                ${item.talla ? `Talla: ${item.talla}` : ''}
+                                ${item.cantidad > 1 ? ` · Qty: ${item.cantidad}` : ''}
+                            </div>
+                        </div>
+                        <span class="item-price">$${formatPrice(item.subtotal || item.precio)}</span>
+                    </div>
+                `;
+            }
+
+            // Totals
+            const subtotal = items.reduce((s, i) => s + (parseFloat(i.subtotal || i.precio || 0)), 0);
+            const shipping = parseFloat(order.shipping_cost || 0);
+            const total = parseFloat(order.total || 0);
+
+            itemsHTML += `
+                <div class="totals-section">
+                    <div class="total-row">
+                        <span>Subtotal</span>
+                        <span>$${formatPrice(subtotal)}</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Envío</span>
+                        <span>$${formatPrice(shipping)}</span>
+                    </div>
+                    <div class="total-row grand">
+                        <span>Total</span>
+                        <span>$${formatPrice(total)}</span>
+                    </div>
+                </div>
+            `;
+
+            orderItems.innerHTML = itemsHTML;
+        }
+
+        // ===============================
+        // VIEW TOGGLES
+        // ===============================
+        function showExpired() {
+            viewLoading.style.display = 'none';
+            viewDetail.style.display = 'none';
+            viewExpired.style.display = 'flex';
+        }
+
+        function showDetail() {
+            viewLoading.style.display = 'none';
+            viewExpired.style.display = 'none';
+            viewDetail.style.display = 'flex';
+        }
+
+        function showError(title, message) {
+            viewLoading.style.display = 'none';
+            viewExpired.style.display = 'none';
+            viewDetail.style.display = 'flex';
+
+            document.querySelector('.detail-container').innerHTML = `
+                <div class="back-nav">
+                    <a href="mis-pedidos.html">← Volver a mis pedidos</a>
+                </div>
+                <div class="error-card">
+                    <h2>${title}</h2>
+                    <p>${message}</p>
+                    <a href="catalogo.html" style="color:#111;font-weight:600;text-decoration:none;">
+                        Ir al catálogo →
+                    </a>
+                </div>
+            `;
+        }
+
+        // ===============================
+        // HELPERS
+        // ===============================
+        function formatStatus(status) {
+            const map = {
+                'PENDIENTE': 'Pendiente',
+                'PAGADO': 'Pagado',
+                'EXPIRADO': 'Expirado',
+                'CONFIRMADO': 'Confirmado',
+                'EMPAQUETADO': 'Empaquetado',
+                'EN_TRANSITO': 'En tránsito',
+                'ENTREGADO': 'Entregado'
+            };
+            return map[status] || status || '';
+        }
+
+        function formatPrice(price) {
+            const num = parseFloat(price) || 0;
+            return num.toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+        }
+
+    })();
+    </script>
 </body>
 </html>

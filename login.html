@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceder a mis pedidos | ETHERE4L</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        .login-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: #0a0a0a;
+        }
+
+        .login-card {
+            max-width: 480px;
+            width: 100%;
+            background: #fff;
+            border-radius: 16px;
+            padding: 48px 40px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .login-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 24px;
+            background: #f5f5f5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .login-card h1 {
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            color: #111;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .login-card .subtitle {
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 1.6;
+            color: #666;
+            margin-bottom: 32px;
+        }
+
+        .form-field {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .form-field input {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 15px;
+            border: 1.5px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            background: #fafafa;
+            color: #111;
+        }
+
+        .form-field input:focus {
+            border-color: #111;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
+            background: #fff;
+        }
+
+        .form-field input::placeholder {
+            color: #aaa;
+        }
+
+        .btn-login {
+            display: block;
+            width: 100%;
+            padding: 14px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: #fff;
+            background: #111;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.1s ease;
+            margin-top: 8px;
+        }
+
+        .btn-login:hover {
+            background: #333;
+        }
+
+        .btn-login:active {
+            transform: scale(0.98);
+        }
+
+        .btn-login:disabled {
+            background: #999;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-footer {
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .login-footer p {
+            font-size: 13px;
+            color: #999;
+            line-height: 1.5;
+        }
+
+        .login-footer a {
+            color: #111;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Status messages */
+        .status-msg {
+            padding: 14px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .status-msg.success {
+            display: block;
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .status-msg.error {
+            display: block;
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .status-msg.info {
+            display: block;
+            background: #eff6ff;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        /* Cooldown timer */
+        .cooldown-text {
+            font-size: 13px;
+            color: #999;
+            margin-top: 12px;
+            display: none;
+        }
+
+        .cooldown-text.visible {
+            display: block;
+        }
+
+        /* Back to store link */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: #111;
+        }
+
+        @media (max-width: 520px) {
+            .login-card {
+                padding: 36px 24px;
+                border-radius: 12px;
+            }
+            .login-card h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-card">
+            <div class="login-icon">📧</div>
+
+            <h1>Accede a tus pedidos</h1>
+
+            <p class="subtitle">
+                Ingresa el email que usaste en tu compra. Te enviaremos un enlace seguro para ver el estado de tus pedidos.
+            </p>
+
+            <div id="status-message" class="status-msg"></div>
+
+            <form id="login-form">
+                <div class="form-field">
+                    <label for="email">Correo electrónico</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="tu@email.com" 
+                        required 
+                        autocomplete="email"
+                        spellcheck="false">
+                </div>
+
+                <button type="submit" class="btn-login" id="btn-submit">
+                    ENVIAR ENLACE DE ACCESO
+                </button>
+
+                <p class="cooldown-text" id="cooldown-text"></p>
+            </form>
+
+            <div class="login-footer">
+                <p>Solo se envía un enlace si existen pedidos asociados a tu email. El enlace expira en 24 horas.</p>
+                <a href="catalogo.html" class="back-link">← Volver a la tienda</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        'use strict';
+
+        // ===============================
+        // CONFIG
+        // ===============================
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000'
+            : 'https://ethere4l-backend-production.up.railway.app';
+
+        const COOLDOWN_SECONDS = 60;
+        const COOLDOWN_KEY = 'ethere4l_magic_link_cooldown';
+
+        const form = document.getElementById('login-form');
+        const emailInput = document.getElementById('email');
+        const btnSubmit = document.getElementById('btn-submit');
+        const statusMsg = document.getElementById('status-message');
+        const cooldownText = document.getElementById('cooldown-text');
+
+        // ===============================
+        // SECURITY: Clear any stale sessions on login page
+        // ===============================
+        localStorage.removeItem('ethere4l_session');
+        localStorage.removeItem('ethere4l_customer_token');
+        sessionStorage.removeItem('ethere4l_session');
+        sessionStorage.removeItem('ethere4l_customer_token');
+
+        // ===============================
+        // COOLDOWN CHECK ON LOAD
+        // ===============================
+        checkCooldown();
+
+        // ===============================
+        // FORM SUBMIT
+        // ===============================
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Check cooldown
+            const remaining = getCooldownRemaining();
+            if (remaining > 0) {
+                showStatus('info', `Espera ${remaining} segundos antes de solicitar otro enlace.`);
+                return;
+            }
+
+            const email = emailInput.value.trim().toLowerCase();
+            if (!email || !email.includes('@')) {
+                showStatus('error', 'Ingresa un email válido.');
+                return;
+            }
+
+            // Disable button
+            btnSubmit.disabled = true;
+            btnSubmit.textContent = 'ENVIANDO...';
+
+            try {
+                const res = await fetch(`${API_BASE}/api/magic-link`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await res.json();
+
+                // Always show success (anti-enumeration — backend always returns success)
+                showStatus('success', 
+                    'Si existe una cuenta con ese email, recibirás un enlace de acceso en los próximos minutos. Revisa tu bandeja de entrada y spam.'
+                );
+
+                // Set cooldown
+                setCooldown();
+                startCooldownTimer();
+
+                // Clear input
+                emailInput.value = '';
+
+            } catch (err) {
+                showStatus('error', 'Error de conexión. Intenta de nuevo.');
+                btnSubmit.disabled = false;
+                btnSubmit.textContent = 'ENVIAR ENLACE DE ACCESO';
+            }
+        });
+
+        // ===============================
+        // HELPERS
+        // ===============================
+        function showStatus(type, message) {
+            statusMsg.className = `status-msg ${type}`;
+            statusMsg.textContent = message;
+        }
+
+        function setCooldown() {
+            const expiresAt = Date.now() + (COOLDOWN_SECONDS * 1000);
+            localStorage.setItem(COOLDOWN_KEY, expiresAt.toString());
+        }
+
+        function getCooldownRemaining() {
+            const expiresAt = parseInt(localStorage.getItem(COOLDOWN_KEY) || '0');
+            const remaining = Math.ceil((expiresAt - Date.now()) / 1000);
+            return remaining > 0 ? remaining : 0;
+        }
+
+        function checkCooldown() {
+            const remaining = getCooldownRemaining();
+            if (remaining > 0) {
+                startCooldownTimer();
+            }
+        }
+
+        function startCooldownTimer() {
+            btnSubmit.disabled = true;
+
+            const tick = () => {
+                const remaining = getCooldownRemaining();
+                if (remaining <= 0) {
+                    btnSubmit.disabled = false;
+                    btnSubmit.textContent = 'ENVIAR ENLACE DE ACCESO';
+                    cooldownText.classList.remove('visible');
+                    return;
+                }
+                btnSubmit.textContent = `ESPERA ${remaining}s`;
+                cooldownText.textContent = `Podrás solicitar otro enlace en ${remaining} segundos`;
+                cooldownText.classList.add('visible');
+                setTimeout(tick, 1000);
+            };
+
+            tick();
+        }
+    })();
+    </script>
+</body>
+</html>
