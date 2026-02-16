@@ -7,7 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     var configScript = document.createElement('script');
     configScript.src = 'assets/js/ethere4l-config.js';
     configScript.onload = function() {
-        var API_URL = window.ETHERE4L_CONFIG ? window.ETHERE4L_CONFIG.API_BASE : 'https://ethereal-backend-production-6060.up.railway.app';
+        var API_URL = window.ETHERE4L_CONFIG ? window.ETHERE4L_CONFIG.API_BASE : "https://api.ethere4l.com";
+
         window._CHECKOUT_API_URL = API_URL;
 
         var params = new URLSearchParams(window.location.search);
@@ -31,7 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
 function getApiUrl() {
     if (window.ETHERE4L_CONFIG) return window.ETHERE4L_CONFIG.API_BASE;
     if (window._CHECKOUT_API_URL) return window._CHECKOUT_API_URL;
-    return 'https://ethereal-backend-production-6060.up.railway.app';
+    return  "https://api.ethere4l.com";
+
 }
 
 function initCheckout() {

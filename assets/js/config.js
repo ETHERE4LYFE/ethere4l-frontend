@@ -1,7 +1,8 @@
 // assets/js/config.js
 const API_BASE = window.location.hostname.includes('localhost')
   ? 'http://localhost:3000'
-  : 'https://ethereal-backend-production-6060.up.railway.app';
+  : "https://api.ethere4l.com";
+
 
     
 

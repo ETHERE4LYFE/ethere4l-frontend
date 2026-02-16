@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         const res = await fetch(
-            `https://ethereal-backend-production-6060.up.railway.app/api/orders/track/${orderId}`,
+            `https://api.ethere4l.com;${orderId}`,
             { headers: { Authorization: `Bearer ${token}` } }
         );
 

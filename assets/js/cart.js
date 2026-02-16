@@ -5,7 +5,8 @@
 // Clave para guardar en el navegador
 const CART_KEY = 'ethereal_cart_v1';
 // URL del Backend (Producción Railway)
-const PRODUCTION_API = 'https://ethereal-backend-production-6060.up.railway.app/api/create-checkout-session';
+const API_PRODUCTION = "https://api.ethere4l.com";
+
 
 // 1. Obtener carrito actual
 function getCart() {

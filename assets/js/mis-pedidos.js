@@ -43,7 +43,8 @@ async function initCustomerOrders(token) {
 
 
 
-const API_BASE = 'https://ethereal-backend-production-6060.up.railway.app';
+const API_BASE = "https://api.ethere4l.com";
+
 
 document.addEventListener('DOMContentLoaded', () => {
     function generateLegacyToken(orderId) {

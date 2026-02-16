@@ -14,6 +14,7 @@
     window.ETHERE4L_CONFIG = {
         API_BASE: isLocal
             ? 'http://localhost:3000'
-            : 'https://ethereal-backend-production-6060.up.railway.app'
+            :  "https://api.ethere4l.com"
+
     };
 })();
