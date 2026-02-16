@@ -11,85 +11,16 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            background: #0a0a0a;
-            color: #111;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* ========================= */
-        /* LAYOUT                    */
-        /* ========================= */
-        .page-wrapper {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 24px;
-        }
-
-        .detail-container {
-            width: 100%;
-            max-width: 640px;
-        }
-
-        /* ========================= */
-        /* BACK NAV                  */
-        /* ========================= */
-        .back-nav {
-            margin-bottom: 24px;
-        }
-
-        .back-nav a {
-            font-size: 14px;
-            color: #888;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: color 0.2s;
-        }
-
-        .back-nav a:hover {
-            color: #fff;
-        }
-
-        /* ========================= */
-        /* ORDER HEADER CARD         */
-        /* ========================= */
-        .order-header-card {
-            background: #fff;
-            border-radius: 14px;
-            padding: 32px 28px;
-            margin-bottom: 16px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-        }
-
-        .order-header-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .order-id-large {
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: #111;
-        }
-
-        .status-badge {
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
+        body { background: #0a0a0a; color: #111; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+        .page-wrapper { min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 24px; }
+        .detail-container { width: 100%; max-width: 640px; }
+        .back-nav { margin-bottom: 24px; }
+        .back-nav a { font-size: 14px; color: #888; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s; }
+        .back-nav a:hover { color: #fff; }
+        .order-header-card { background: #fff; border-radius: 14px; padding: 32px 28px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+        .order-header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .order-id-large { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #111; }
+        .status-badge { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
         .badge-PENDIENTE { background: #fef3c7; color: #92400e; }
         .badge-PAGADO { background: #d1fae5; color: #065f46; }
         .badge-EXPIRADO { background: #fee2e2; color: #991b1b; }
@@ -97,365 +28,54 @@
         .badge-EMPAQUETADO { background: #e0e7ff; color: #3730a3; }
         .badge-EN_TRANSITO { background: #fef3c7; color: #92400e; }
         .badge-ENTREGADO { background: #d1fae5; color: #065f46; }
-
-        .order-meta-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        .meta-item {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .meta-label {
-            font-size: 11px;
-            font-weight: 500;
-            color: #999;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .meta-value {
-            font-size: 15px;
-            font-weight: 600;
-            color: #111;
-        }
-
-        /* ========================= */
-        /* TRACKING TIMELINE         */
-        /* ========================= */
-        .tracking-card {
-            background: #fff;
-            border-radius: 14px;
-            padding: 28px;
-            margin-bottom: 16px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-        }
-
-        .tracking-card h3 {
-            font-size: 16px;
-            font-weight: 600;
-            color: #111;
-            margin-bottom: 20px;
-            letter-spacing: -0.3px;
-        }
-
-        .tracking-number-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px;
-            background: #f9fafb;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        .tracking-number-row .label {
-            font-size: 12px;
-            color: #888;
-            font-weight: 500;
-        }
-
-        .tracking-number-row .value {
-            font-size: 14px;
-            font-weight: 700;
-            color: #111;
-            letter-spacing: 0.5px;
-        }
-
-        .timeline {
-            position: relative;
-            padding-left: 28px;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 7px;
-            top: 8px;
-            bottom: 8px;
-            width: 2px;
-            background: #e5e7eb;
-        }
-
-        .timeline-item {
-            position: relative;
-            padding-bottom: 24px;
-        }
-
-        .timeline-item:last-child {
-            padding-bottom: 0;
-        }
-
-        .timeline-dot {
-            position: absolute;
-            left: -24px;
-            top: 4px;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #e5e7eb;
-            border: 3px solid #fff;
-            box-shadow: 0 0 0 2px #e5e7eb;
-        }
-
-        .timeline-item:first-child .timeline-dot {
-            background: #111;
-            box-shadow: 0 0 0 2px #111;
-        }
-
-        .timeline-status {
-            font-size: 14px;
-            font-weight: 600;
-            color: #111;
-            margin-bottom: 4px;
-        }
-
-        .timeline-desc {
-            font-size: 13px;
-            color: #888;
-            line-height: 1.5;
-        }
-
-        .timeline-date {
-            font-size: 12px;
-            color: #bbb;
-            margin-top: 4px;
-        }
-
-        /* ========================= */
-        /* ITEMS CARD                */
-        /* ========================= */
-        .items-card {
-            background: #fff;
-            border-radius: 14px;
-            padding: 28px;
-            margin-bottom: 16px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-        }
-
-        .items-card h3 {
-            font-size: 16px;
-            font-weight: 600;
-            color: #111;
-            margin-bottom: 20px;
-            letter-spacing: -0.3px;
-        }
-
-        .item-row {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 14px 0;
-            border-bottom: 1px solid #f3f4f6;
-        }
-
-        .item-row:last-child {
-            border-bottom: none;
-        }
-
-        .item-thumb {
-            width: 56px;
-            height: 56px;
-            border-radius: 8px;
-            object-fit: cover;
-            background: #f5f5f5;
-            flex-shrink: 0;
-        }
-
-        .item-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .item-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: #111;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .item-detail {
-            font-size: 12px;
-            color: #888;
-            margin-top: 3px;
-        }
-
-        .item-price {
-            font-size: 15px;
-            font-weight: 700;
-            color: #111;
-            white-space: nowrap;
-        }
-
-        /* ========================= */
-        /* TOTALS                    */
-        /* ========================= */
-        .totals-section {
-            padding-top: 16px;
-            border-top: 1px solid #e5e7eb;
-            margin-top: 8px;
-        }
-
-        .total-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 6px 0;
-            font-size: 14px;
-            color: #666;
-        }
-
-        .total-row.grand {
-            font-size: 18px;
-            font-weight: 700;
-            color: #111;
-            padding-top: 12px;
-            border-top: 2px solid #111;
-            margin-top: 8px;
-        }
-
-        /* ========================= */
-        /* SESSION EXPIRED           */
-        /* ========================= */
-        .expired-wrapper {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            background: #0a0a0a;
-        }
-
-        .expired-card {
-            max-width: 480px;
-            width: 100%;
-            background: #fff;
-            border-radius: 16px;
-            padding: 48px 40px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.08);
-            text-align: center;
-        }
-
-        .expired-icon {
-            width: 72px;
-            height: 72px;
-            margin: 0 auto 28px;
-            background: #fef2f2;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-        }
-
-        .expired-card h1 {
-            font-size: 28px;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-            color: #111;
-            margin-bottom: 16px;
-            line-height: 1.2;
-        }
-
-        .expired-card .expired-desc {
-            font-size: 15px;
-            font-weight: 400;
-            line-height: 1.7;
-            color: #666;
-            margin-bottom: 32px;
-        }
-
-        .btn-reauth {
-            display: inline-block;
-            padding: 14px 32px;
-            font-size: 15px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            color: #fff;
-            background: #111;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background 0.2s ease, transform 0.1s ease;
-            text-decoration: none;
-        }
-
+        .order-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .meta-item { display: flex; flex-direction: column; gap: 4px; }
+        .meta-label { font-size: 11px; font-weight: 500; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
+        .meta-value { font-size: 15px; font-weight: 600; color: #111; }
+        .tracking-card { background: #fff; border-radius: 14px; padding: 28px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+        .tracking-card h3 { font-size: 16px; font-weight: 600; color: #111; margin-bottom: 20px; letter-spacing: -0.3px; }
+        .tracking-number-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: #f9fafb; border-radius: 10px; margin-bottom: 20px; }
+        .tracking-number-row .label { font-size: 12px; color: #888; font-weight: 500; }
+        .tracking-number-row .value { font-size: 14px; font-weight: 700; color: #111; letter-spacing: 0.5px; }
+        .timeline { position: relative; padding-left: 28px; }
+        .timeline::before { content: ''; position: absolute; left: 7px; top: 8px; bottom: 8px; width: 2px; background: #e5e7eb; }
+        .timeline-item { position: relative; padding-bottom: 24px; }
+        .timeline-item:last-child { padding-bottom: 0; }
+        .timeline-dot { position: absolute; left: -24px; top: 4px; width: 16px; height: 16px; border-radius: 50%; background: #e5e7eb; border: 3px solid #fff; box-shadow: 0 0 0 2px #e5e7eb; }
+        .timeline-item:first-child .timeline-dot { background: #111; box-shadow: 0 0 0 2px #111; }
+        .timeline-status { font-size: 14px; font-weight: 600; color: #111; margin-bottom: 4px; }
+        .timeline-desc { font-size: 13px; color: #888; line-height: 1.5; }
+        .timeline-date { font-size: 12px; color: #bbb; margin-top: 4px; }
+        .items-card { background: #fff; border-radius: 14px; padding: 28px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+        .items-card h3 { font-size: 16px; font-weight: 600; color: #111; margin-bottom: 20px; letter-spacing: -0.3px; }
+        .item-row { display: flex; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid #f3f4f6; }
+        .item-row:last-child { border-bottom: none; }
+        .item-thumb { width: 56px; height: 56px; border-radius: 8px; object-fit: cover; background: #f5f5f5; flex-shrink: 0; }
+        .item-info { flex: 1; min-width: 0; }
+        .item-name { font-size: 14px; font-weight: 600; color: #111; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .item-detail { font-size: 12px; color: #888; margin-top: 3px; }
+        .item-price { font-size: 15px; font-weight: 700; color: #111; white-space: nowrap; }
+        .totals-section { padding-top: 16px; border-top: 1px solid #e5e7eb; margin-top: 8px; }
+        .total-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: 14px; color: #666; }
+        .total-row.grand { font-size: 18px; font-weight: 700; color: #111; padding-top: 12px; border-top: 2px solid #111; margin-top: 8px; }
+        .expired-wrapper { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; background: #0a0a0a; }
+        .expired-card { max-width: 480px; width: 100%; background: #fff; border-radius: 16px; padding: 48px 40px; box-shadow: 0 4px 24px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.08); text-align: center; }
+        .expired-icon { width: 72px; height: 72px; margin: 0 auto 28px; background: #fef2f2; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; }
+        .expired-card h1 { font-size: 28px; font-weight: 600; letter-spacing: -0.5px; color: #111; margin-bottom: 16px; line-height: 1.2; }
+        .expired-card .expired-desc { font-size: 15px; font-weight: 400; line-height: 1.7; color: #666; margin-bottom: 32px; }
+        .btn-reauth { display: inline-block; padding: 14px 32px; font-size: 15px; font-weight: 600; letter-spacing: 0.5px; color: #fff; background: #111; border: none; border-radius: 10px; cursor: pointer; transition: background 0.2s ease, transform 0.1s ease; text-decoration: none; }
         .btn-reauth:hover { background: #333; }
         .btn-reauth:active { transform: scale(0.98); }
-
-        .expired-footer {
-            margin-top: 24px;
-        }
-
-        .expired-footer a {
-            font-size: 13px;
-            color: #999;
-            text-decoration: none;
-        }
-
-        .expired-footer a:hover {
-            color: #111;
-            text-decoration: underline;
-        }
-
-        /* ========================= */
-        /* LOADING                   */
-        /* ========================= */
-        .loading-state {
-            text-align: center;
-            padding: 80px 24px;
-        }
-
-        .spinner {
-            width: 36px;
-            height: 36px;
-            border: 3px solid #333;
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 20px;
-        }
-
+        .expired-footer { margin-top: 24px; }
+        .expired-footer a { font-size: 13px; color: #999; text-decoration: none; }
+        .expired-footer a:hover { color: #111; text-decoration: underline; }
+        .loading-state { text-align: center; padding: 80px 24px; }
+        .spinner { width: 36px; height: 36px; border: 3px solid #333; border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
-        .loading-text {
-            color: #888;
-            font-size: 14px;
-        }
-
-        /* ========================= */
-        /* ERROR CARD                */
-        /* ========================= */
-        .error-card {
-            background: #fff;
-            border-radius: 14px;
-            padding: 40px 28px;
-            text-align: center;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-        }
-
-        .error-card h2 {
-            font-size: 20px;
-            font-weight: 600;
-            color: #111;
-            margin-bottom: 12px;
-        }
-
-        .error-card p {
-            font-size: 14px;
-            color: #888;
-            margin-bottom: 20px;
-        }
-
-        /* ========================= */
-        /* RESPONSIVE                */
-        /* ========================= */
+        .loading-text { color: #888; font-size: 14px; }
+        .error-card { background: #fff; border-radius: 14px; padding: 40px 28px; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+        .error-card h2 { font-size: 20px; font-weight: 600; color: #111; margin-bottom: 12px; }
+        .error-card p { font-size: 14px; color: #888; margin-bottom: 20px; }
         @media (max-width: 520px) {
             .order-header-card { padding: 24px 20px; }
             .order-meta-grid { grid-template-columns: 1fr; gap: 12px; }
@@ -468,7 +88,6 @@
 </head>
 <body>
 
-    <!-- LOADING -->
     <div id="view-loading" class="page-wrapper">
         <div class="loading-state">
             <div class="spinner"></div>
@@ -476,67 +95,32 @@
         </div>
     </div>
 
-    <!-- SESSION EXPIRED -->
     <div id="view-expired" class="expired-wrapper" style="display:none;">
         <div class="expired-card">
             <div class="expired-icon">🔒</div>
-
             <h1>Acceso no autorizado</h1>
-
-            <p class="expired-desc">
-                El enlace para ver este pedido ha expirado o no es válido. Solicita un nuevo enlace de acceso desde tu email.
-            </p>
-
-            <a href="login.html" class="btn-reauth">
-                SOLICITAR NUEVO ACCESO
-            </a>
-
-            <div class="expired-footer">
-                <a href="catalogo.html">← Volver a la tienda</a>
-            </div>
+            <p class="expired-desc">El enlace para ver este pedido ha expirado o no es válido. Solicita un nuevo enlace de acceso desde tu email.</p>
+            <a href="login.html" class="btn-reauth">SOLICITAR NUEVO ACCESO</a>
+            <div class="expired-footer"><a href="catalogo.html">← Volver a la tienda</a></div>
         </div>
     </div>
 
-    <!-- ORDER DETAIL -->
     <div id="view-detail" class="page-wrapper" style="display:none;">
         <div class="detail-container">
-
-            <div class="back-nav">
-                <a href="mis-pedidos.html">← Volver a mis pedidos</a>
-            </div>
-
-            <!-- HEADER -->
-            <div class="order-header-card" id="order-header">
-                <!-- Rendered by JS -->
-            </div>
-
-            <!-- TRACKING -->
-            <div class="tracking-card" id="order-tracking" style="display:none;">
-                <!-- Rendered by JS -->
-            </div>
-
-            <!-- ITEMS -->
-            <div class="items-card" id="order-items">
-                <!-- Rendered by JS -->
-            </div>
-
+            <div class="back-nav"><a href="mis-pedidos.html">← Volver a mis pedidos</a></div>
+            <div class="order-header-card" id="order-header"></div>
+            <div class="tracking-card" id="order-tracking" style="display:none;"></div>
+            <div class="items-card" id="order-items"></div>
         </div>
     </div>
 
+    <script src="assets/js/ethere4l-config.js"></script>
     <script>
     (function() {
         'use strict';
 
-        // ===============================
-        // CONFIG
-        // ===============================
-        var API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-            ? 'http://localhost:3000'
-            : 'https://ethere4l-backend-production.up.railway.app';
+        var API_BASE = window.ETHERE4L_CONFIG.API_BASE;
 
-        // ===============================
-        // DOM
-        // ===============================
         var viewLoading = document.getElementById('view-loading');
         var viewExpired = document.getElementById('view-expired');
         var viewDetail = document.getElementById('view-detail');
@@ -544,9 +128,6 @@
         var orderTracking = document.getElementById('order-tracking');
         var orderItems = document.getElementById('order-items');
 
-        // ===============================
-        // INIT
-        // ===============================
         init();
 
         async function init() {
@@ -554,24 +135,20 @@
             var orderId = params.get('id');
             var orderToken = params.get('token');
 
-            // Security: clean token from URL after extracting
             if (orderToken) {
                 window.history.replaceState({}, '', window.location.pathname + '?id=' + orderId);
             }
 
-            // Validate required params
             if (!orderId || !orderToken) {
                 showExpired();
                 return;
             }
 
-            // Validate token structure (basic JWT check)
             if (orderToken.split('.').length !== 3) {
                 showExpired();
                 return;
             }
 
-            // Check token expiration client-side (basic pre-check, server validates authoritatively)
             try {
                 var payload = JSON.parse(atob(orderToken.split('.')[1]));
                 if (Date.now() >= payload.exp * 1000) {
@@ -583,14 +160,10 @@
                 return;
             }
 
-            // Fetch order data from API
-            // pedido-ver uses the per-order token (order_token) via Authorization header
-            // This is NOT the session JWT — it's a short-lived, scoped token for this specific order
-            // It is NOT stored in localStorage; it comes from the URL and is used once
             try {
                 var res = await fetch(API_BASE + '/api/orders/track/' + orderId, {
                     headers: { 'Authorization': 'Bearer ' + orderToken },
-                    credentials: 'include'  // Also send session cookie if present (for owner validation)
+                    credentials: 'include'
                 });
 
                 if (res.status === 401 || res.status === 403) {
@@ -617,9 +190,6 @@
             }
         }
 
-        // ===============================
-        // RENDER ORDER
-        // ===============================
         function renderOrder(order) {
             var shortId = order.id.slice(-8).toUpperCase();
             var date = new Date(order.date).toLocaleDateString('es-MX', {
@@ -629,163 +199,64 @@
             var statusLabel = formatStatus(order.payment_status || order.status);
             var statusClass = order.payment_status || order.status;
 
-            // HEADER
-            orderHeader.innerHTML = 
+            orderHeader.innerHTML =
                 '<div class="order-header-top">' +
                     '<span class="order-id-large">#' + shortId + '</span>' +
                     '<span class="status-badge badge-' + statusClass + '">' + statusLabel + '</span>' +
                 '</div>' +
                 '<div class="order-meta-grid">' +
-                    '<div class="meta-item">' +
-                        '<span class="meta-label">Fecha</span>' +
-                        '<span class="meta-value">' + date + '</span>' +
-                    '</div>' +
-                    '<div class="meta-item">' +
-                        '<span class="meta-label">Total</span>' +
-                        '<span class="meta-value">$' + formatPrice(order.total) + '</span>' +
-                    '</div>' +
-                    '<div class="meta-item">' +
-                        '<span class="meta-label">Envío</span>' +
-                        '<span class="meta-value">$' + formatPrice(order.shipping_cost) + '</span>' +
-                    '</div>' +
-                    (order.tracking_number ? 
-                    '<div class="meta-item">' +
-                        '<span class="meta-label">Guía</span>' +
-                        '<span class="meta-value">' + order.tracking_number + '</span>' +
-                    '</div>' : '') +
+                    '<div class="meta-item"><span class="meta-label">Fecha</span><span class="meta-value">' + date + '</span></div>' +
+                    '<div class="meta-item"><span class="meta-label">Total</span><span class="meta-value">$' + formatPrice(order.total) + '</span></div>' +
+                    '<div class="meta-item"><span class="meta-label">Envío</span><span class="meta-value">$' + formatPrice(order.shipping_cost) + '</span></div>' +
+                    (order.tracking_number ? '<div class="meta-item"><span class="meta-label">Guía</span><span class="meta-value">' + order.tracking_number + '</span></div>' : '') +
                 '</div>';
 
-            // TRACKING TIMELINE
             var history = order.tracking_history || [];
             if (history.length > 0) {
                 orderTracking.style.display = 'block';
-
                 var trackingHTML = '<h3>Seguimiento de envío</h3>';
-
                 if (order.tracking_number) {
-                    trackingHTML += 
-                        '<div class="tracking-number-row">' +
-                            '<span class="label">Número de guía</span>' +
-                            '<span class="value">' + order.tracking_number + '</span>' +
-                        '</div>';
+                    trackingHTML += '<div class="tracking-number-row"><span class="label">Número de guía</span><span class="value">' + order.tracking_number + '</span></div>';
                 }
-
                 trackingHTML += '<div class="timeline">';
-
                 for (var i = 0; i < history.length; i++) {
                     var event = history[i];
-                    var eventDate = new Date(event.timestamp).toLocaleDateString('es-MX', {
-                        month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                    });
-
-                    trackingHTML += 
-                        '<div class="timeline-item">' +
-                            '<div class="timeline-dot"></div>' +
-                            '<div class="timeline-status">' + formatStatus(event.status) + '</div>' +
-                            '<div class="timeline-desc">' + (event.description || '') + '</div>' +
-                            '<div class="timeline-date">' + eventDate + '</div>' +
-                        '</div>';
+                    var eventDate = new Date(event.timestamp).toLocaleDateString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                    trackingHTML += '<div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-status">' + formatStatus(event.status) + '</div><div class="timeline-desc">' + (event.description || '') + '</div><div class="timeline-date">' + eventDate + '</div></div>';
                 }
-
                 trackingHTML += '</div>';
                 orderTracking.innerHTML = trackingHTML;
             }
 
-            // ITEMS
             var items = order.items || [];
             var itemsHTML = '<h3>Artículos</h3>';
-
             for (var j = 0; j < items.length; j++) {
                 var item = items[j];
                 var imgSrc = item.imagen || '';
-                var imgTag = imgSrc 
+                var imgTag = imgSrc
                     ? '<img src="' + imgSrc + '" alt="' + (item.nombre || '') + '" class="item-thumb" loading="lazy">'
                     : '<div class="item-thumb" style="display:flex;align-items:center;justify-content:center;font-size:20px;">📦</div>';
-
-                itemsHTML += 
-                    '<div class="item-row">' +
-                        imgTag +
-                        '<div class="item-info">' +
-                            '<div class="item-name">' + (item.nombre || 'Producto') + '</div>' +
-                            '<div class="item-detail">' +
-                                (item.talla ? 'Talla: ' + item.talla : '') +
-                                (item.cantidad > 1 ? ' · Qty: ' + item.cantidad : '') +
-                            '</div>' +
-                        '</div>' +
-                        '<span class="item-price">$' + formatPrice(item.subtotal || item.precio) + '</span>' +
-                    '</div>';
+                itemsHTML += '<div class="item-row">' + imgTag + '<div class="item-info"><div class="item-name">' + (item.nombre || 'Producto') + '</div><div class="item-detail">' + (item.talla ? 'Talla: ' + item.talla : '') + (item.cantidad > 1 ? ' · Qty: ' + item.cantidad : '') + '</div></div><span class="item-price">$' + formatPrice(item.subtotal || item.precio) + '</span></div>';
             }
 
-            // Totals
             var subtotal = items.reduce(function(s, i) { return s + (parseFloat(i.subtotal || i.precio || 0)); }, 0);
             var shipping = parseFloat(order.shipping_cost || 0);
             var total = parseFloat(order.total || 0);
 
-            itemsHTML += 
-                '<div class="totals-section">' +
-                    '<div class="total-row">' +
-                        '<span>Subtotal</span>' +
-                        '<span>$' + formatPrice(subtotal) + '</span>' +
-                    '</div>' +
-                    '<div class="total-row">' +
-                        '<span>Envío</span>' +
-                        '<span>$' + formatPrice(shipping) + '</span>' +
-                    '</div>' +
-                    '<div class="total-row grand">' +
-                        '<span>Total</span>' +
-                        '<span>$' + formatPrice(total) + '</span>' +
-                    '</div>' +
-                '</div>';
-
+            itemsHTML += '<div class="totals-section"><div class="total-row"><span>Subtotal</span><span>$' + formatPrice(subtotal) + '</span></div><div class="total-row"><span>Envío</span><span>$' + formatPrice(shipping) + '</span></div><div class="total-row grand"><span>Total</span><span>$' + formatPrice(total) + '</span></div></div>';
             orderItems.innerHTML = itemsHTML;
         }
 
-        // ===============================
-        // VIEW TOGGLES
-        // ===============================
-        function showExpired() {
-            viewLoading.style.display = 'none';
-            viewDetail.style.display = 'none';
-            viewExpired.style.display = 'flex';
-        }
-
-        function showDetail() {
-            viewLoading.style.display = 'none';
-            viewExpired.style.display = 'none';
-            viewDetail.style.display = 'flex';
-        }
+        function showExpired() { viewLoading.style.display = 'none'; viewDetail.style.display = 'none'; viewExpired.style.display = 'flex'; }
+        function showDetail() { viewLoading.style.display = 'none'; viewExpired.style.display = 'none'; viewDetail.style.display = 'flex'; }
 
         function showError(title, message) {
-            viewLoading.style.display = 'none';
-            viewExpired.style.display = 'none';
-            viewDetail.style.display = 'flex';
-
-            document.querySelector('.detail-container').innerHTML = 
-                '<div class="back-nav">' +
-                    '<a href="mis-pedidos.html">← Volver a mis pedidos</a>' +
-                '</div>' +
-                '<div class="error-card">' +
-                    '<h2>' + title + '</h2>' +
-                    '<p>' + message + '</p>' +
-                    '<a href="catalogo.html" style="color:#111;font-weight:600;text-decoration:none;">' +
-                        'Ir al catálogo →' +
-                    '</a>' +
-                '</div>';
+            viewLoading.style.display = 'none'; viewExpired.style.display = 'none'; viewDetail.style.display = 'flex';
+            document.querySelector('.detail-container').innerHTML = '<div class="back-nav"><a href="mis-pedidos.html">← Volver a mis pedidos</a></div><div class="error-card"><h2>' + title + '</h2><p>' + message + '</p><a href="catalogo.html" style="color:#111;font-weight:600;text-decoration:none;">Ir al catálogo →</a></div>';
         }
 
-        // ===============================
-        // HELPERS
-        // ===============================
         function formatStatus(status) {
-            var map = {
-                'PENDIENTE': 'Pendiente',
-                'PAGADO': 'Pagado',
-                'EXPIRADO': 'Expirado',
-                'CONFIRMADO': 'Confirmado',
-                'EMPAQUETADO': 'Empaquetado',
-                'EN_TRANSITO': 'En tránsito',
-                'ENTREGADO': 'Entregado'
-            };
+            var map = { 'PENDIENTE': 'Pendiente', 'PAGADO': 'Pagado', 'EXPIRADO': 'Expirado', 'CONFIRMADO': 'Confirmado', 'EMPAQUETADO': 'Empaquetado', 'EN_TRANSITO': 'En tránsito', 'ENTREGADO': 'Entregado' };
             return map[status] || status || '';
         }
 
@@ -793,7 +264,6 @@
             var num = parseFloat(price) || 0;
             return num.toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
         }
-
     })();
     </script>
 </body>

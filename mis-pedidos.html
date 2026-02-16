@@ -19,9 +19,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ========================= */
-        /* LAYOUT WRAPPER            */
-        /* ========================= */
         .page-wrapper {
             min-height: 100vh;
             display: flex;
@@ -30,9 +27,6 @@
             padding: 24px;
         }
 
-        /* ========================= */
-        /* HEADER BAR                */
-        /* ========================= */
         .orders-header {
             width: 100%;
             max-width: 720px;
@@ -43,86 +37,31 @@
             margin-bottom: 8px;
         }
 
-        .orders-header h1 {
-            font-size: 24px;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-            color: #fff;
-        }
-
-        .orders-header .user-email {
-            font-size: 13px;
-            color: #888;
-            max-width: 200px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
+        .orders-header h1 { font-size: 24px; font-weight: 600; letter-spacing: -0.5px; color: #fff; }
+        .orders-header .user-email { font-size: 13px; color: #888; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
         .btn-logout {
-            padding: 8px 16px;
-            font-size: 12px;
-            font-weight: 500;
-            color: #999;
-            background: transparent;
-            border: 1px solid #333;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            letter-spacing: 0.3px;
+            padding: 8px 16px; font-size: 12px; font-weight: 500; color: #999;
+            background: transparent; border: 1px solid #333; border-radius: 6px;
+            cursor: pointer; transition: all 0.2s ease; letter-spacing: 0.3px;
         }
+        .btn-logout:hover { color: #fff; border-color: #666; }
 
-        .btn-logout:hover {
-            color: #fff;
-            border-color: #666;
-        }
-
-        /* ========================= */
-        /* ORDERS LIST               */
-        /* ========================= */
-        .orders-container {
-            width: 100%;
-            max-width: 720px;
-        }
+        .orders-container { width: 100%; max-width: 720px; }
 
         .order-card {
-            background: #fff;
-            border-radius: 12px;
-            padding: 24px 28px;
-            margin-bottom: 16px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            transition: box-shadow 0.2s ease;
-            cursor: pointer;
-            text-decoration: none;
-            display: block;
-            color: inherit;
+            background: #fff; border-radius: 12px; padding: 24px 28px; margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08); transition: box-shadow 0.2s ease;
+            cursor: pointer; text-decoration: none; display: block; color: inherit;
         }
+        .order-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.12); }
 
-        .order-card:hover {
-            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-        }
-
-        .order-card-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .order-id {
-            font-size: 15px;
-            font-weight: 600;
-            color: #111;
-            letter-spacing: -0.3px;
-        }
+        .order-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .order-id { font-size: 15px; font-weight: 600; color: #111; letter-spacing: -0.3px; }
 
         .order-status {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
+            padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;
+            letter-spacing: 0.5px; text-transform: uppercase;
         }
 
         .status-PENDIENTE { background: #fef3c7; color: #92400e; }
@@ -133,233 +72,79 @@
         .status-EN_TRANSITO { background: #fef3c7; color: #92400e; }
         .status-ENTREGADO { background: #d1fae5; color: #065f46; }
 
-        .order-card-body {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+        .order-card-body { display: flex; align-items: center; justify-content: space-between; }
+        .order-meta { font-size: 13px; color: #888; line-height: 1.6; }
+        .order-meta span { display: block; }
+        .order-total { font-size: 20px; font-weight: 700; color: #111; letter-spacing: -0.5px; }
 
-        .order-meta {
-            font-size: 13px;
-            color: #888;
-            line-height: 1.6;
-        }
+        .order-arrow { font-size: 18px; color: #ccc; margin-left: 12px; transition: transform 0.2s; }
+        .order-card:hover .order-arrow { transform: translateX(4px); color: #111; }
 
-        .order-meta span {
-            display: block;
-        }
-
-        .order-total {
-            font-size: 20px;
-            font-weight: 700;
-            color: #111;
-            letter-spacing: -0.5px;
-        }
-
-        .order-arrow {
-            font-size: 18px;
-            color: #ccc;
-            margin-left: 12px;
-            transition: transform 0.2s;
-        }
-
-        .order-card:hover .order-arrow {
-            transform: translateX(4px);
-            color: #111;
-        }
-
-        /* ========================= */
-        /* EMPTY STATE               */
-        /* ========================= */
-        .empty-state {
-            text-align: center;
-            padding: 60px 24px;
-        }
-
-        .empty-state .empty-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-
-        .empty-state h2 {
-            font-size: 22px;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 12px;
-        }
-
-        .empty-state p {
-            font-size: 15px;
-            color: #888;
-            line-height: 1.6;
-            margin-bottom: 28px;
-        }
+        .empty-state { text-align: center; padding: 60px 24px; }
+        .empty-state .empty-icon { font-size: 48px; margin-bottom: 20px; }
+        .empty-state h2 { font-size: 22px; font-weight: 600; color: #fff; margin-bottom: 12px; }
+        .empty-state p { font-size: 15px; color: #888; line-height: 1.6; margin-bottom: 28px; }
 
         .btn-shop {
-            display: inline-block;
-            padding: 14px 28px;
-            background: #fff;
-            color: #111;
-            font-size: 14px;
-            font-weight: 600;
-            border-radius: 10px;
-            text-decoration: none;
-            transition: all 0.2s;
-            letter-spacing: 0.3px;
+            display: inline-block; padding: 14px 28px; background: #fff; color: #111;
+            font-size: 14px; font-weight: 600; border-radius: 10px; text-decoration: none;
+            transition: all 0.2s; letter-spacing: 0.3px;
         }
+        .btn-shop:hover { background: #f5f5f5; transform: translateY(-1px); }
 
-        .btn-shop:hover {
-            background: #f5f5f5;
-            transform: translateY(-1px);
-        }
-
-        /* ========================= */
-        /* SESSION EXPIRED CARD      */
-        /* ========================= */
         .expired-wrapper {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            background: #0a0a0a;
+            min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            padding: 24px; background: #0a0a0a;
         }
 
         .expired-card {
-            max-width: 480px;
-            width: 100%;
-            background: #fff;
-            border-radius: 16px;
-            padding: 48px 40px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.08);
+            max-width: 480px; width: 100%; background: #fff; border-radius: 16px;
+            padding: 48px 40px; box-shadow: 0 4px 24px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.08);
             text-align: center;
         }
 
         .expired-icon {
-            width: 72px;
-            height: 72px;
-            margin: 0 auto 28px;
-            background: #fef2f2;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
+            width: 72px; height: 72px; margin: 0 auto 28px; background: #fef2f2;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px;
         }
 
-        .expired-card h1 {
-            font-size: 28px;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-            color: #111;
-            margin-bottom: 16px;
-            line-height: 1.2;
-        }
-
-        .expired-card .expired-desc {
-            font-size: 15px;
-            font-weight: 400;
-            line-height: 1.7;
-            color: #666;
-            margin-bottom: 32px;
-        }
+        .expired-card h1 { font-size: 28px; font-weight: 600; letter-spacing: -0.5px; color: #111; margin-bottom: 16px; line-height: 1.2; }
+        .expired-card .expired-desc { font-size: 15px; font-weight: 400; line-height: 1.7; color: #666; margin-bottom: 32px; }
 
         .btn-reauth {
-            display: inline-block;
-            padding: 14px 32px;
-            font-size: 15px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            color: #fff;
-            background: #111;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background 0.2s ease, transform 0.1s ease;
-            text-decoration: none;
+            display: inline-block; padding: 14px 32px; font-size: 15px; font-weight: 600;
+            letter-spacing: 0.5px; color: #fff; background: #111; border: none; border-radius: 10px;
+            cursor: pointer; transition: background 0.2s ease, transform 0.1s ease; text-decoration: none;
         }
+        .btn-reauth:hover { background: #333; }
+        .btn-reauth:active { transform: scale(0.98); }
 
-        .btn-reauth:hover {
-            background: #333;
-        }
+        .expired-footer { margin-top: 24px; }
+        .expired-footer a { font-size: 13px; color: #999; text-decoration: none; }
+        .expired-footer a:hover { color: #111; text-decoration: underline; }
 
-        .btn-reauth:active {
-            transform: scale(0.98);
-        }
-
-        .expired-footer {
-            margin-top: 24px;
-        }
-
-        .expired-footer a {
-            font-size: 13px;
-            color: #999;
-            text-decoration: none;
-        }
-
-        .expired-footer a:hover {
-            color: #111;
-            text-decoration: underline;
-        }
-
-        /* ========================= */
-        /* LOADING STATE             */
-        /* ========================= */
-        .loading-state {
-            text-align: center;
-            padding: 80px 24px;
-        }
+        .loading-state { text-align: center; padding: 80px 24px; }
 
         .spinner {
-            width: 36px;
-            height: 36px;
-            border: 3px solid #333;
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 20px;
+            width: 36px; height: 36px; border: 3px solid #333; border-top-color: #fff;
+            border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px;
         }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        .loading-text { color: #888; font-size: 14px; }
 
-        .loading-text {
-            color: #888;
-            font-size: 14px;
-        }
-
-        /* ========================= */
-        /* RESPONSIVE                */
-        /* ========================= */
         @media (max-width: 520px) {
-            .orders-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-            .orders-header .user-email {
-                max-width: 100%;
-            }
-            .order-card {
-                padding: 20px;
-            }
-            .order-total {
-                font-size: 18px;
-            }
-            .expired-card {
-                padding: 36px 24px;
-                border-radius: 12px;
-            }
-            .expired-card h1 {
-                font-size: 24px;
-            }
+            .orders-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .orders-header .user-email { max-width: 100%; }
+            .order-card { padding: 20px; }
+            .order-total { font-size: 18px; }
+            .expired-card { padding: 36px 24px; border-radius: 12px; }
+            .expired-card h1 { font-size: 24px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- LOADING STATE (shown first) -->
     <div id="view-loading" class="page-wrapper">
         <div class="loading-state">
             <div class="spinner"></div>
@@ -367,28 +152,20 @@
         </div>
     </div>
 
-    <!-- SESSION EXPIRED STATE (hidden by default) -->
     <div id="view-expired" class="expired-wrapper" style="display:none;">
         <div class="expired-card">
             <div class="expired-icon">🔒</div>
-
             <h1>Sesión expirada</h1>
-
             <p class="expired-desc">
                 Tu enlace de acceso ha expirado o no es válido. Por seguridad, necesitas solicitar uno nuevo para ver tus pedidos.
             </p>
-
-            <a href="login.html" class="btn-reauth">
-                SOLICITAR NUEVO ACCESO
-            </a>
-
+            <a href="login.html" class="btn-reauth">SOLICITAR NUEVO ACCESO</a>
             <div class="expired-footer">
                 <a href="catalogo.html">← Volver a la tienda</a>
             </div>
         </div>
     </div>
 
-    <!-- ORDERS STATE (hidden by default) -->
     <div id="view-orders" class="page-wrapper" style="display:none;">
         <div class="orders-header">
             <div>
@@ -397,35 +174,24 @@
             </div>
             <button class="btn-logout" id="btn-logout">Cerrar sesión</button>
         </div>
-
-        <div class="orders-container" id="orders-list">
-            <!-- Orders rendered here by JS -->
-        </div>
+        <div class="orders-container" id="orders-list"></div>
     </div>
 
+    <script src="assets/js/ethere4l-config.js"></script>
     <script>
     (function() {
         'use strict';
 
-        // ===============================
-        // CONFIG
-        // ===============================
-        var API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-            ? 'http://localhost:3000'
-            : 'https://ethere4l-backend-production.up.railway.app';
+        var API_BASE = window.ETHERE4L_CONFIG.API_BASE;
 
-        // ===============================
-        // SECURITY: Clear ALL legacy localStorage/sessionStorage JWT data
-        // Phase 0 migration: ensure no token persists client-side
-        // ===============================
+        // Clear ALL legacy data
         localStorage.removeItem('ethere4l_session');
         localStorage.removeItem('ethere4l_customer_token');
+        localStorage.removeItem('ethereal_customer_token');
         sessionStorage.removeItem('ethere4l_session');
         sessionStorage.removeItem('ethere4l_customer_token');
+        sessionStorage.removeItem('magic_token');
 
-        // ===============================
-        // DOM REFS
-        // ===============================
         var viewLoading = document.getElementById('view-loading');
         var viewExpired = document.getElementById('view-expired');
         var viewOrders = document.getElementById('view-orders');
@@ -433,28 +199,21 @@
         var displayEmail = document.getElementById('display-email');
         var btnLogout = document.getElementById('btn-logout');
 
-        // ===============================
-        // INIT: AUTHENTICATION FLOW
-        // ===============================
         init();
 
         async function init() {
-            // 1. Check URL for magic link token
             var params = new URLSearchParams(window.location.search);
             var magicToken = params.get('token');
 
             if (magicToken) {
-                // Clean URL immediately (security: remove token from URL bar)
                 window.history.replaceState({}, '', window.location.pathname);
 
-                // Exchange magic link token for HttpOnly session cookie
-                // The backend will SET the cookie — we just need credentials: 'include'
                 try {
                     var res = await fetch(API_BASE + '/api/session/start?token=' + encodeURIComponent(magicToken), {
                         method: 'GET',
-                        credentials: 'include'  // ← CRITICAL: allows browser to accept Set-Cookie from cross-origin
+                        credentials: 'include'
                     });
-                    
+
                     if (!res.ok) {
                         showExpired();
                         return;
@@ -463,8 +222,6 @@
                     var data = await res.json();
 
                     if (data.success) {
-                        // Session cookie is now set by browser automatically
-                        // We store email for display only (NOT a secret)
                         if (data.email) {
                             displayEmail.textContent = data.email;
                         }
@@ -480,19 +237,14 @@
                 }
             }
 
-            // 2. No magic token in URL — try loading orders with existing cookie
-            // If the HttpOnly session cookie exists, the browser will send it automatically
             loadOrders();
         }
 
-        // ===============================
-        // LOAD ORDERS FROM API (Cookie-based auth)
-        // ===============================
         async function loadOrders() {
             try {
                 var res = await fetch(API_BASE + '/api/customer/orders', {
                     method: 'GET',
-                    credentials: 'include'  // ← CRITICAL: sends HttpOnly cookie automatically
+                    credentials: 'include'
                 });
 
                 if (res.status === 401 || res.status === 403) {
@@ -507,7 +259,6 @@
 
                 var responseData = await res.json();
 
-                // The backend now returns { email, orders } 
                 if (responseData.email) {
                     displayEmail.textContent = responseData.email;
                 }
@@ -520,12 +271,9 @@
             }
         }
 
-        // ===============================
-        // RENDER ORDERS
-        // ===============================
         function renderOrders(orders) {
             if (!orders || orders.length === 0) {
-                ordersList.innerHTML = 
+                ordersList.innerHTML =
                     '<div class="empty-state">' +
                         '<div class="empty-icon">📦</div>' +
                         '<h2>No tienes pedidos aún</h2>' +
@@ -537,18 +285,14 @@
 
             ordersList.innerHTML = orders.map(function(order) {
                 var date = new Date(order.created_at).toLocaleDateString('es-MX', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric'
+                    year: 'numeric', month: 'short', day: 'numeric'
                 });
 
                 var itemCount = order.items ? order.items.length : 0;
                 var statusLabel = formatStatus(order.status);
                 var shortId = order.id.slice(-8).toUpperCase();
 
-                // order_token is a short-lived per-order JWT for viewing order detail
-                // It's passed as URL param (NOT stored in localStorage)
-                var trackUrl = order.order_token 
+                var trackUrl = order.order_token
                     ? 'pedido-ver.html?id=' + order.id + '&token=' + order.order_token
                     : '#';
 
@@ -571,9 +315,6 @@
             }).join('');
         }
 
-        // ===============================
-        // VIEW TOGGLES
-        // ===============================
         function showExpired() {
             viewLoading.style.display = 'none';
             viewOrders.style.display = 'none';
@@ -586,39 +327,27 @@
             viewOrders.style.display = 'flex';
         }
 
-        // ===============================
-        // LOGOUT — Server-side cookie clearing
-        // ===============================
         btnLogout.addEventListener('click', async function() {
             try {
                 await fetch(API_BASE + '/api/session/logout', {
                     method: 'POST',
-                    credentials: 'include'  // ← sends cookie so server can revoke session
+                    credentials: 'include'
                 });
-            } catch (e) {
-                // Even if logout call fails, redirect to login
-            }
+            } catch (e) {}
 
-            // Clear any legacy client-side data
             localStorage.removeItem('ethere4l_session');
             localStorage.removeItem('ethere4l_customer_token');
+            localStorage.removeItem('ethereal_customer_token');
             sessionStorage.clear();
 
             window.location.href = 'login.html';
         });
 
-        // ===============================
-        // HELPERS
-        // ===============================
         function formatStatus(status) {
             var map = {
-                'PENDIENTE': 'Pendiente',
-                'PAGADO': 'Pagado',
-                'EXPIRADO': 'Expirado',
-                'CONFIRMADO': 'Confirmado',
-                'EMPAQUETADO': 'Empaquetado',
-                'EN_TRANSITO': 'En tránsito',
-                'ENTREGADO': 'Entregado'
+                'PENDIENTE': 'Pendiente', 'PAGADO': 'Pagado', 'EXPIRADO': 'Expirado',
+                'CONFIRMADO': 'Confirmado', 'EMPAQUETADO': 'Empaquetado',
+                'EN_TRANSITO': 'En tránsito', 'ENTREGADO': 'Entregado'
             };
             return map[status] || status;
         }
@@ -627,7 +356,6 @@
             var num = parseFloat(price) || 0;
             return num.toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
         }
-
     })();
     </script>
 </body>

@@ -111,19 +111,9 @@
             margin-top: 8px;
         }
 
-        .btn-login:hover {
-            background: #333;
-        }
-
-        .btn-login:active {
-            transform: scale(0.98);
-        }
-
-        .btn-login:disabled {
-            background: #999;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .btn-login:hover { background: #333; }
+        .btn-login:active { transform: scale(0.98); }
+        .btn-login:disabled { background: #999; cursor: not-allowed; transform: none; }
 
         .login-footer {
             margin-top: 28px;
@@ -143,11 +133,8 @@
             font-weight: 500;
         }
 
-        .login-footer a:hover {
-            text-decoration: underline;
-        }
+        .login-footer a:hover { text-decoration: underline; }
 
-        /* Status messages */
         .status-msg {
             padding: 14px 16px;
             border-radius: 10px;
@@ -157,28 +144,10 @@
             display: none;
         }
 
-        .status-msg.success {
-            display: block;
-            background: #f0fdf4;
-            color: #166534;
-            border: 1px solid #bbf7d0;
-        }
+        .status-msg.success { display: block; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+        .status-msg.error { display: block; background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+        .status-msg.info { display: block; background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
 
-        .status-msg.error {
-            display: block;
-            background: #fef2f2;
-            color: #991b1b;
-            border: 1px solid #fecaca;
-        }
-
-        .status-msg.info {
-            display: block;
-            background: #eff6ff;
-            color: #1e40af;
-            border: 1px solid #bfdbfe;
-        }
-
-        /* Cooldown timer */
         .cooldown-text {
             font-size: 13px;
             color: #999;
@@ -186,11 +155,8 @@
             display: none;
         }
 
-        .cooldown-text.visible {
-            display: block;
-        }
+        .cooldown-text.visible { display: block; }
 
-        /* Back to store link */
         .back-link {
             display: inline-flex;
             align-items: center;
@@ -202,18 +168,11 @@
             transition: color 0.2s;
         }
 
-        .back-link:hover {
-            color: #111;
-        }
+        .back-link:hover { color: #111; }
 
         @media (max-width: 520px) {
-            .login-card {
-                padding: 36px 24px;
-                border-radius: 12px;
-            }
-            .login-card h1 {
-                font-size: 24px;
-            }
+            .login-card { padding: 36px 24px; border-radius: 12px; }
+            .login-card h1 { font-size: 24px; }
         }
     </style>
 </head>
@@ -221,35 +180,21 @@
     <div class="login-wrapper">
         <div class="login-card">
             <div class="login-icon">📧</div>
-
             <h1>Accede a tus pedidos</h1>
-
             <p class="subtitle">
                 Ingresa el email que usaste en tu compra. Te enviaremos un enlace seguro para ver el estado de tus pedidos.
             </p>
-
             <div id="status-message" class="status-msg"></div>
-
             <form id="login-form">
                 <div class="form-field">
                     <label for="email">Correo electrónico</label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        name="email" 
-                        placeholder="tu@email.com" 
-                        required 
-                        autocomplete="email"
-                        spellcheck="false">
+                    <input type="email" id="email" name="email" placeholder="tu@email.com" required autocomplete="email" spellcheck="false">
                 </div>
-
                 <button type="submit" class="btn-login" id="btn-submit">
                     ENVIAR ENLACE DE ACCESO
                 </button>
-
                 <p class="cooldown-text" id="cooldown-text"></p>
             </form>
-
             <div class="login-footer">
                 <p>Solo se envía un enlace si existen pedidos asociados a tu email. El enlace expira en 24 horas.</p>
                 <a href="catalogo.html" class="back-link">← Volver a la tienda</a>
@@ -257,93 +202,72 @@
         </div>
     </div>
 
+    <script src="assets/js/ethere4l-config.js"></script>
     <script>
     (function() {
         'use strict';
 
-        // ===============================
-        // CONFIG
-        // ===============================
-        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-            ? 'http://localhost:3000'
-            : 'https://ethere4l-backend-production.up.railway.app';
+        var API_BASE = window.ETHERE4L_CONFIG.API_BASE;
 
-        const COOLDOWN_SECONDS = 60;
-        const COOLDOWN_KEY = 'ethere4l_magic_link_cooldown';
+        var COOLDOWN_SECONDS = 60;
+        var COOLDOWN_KEY = 'ethere4l_magic_link_cooldown';
 
-        const form = document.getElementById('login-form');
-        const emailInput = document.getElementById('email');
-        const btnSubmit = document.getElementById('btn-submit');
-        const statusMsg = document.getElementById('status-message');
-        const cooldownText = document.getElementById('cooldown-text');
+        var form = document.getElementById('login-form');
+        var emailInput = document.getElementById('email');
+        var btnSubmit = document.getElementById('btn-submit');
+        var statusMsg = document.getElementById('status-message');
+        var cooldownText = document.getElementById('cooldown-text');
 
-        // ===============================
-        // SECURITY: Clear any legacy stale data
-        // No JWT is stored anymore. Clear legacy keys if they exist.
-        // ===============================
+        // Clear legacy storage
         localStorage.removeItem('ethere4l_session');
         localStorage.removeItem('ethere4l_customer_token');
+        localStorage.removeItem('ethereal_customer_token');
         sessionStorage.removeItem('ethere4l_session');
         sessionStorage.removeItem('ethere4l_customer_token');
+        sessionStorage.removeItem('magic_token');
 
-        // ===============================
-        // SECURITY: Clear server-side session cookie on login page load
-        // If user navigates to login, we assume they want to re-authenticate.
-        // We call the logout endpoint to clear the HttpOnly cookie.
-        // ===============================
-        fetch(`${API_BASE}/api/session/logout`, {
+        // Clear server-side session cookie on login page load
+        fetch(API_BASE + '/api/session/logout', {
             method: 'POST',
             credentials: 'include'
-        }).catch(function() { /* silent — if server is down, no cookie to clear */ });
+        }).catch(function() {});
 
-        // ===============================
-        // COOLDOWN CHECK ON LOAD
-        // ===============================
         checkCooldown();
 
-        // ===============================
-        // FORM SUBMIT
-        // ===============================
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            // Check cooldown
-            const remaining = getCooldownRemaining();
+            var remaining = getCooldownRemaining();
             if (remaining > 0) {
                 showStatus('info', 'Espera ' + remaining + ' segundos antes de solicitar otro enlace.');
                 return;
             }
 
-            const email = emailInput.value.trim().toLowerCase();
+            var email = emailInput.value.trim().toLowerCase();
             if (!email || !email.includes('@')) {
                 showStatus('error', 'Ingresa un email válido.');
                 return;
             }
 
-            // Disable button
             btnSubmit.disabled = true;
             btnSubmit.textContent = 'ENVIANDO...';
 
             try {
-                const res = await fetch(API_BASE + '/api/magic-link', {
+                var res = await fetch(API_BASE + '/api/magic-link', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',  // ← CONSISTENCY (aunque no crítico aquí)
+                    credentials: 'include',
                     body: JSON.stringify({ email: email })
                 });
 
-                const data = await res.json();
+                var data = await res.json();
 
-                // Always show success (anti-enumeration — backend always returns success)
-                showStatus('success', 
+                showStatus('success',
                     'Si existe una cuenta con ese email, recibirás un enlace de acceso en los próximos minutos. Revisa tu bandeja de entrada y spam.'
                 );
 
-                // Set cooldown
                 setCooldown();
                 startCooldownTimer();
-
-                // Clear input
                 emailInput.value = '';
 
             } catch (err) {
@@ -353,9 +277,6 @@
             }
         });
 
-        // ===============================
-        // HELPERS
-        // ===============================
         function showStatus(type, message) {
             statusMsg.className = 'status-msg ' + type;
             statusMsg.textContent = message;
