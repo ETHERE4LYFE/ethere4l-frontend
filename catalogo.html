@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catálogo | ETHEREAL</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
-    
+    <!-- ✅ FIX: Load config FIRST so render.js can access API_BASE if needed -->
+    <script src="assets/js/ethere4l-config.js"></script>
+
     <style>
-        .nav-promo { 
+        .nav-promo {
             color: #ff4757 !important;
-            font-weight: bold; 
-            font-size: 0.9em; 
-            text-decoration: none; 
+            font-weight: bold;
+            font-size: 0.9em;
+            text-decoration: none;
             margin-left: 10px;
             border: 1px solid #ff4757;
             padding: 5px 10px;
@@ -64,7 +66,7 @@
             </ul>
         </li>
         <li><a href="catalogo.html">Catálogo</a></li>
-        
+
         <li>
             <a href="catalogo.html" class="nav-promo">
                 📦 Lotes: Envío -50% (2+ pzas)
@@ -75,15 +77,15 @@
 </nav>
 
 <div class="btn-consulta-container">
-    <a href="https://www.instagram.com/etheere4l" 
-       target="_blank" 
+    <a href="https://www.instagram.com/etheere4l"
+       target="_blank"
        class="btn-buy">
        CONSULTAR DISPONIBILIDAD
     </a>
 </div>
 
 <header class="tienda-header" style="text-align: center; padding: 40px 0;">
-    <h1 id="titulo-seccion">NUESTRAS COLECCIONES</h1> 
+    <h1 id="titulo-seccion">NUESTRAS COLECCIONES</h1>
     <p>Calidad Ethereal en cada prenda.</p>
 </header>
 
@@ -91,7 +93,7 @@
 <section id="lcp-hero" class="container-grid">
     <a href="producto.html?id=balenciaga-jacket-001" class="producto-card">
         <div class="img-container">
-            <img 
+            <img
                 src="images/catalogos/balenciaga/001/principal.webp"
                 alt="Balenciaga jacket 001"
                 width="600"
@@ -118,6 +120,7 @@
     <div class="skeleton-card"></div>
 </section>
 
+<!-- ✅ FIX: render.js loaded AFTER config is available -->
 <script src="assets/js/render.js" defer></script>
 <script defer>
     const menuToggle = document.getElementById('mobile-menu');
@@ -142,12 +145,10 @@
     document.addEventListener('mousemove', (e) => {
         if (rafId) return;
         rafId = requestAnimationFrame(() => {
-            cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+            cursor.style.transform = 'translate(' + e.clientX + 'px, ' + e.clientY + 'px)';
             rafId = null;
         });
     });
-
-   
 
     document.querySelectorAll('a, button, .producto-card').forEach(el => {
         el.addEventListener('mouseenter', () => cursor.classList.add('active'));
@@ -159,10 +160,10 @@
     <div class="contacto-container">
         <h2>¿BUSCAS ALGO EN ESPECIAL?</h2>
         <p>Si no encuentras una pieza, cuéntanos cuál buscas y te contactaremos.</p>
-        
+
         <form name="interes-piezas" method="POST" data-netlify="true" action="/gracias.html" id="form-piezas">
             <input type="hidden" name="form-name" value="interes-piezas">
-            
+
             <div class="form-group">
                 <input type="text" name="pieza" id="pieza" placeholder="Ej. Chrome Hearts chain" required>
             </div>
@@ -178,14 +179,14 @@
 
 <script defer>
   document.getElementById('form-piezas').onsubmit = function() {
-    const pieza = document.getElementById('pieza').value;
-    const user = document.getElementById('insta_user').value;
-    
-    setTimeout(() => {
-        window.open(`https://ig.me/m/etheere4l?text=Hola! Busco: ${pieza}. Mi usuario es ${user}`, '_blank');
+    var pieza = document.getElementById('pieza').value;
+    var user = document.getElementById('insta_user').value;
+
+    setTimeout(function() {
+        window.open('https://ig.me/m/etheere4l?text=Hola! Busco: ' + pieza + '. Mi usuario es ' + user, '_blank');
     }, 100);
 
-    return true; 
+    return true;
   };
 </script>
 </body>

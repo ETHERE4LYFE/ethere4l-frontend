@@ -1,11 +1,29 @@
 // ==========================================
-// CART.JS - Lógica Global del Carrito
+// CART.JS - Lógica Global del Carrito (CORREGIDO)
+// ==========================================
+// FIXES APPLIED:
+//   ✅ FIX 1: PRODUCTION_API typo → now reads from ETHERE4L_CONFIG
+//   ✅ FIX 2: Removed hardcoded API_PRODUCTION
+//   ✅ FIX 3: Added credentials: 'include' to checkout fetch
+//   ✅ FIX 4: Added res.ok check before res.json()
+//   ✅ FIX 5: Added timeout for mobile networks
+//   ✅ All existing functions preserved 1:1
+//   ✅ No functions removed
 // ==========================================
 
 // Clave para guardar en el navegador
 const CART_KEY = 'ethereal_cart_v1';
-// URL del Backend (Producción Railway)
-const API_PRODUCTION = "https://api.ethere4l.com";
+
+// ✅ FIX 1: Read API URL from centralized config (loaded via <script> in HTML)
+// Falls back to hardcoded URL if config not loaded yet
+function getApiBase() {
+    if (window.ETHERE4L_CONFIG && window.ETHERE4L_CONFIG.API_BASE) {
+        return window.ETHERE4L_CONFIG.API_BASE;
+    }
+    // Fallback — should never reach here if config is loaded properly
+    console.warn('ETHERE4L_CONFIG not available, using fallback API URL');
+    return 'https://api.ethere4l.com';
+}
 
 
 // 1. Obtener carrito actual
@@ -33,7 +51,7 @@ function saveCart(cart) {
 // 3. Agregar producto
 function addToCart(producto) {
     let cart = getCart();
-    
+
     // Validación estricta de ID y Talla
     if (!producto.id || !producto.talla) {
         console.error("Error: Producto sin ID o Talla", producto);
@@ -78,7 +96,7 @@ function addToCart(producto) {
     }
 
     saveCart(cart);
-    console.log(`✅ Agregado: ${producto.nombre} | $${precioNumerico}`);
+    console.log('✅ Agregado: ' + producto.nombre + ' | $' + precioNumerico);
     alert("Producto agregado al carrito"); // Feedback visual simple
 }
 
@@ -89,7 +107,7 @@ function getCartTotal() {
         const p = Number(item.precio) || 0;
         const q = Number(item.cantidad) || 0;
         return total + (p * q);
-    }, 0); // ✅ CORRECCIÓN: Se agregó el 0 inicial para evitar errores en arrays vacíos
+    }, 0);
 }
 
 // 5. Funciones Auxiliares Globales (Window)
@@ -99,12 +117,12 @@ window.removeFromCart = function(id, talla) {
     // Filtrar manteniendo tipos consistentes
     cart = cart.filter(item => !(String(item.id) === String(id) && item.talla === talla));
     saveCart(cart);
-}
+};
 
 window.updateItemQuantity = function(id, talla, change) {
     let cart = getCart();
     const item = cart.find(i => String(i.id) === String(id) && i.talla === talla);
-    
+
     if (item) {
         const nuevaCantidad = item.cantidad + change;
         if (nuevaCantidad > 0) {
@@ -115,34 +133,35 @@ window.updateItemQuantity = function(id, talla, change) {
             window.removeFromCart(id, talla);
         }
     }
-}
+};
 
 window.clearCart = function() {
     localStorage.removeItem(CART_KEY);
     window.dispatchEvent(new Event('cartUpdated'));
     if (typeof updateCartCount === 'function') updateCartCount();
-}
+};
 
 /* ==========================================================================
-   INTEGRACIÓN STRIPE & BACKEND (Checkout Seguro)
+   INTEGRACIÓN STRIPE & BACKEND (Checkout Seguro) — CORREGIDO
    ========================================================================== */
 
 /**
  * Envía el carrito + datos del cliente al backend para iniciar sesión de Stripe.
  * @param {string} btnId - ID del botón que dispara la acción (para efecto de carga)
  */
-window.iniciarCheckoutSeguro = async function(btnId = 'btn-checkout') {
-    const cart = getCart();
-    
+window.iniciarCheckoutSeguro = async function(btnId) {
+    btnId = btnId || 'btn-checkout';
+    var cart = getCart();
+
     if (cart.length === 0) {
         alert("Tu bolsa está vacía.");
         return;
     }
 
     // UI Loading
-    const btn = document.getElementById(btnId);
-    let textoOriginal = "";
-    if(btn) {
+    var btn = document.getElementById(btnId);
+    var textoOriginal = "";
+    if (btn) {
         textoOriginal = btn.innerText;
         btn.innerText = "Conectando con Stripe...";
         btn.disabled = true;
@@ -150,9 +169,9 @@ window.iniciarCheckoutSeguro = async function(btnId = 'btn-checkout') {
 
     try {
         // 1. Intentar recuperar datos del cliente (Si vienen desde checkout.js)
-        let clienteData = null;
+        var clienteData = null;
         try {
-            const storedData = sessionStorage.getItem('checkout_cliente');
+            var storedData = sessionStorage.getItem('checkout_cliente');
             if (storedData) {
                 clienteData = JSON.parse(storedData);
             }
@@ -160,41 +179,71 @@ window.iniciarCheckoutSeguro = async function(btnId = 'btn-checkout') {
             console.warn("No se encontraron datos de cliente en sessionStorage");
         }
 
-        // 2. Determinar URL de la API
-        const apiUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-            ? 'http://localhost:3000/api/create-checkout-session'
-            : PRODUCTION_API;
+        // ✅ FIX 2: Use centralized config function instead of broken variable
+        var apiBase = getApiBase();
+        var apiUrl = apiBase + '/api/create-checkout-session';
 
-        console.log(`🔄 Iniciando Checkout hacia: ${apiUrl}`);
+        console.log('🔄 Iniciando Checkout hacia: ' + apiUrl);
+
+        // ✅ FIX 3: Added timeout for mobile networks
+        var controller = new AbortController();
+        var timeout = setTimeout(function() {
+            controller.abort();
+        }, 20000); // 20 second timeout for slow mobile
 
         // 3. Petición al Backend
-        const response = await fetch(apiUrl, {
+        // ✅ FIX 4: Added credentials: 'include' for cross-origin cookie support
+        var response = await fetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
+            credentials: 'include',
+            signal: controller.signal,
+            body: JSON.stringify({
                 items: cart,
-                customer: clienteData // Enviamos los datos del formulario si existen
+                customer: clienteData
             })
         });
 
-        const data = await response.json();
+        clearTimeout(timeout);
+
+        // ✅ FIX 5: Check response.ok BEFORE parsing JSON
+        if (!response.ok) {
+            var errorData;
+            try {
+                errorData = await response.json();
+            } catch (e) {
+                throw new Error('Error del servidor (HTTP ' + response.status + ')');
+            }
+            throw new Error(errorData.error || 'Error del servidor (HTTP ' + response.status + ')');
+        }
+
+        var data = await response.json();
 
         // 4. Manejo de Respuesta
-        if (response.ok && data.url) {
+        if (data.url) {
             console.log("✅ Sesión creada, redirigiendo...");
             window.location.href = data.url; // Redirige a Stripe
         } else {
-            throw new Error(data.error || "Error desconocido del servidor");
+            throw new Error(data.error || "No se recibió URL de pago");
         }
 
     } catch (error) {
         console.error("❌ Checkout Error:", error);
-        alert("No se pudo iniciar el pago: " + error.message);
-        
+
+        // ✅ FIX 6: Better error messages for mobile users
+        var userMessage = "No se pudo iniciar el pago.";
+        if (error.name === 'AbortError') {
+            userMessage = "La conexión tardó demasiado. Verifica tu internet e intenta de nuevo.";
+        } else if (error.message) {
+            userMessage = error.message;
+        }
+
+        alert(userMessage);
+
         // Restaurar botón
-        if(btn) {
+        if (btn) {
             btn.innerText = textoOriginal;
             btn.disabled = false;
         }
     }
-}
+};
