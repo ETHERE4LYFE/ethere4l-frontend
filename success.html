@@ -18,45 +18,56 @@ gtag('config','G-XXXXXXXX');
 </script>
 </head>
 
-<body style="background:#000;color:#fff;display:flex;justify-content:center;align-items:center;height:100vh;text-align:center;">
+<body style="background:#000;color:#fff;display:flex;justify-content:center;align-items:center;min-height:100vh;text-align:center;padding:20px;">
 
-<div style="max-width:600px;padding:20px;">
+<div style="max-width:600px;width:100%;">
     <div style="font-size:4rem;color:#2ecc71;margin-bottom:20px;">
         <i class="fa-regular fa-circle-check"></i>
     </div>
 
-    <h1 style="font-family:'Pirata One';font-size:3.5rem;letter-spacing:3px;">
+    <h1 style="font-family:'Pirata One';font-size:3.5rem;letter-spacing:3px;margin-bottom:30px;">
         ORDEN CONFIRMADA
     </h1>
 
     <div style="background:rgba(255,255,255,.1);padding:22px;border-radius:8px;margin:30px 0;">
-        <p>
+        <p style="font-size:16px;line-height:1.6;margin-bottom:15px;">
             Tu pago fue procesado correctamente.<br>
             Tu pedido ya está en nuestro sistema.
         </p>
-        <p style="color:#ccc;">
-            📩 Te enviamos un correo con un acceso seguro para consultar
-            el estado de tu pedido.
+    </div>
+
+    <div style="background:rgba(46,204,113,.15);padding:25px;border-radius:8px;margin:30px 0;border:1px solid rgba(46,204,113,.3);">
+        <p style="font-size:17px;margin-bottom:15px;">
+            <strong>📧 Revisa tu correo electrónico</strong>
+        </p>
+        <p style="font-size:14px;line-height:1.6;color:#ccc;">
+            Te hemos enviado un enlace seguro para acceder a tus pedidos y ver el estado de tu orden.
+            <br><br>
+            Si no lo ves en tu bandeja de entrada, revisa <strong style="color:#fff;">spam</strong> o <strong style="color:#fff;">promociones</strong>.
         </p>
     </div>
 
-    <button onclick="location.href='mis-pedidos.html'"
-        style="background:#fff;color:#000;padding:15px 40px;border:none;font-weight:bold;cursor:pointer;">
-        VER MIS PEDIDOS
-    </button>
+    <div style="margin-top:35px;">
+        <a href="login.html" 
+           style="display:inline-block;background:#fff;color:#000;padding:15px 40px;border:none;font-weight:bold;text-decoration:none;border-radius:4px;font-size:15px;transition:all 0.2s;">
+            SOLICITAR ENLACE DE ACCESO
+        </a>
+    </div>
 
     <br><br>
 
-    <a href="catalogo.html" style="color:#fff;text-decoration:underline;">
+    <a href="catalogo.html" style="color:#fff;text-decoration:underline;font-size:14px;">
         Seguir comprando
     </a>
 
-    <p style="font-size:11px;color:#777;margin-top:15px;">
-        Si no ves el correo, revisa spam o promociones.
+    <p style="font-size:11px;color:#777;margin-top:25px;line-height:1.5;">
+        El enlace de acceso es válido por 24 horas.<br>
+        Úsalo para ver el estado de tu pedido y el número de seguimiento.
     </p>
 </div>
 
 <script>
+// Clear cart after successful payment
 localStorage.removeItem('ethereal_cart_v1');
 </script>
 </body>
