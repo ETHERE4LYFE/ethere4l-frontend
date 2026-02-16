@@ -3,7 +3,8 @@
 // ==========================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    const API_URL = 'https://ethereal-backend-production-6060.up.railway.app';
+    const API_URL = "https://ethereal-backend-production-6060.up.railway.app";
+
     const params = new URLSearchParams(window.location.search);
     const orderId = params.get('order');
     const token = params.get('token');
@@ -283,7 +284,8 @@ async function initTrackingMode(orderId, token) {
 
 
 async function waitForOrderAvailability(orderId, token) {
-    const API_URL = 'https://ethereal-backend-production-6060.up.railway.app';
+    const API_URL = "https://ethereal-backend-production-6060.up.railway.app";
+
     const MAX_RETRIES = 6;
     let attempt = 0;
     let delay = 1000;
